@@ -1,6 +1,7 @@
 <template>
-  <div class="pageLogin-user">
-    <h1 class="pageLogin-Title">Đăng nhập</h1>
+	<div class="pageLogin-user">
+		<div class="FormLogin-user">
+		<h1 class="pageLogin-Title">Đăng nhập</h1>
 		<v-form class="pageLogin-form" ref="form" v-model="valid" lazy-validation>
 			<v-text-field
 				v-model="email"
@@ -16,7 +17,7 @@
 			></v-text-field>
 			<div class="center">
 				<v-btn color="success" class="mr-4" @click="validate" width="100%">
-				Đăng nhập
+		<span class="label__btn--login">Đăng nhập</span>
 			</v-btn>
 			</div>
 			<div class="center">
@@ -24,13 +25,14 @@
 				<a href="">Đăng ký tài khoản</a>
 			</div>
 			<div class="center">
-				Đăng nhập nhanh với
+				Đăng nhập nhanh
 				<div>
-					
+					<i class="fa-brands fa-google icon--size"></i>
 				</div>
 			</div>
 		</v-form>
-  </div>
+	</div>
+	</div>
 </template>
 
 <script>
@@ -52,29 +54,60 @@
       },
     },
   }
+
 </script>
 
 <style>
 #app {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	
 }
-.pageLogin-user {
-  width: 600px;
-  height: 400px;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 3px -3px 3px #aaa;
+.pageLogin-user{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: url("https://nld.mediacdn.vn/2018/3/2/20180228112510-15199665090941211429364.jpg");
+	background-size: cover;
+	height: 100vh;
+}
+:root{
+	--form--height-1444: 410px;
+	--form--width-1444: 620px;
+	--form--height-1024: 400px;
+	--form--width-1024: 500px;
+	--form--height-768: 400px;
+	--form--width-768: 400px;
+	--form--height-480: 380px;
+	--form--width-480: 350px;
+	--form--height-320: 380px;
+	--form--width-320: 280px;
+
+}
+.FormLogin-user {
+	position: relative;
+	height: var(--form--height-1444);
+	width: var(--form--width-1444);
+	background: white;
+	border-radius: 20px;
+	box-shadow: 3px -3px 3px #aaa;
+	animation: 1.5s growth ease;
+}
+@keyframes growth {
+	from{
+		top: 30px
+	}
+	to{
+		top: 0px
+	}
 }
 .pageLogin-Title {
-  text-align: center;
-  background-color: red;
-  border-radius: 20px 20px 0px 0px;
-  color: white;
-  padding: 10px;
+	text-align: center;
+	background-color: red;
+	border-radius: 20px 20px 0px 0px;
+	color: white;
+	padding: 10px;
 }
-.pageLogin-user .pageLogin-form{
+
+.FormLogin-user .pageLogin-form{
 	padding: 10px;
 }
 .center{
@@ -82,5 +115,70 @@
 }
 .center + .center{
 	margin-top: 20px;
+}
+.icon--size{
+	font-size: 30px;
+	color: rgb(255, 255, 255);
+	padding: 5px;
+	background: red;
+	border-radius: 5px;
+	margin-top: 2px;
+}
+.label__btn--login{
+  	font-size: 17px;
+}
+.v-label{
+  	font-size: 18px !important;
+}
+.v-btn{
+    text-transform: none;
+}
+@media (max-width:1024px) {
+	.v-label{
+		font-size: 18px !important;
+	}
+	.FormLogin-user {
+		height: var(--form--height-1024);
+		width: var(--form--width-1024);
+	}
+	.pageLogin-Title {
+		font-size: 29px
+	}
+}
+@media (max-width:768px) {
+    .v-label{
+        font-size: 17px !important;
+    }
+    .FormLogin-user {
+		height: var(--form--height-768);
+		width: var(--form--width-768);
+    }
+    .pageLogin-Title {
+        font-size: 28px
+    }
+}
+@media (max-width:480px) {
+	.v-label{
+		font-size: 16px !important;
+		}
+	.FormLogin-user {
+		height: var(--form--height-480);
+		width: var(--form--width-480);
+	}
+	.pageLogin-Title {
+		font-size: 20px
+	}
+}
+@media (max-width:320px) {
+	*{
+		font-size: 14px;
+	}
+	.FormLogin-user {
+		height: var(--form--height-320);
+		width: var(--form--width-320);
+	}
+	.pageLogin-Title {
+		font-size: 20px
+	}
 }
 </style>

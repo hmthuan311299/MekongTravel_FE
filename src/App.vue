@@ -1,17 +1,20 @@
 <template>
   <v-app>
-    <div id="app">
-        <comp-login-user/>
-    </div>
+		<div id="app">
+			<router-view></router-view>
+			<!-- <compLoginUser/> -->
+		</div>
   </v-app>
 </template>
 
 <script>
-import compLoginUser from './pages/user/compLoginUser.vue'
+import compLoginUser from "./pages/user/compLoginUser.vue";
+import compLoginTech from './pages/technician/compLoginTech'
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    compLoginUser
+    compLoginUser,
+	compLoginTech
   },
 
   data: () => ({
@@ -20,8 +23,7 @@ export default {
 };
 </script>
 <style>
-#app{
-  background: rgb(167, 167, 175);
+#app {
   min-height: 100vh;
 }
 </style>
