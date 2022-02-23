@@ -10,11 +10,13 @@
 <script>
 import compLoginUser from "./pages/user/compLoginUser.vue";
 import compLoginTech from './pages/technician/compLoginTech'
+import compLoginAdmin from './pages/admin/compLoginAdmin.vue'
 export default {
   name: "App",
   components: {
     compLoginUser,
-	compLoginTech
+	  compLoginTech,
+    compLoginAdmin
   },
 
   data: () => ({
