@@ -2,14 +2,14 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
-import compLoginUser from './pages/user/compLoginUser'
-import compLoginTech from './pages/technician/compLoginTech'
-import compLoginAdmin from './pages/admin/compLoginAdmin'
+import LoginUser from './pages/user/LoginUser'
+import LoginTechnician from './pages/technician/LoginTechnician'
+import LoginAdmin from './pages/admin/LoginAdmin'
 const routes = [
-    { path: '/', component: compLoginUser },
-    { path: '/login', component: compLoginUser },
-    { path: '/technician/login', component: compLoginTech},
-    { path: '/admin/login', component: compLoginAdmin}
+    { path: '/', component: LoginUser },
+    { path: '/login', component: LoginUser },
+    { path: '/technician/login', component: LoginTechnician},
+    { path: '/admin/login', component: LoginAdmin}
 ]
 const router = new VueRouter({
     mode: 'history',

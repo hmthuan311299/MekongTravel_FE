@@ -37,7 +37,7 @@
 
 <script>
 export default {
-    name: "comp-login-admin",
+    name: "login-admin",
     data: () => ({
       valid: false,
       name: '',

@@ -8,15 +8,17 @@
 </template>
 
 <script>
-import compLoginUser from "./pages/user/compLoginUser.vue";
-import compLoginTech from './pages/technician/compLoginTech'
-import compLoginAdmin from './pages/admin/compLoginAdmin.vue'
+import LoginUser from "./pages/user/LoginUser.vue";
+import LoginTechnician from './pages/technician/LoginTechnician'
+import LoginAdmin from './pages/admin/LoginAdmin.vue'
+import Admin from './pages/admin/Admin'
 export default {
   name: "App",
   components: {
-    compLoginUser,
-	  compLoginTech,
-    compLoginAdmin
+    LoginUser,
+	  LoginTechnician,
+    LoginAdmin,
+    Admin
   },
 
   data: () => ({
