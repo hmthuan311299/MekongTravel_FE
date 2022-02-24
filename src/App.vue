@@ -12,13 +12,15 @@ import LoginUser from "./pages/user/LoginUser.vue";
 import LoginTechnician from './pages/technician/LoginTechnician'
 import LoginAdmin from './pages/admin/LoginAdmin.vue'
 import Admin from './pages/admin/Admin'
+import Technician from './pages/technician/Technician'
 export default {
   name: "App",
   components: {
     LoginUser,
 	  LoginTechnician,
     LoginAdmin,
-    Admin
+    Admin,
+    Technician
   },
 
   data: () => ({

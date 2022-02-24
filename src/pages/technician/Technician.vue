@@ -13,7 +13,7 @@
 import ItemSideBar from '../../components/ItemSideBar.vue'
 import SearchBar from '../../components/SearchBar.vue'
 export default {
-    name: 'admin',
+    name: 'technician',
     data(){
        return{
            search: ''
@@ -25,7 +25,7 @@ export default {
     },
     methods:{
         getValueSearch(value){
-            console.log("search", value);
+            console.log("search tech", value);
             this.search = this.search
             if(!this.search){
                 alert("vui long nhap lai")
