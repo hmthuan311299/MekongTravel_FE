@@ -13,6 +13,7 @@ import LoginTechnician from './pages/technician/LoginTechnician'
 import LoginAdmin from './pages/admin/LoginAdmin.vue'
 import Admin from './pages/admin/Admin'
 import Technician from './pages/technician/Technician'
+import CategoryMember from './pages/admin/CategoryMember'
 export default {
   name: "App",
   components: {
@@ -20,7 +21,8 @@ export default {
 	  LoginTechnician,
     LoginAdmin,
     Admin,
-    Technician
+    Technician,
+    CategoryMember
   },
 
   data: () => ({

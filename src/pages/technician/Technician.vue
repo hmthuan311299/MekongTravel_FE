@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import ItemSideBar from '../../components/ItemSideBar.vue'
+import SideBar from '../../components/SideBar.vue'
 import SearchBar from '../../components/SearchBar.vue'
 export default {
     name: 'technician',
@@ -20,7 +20,7 @@ export default {
        }
     },
     components:{
-        ItemSideBar,
+        SideBar,
         SearchBar
     },
     methods:{

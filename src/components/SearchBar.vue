@@ -28,5 +28,8 @@ export default {
 </script>
 
 <style>
-
+.search-bar {
+    width: 80% !important;
+    margin: 10px auto;
+}
 </style>
