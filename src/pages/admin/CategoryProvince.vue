@@ -9,7 +9,9 @@
                     <div class="list-item list-item-name">{{item.name}}</div>
                 </div>
                 <div class="list-content-item">
-                    <div class="list-item list-item-update" @click="handleUpdateProvince(item.id)"><i class="fa-solid fa-pen-to-square"></i></div>
+                    <router-link tag="div" class="list-item list-item-update" :to="{name: 'updateProvince', params:{ id: item.id}}">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </router-link>
                     <div class="list-item list-item-delete" @click="handleDeleteProvince(item.id)"><i class="fa-solid fa-trash-can"></i></div>
                 </div>
             </div>

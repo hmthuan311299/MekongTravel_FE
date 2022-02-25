@@ -10,6 +10,8 @@ import Admin from './pages/admin/Admin'
 import CategoryTech from './pages/admin/CategoryTech'
 import CategoryProvince from './pages/admin/CategoryProvince.vue'
 import CategoryMember from './pages/admin/CategoryMember.vue'
+import AddProvince from './pages/admin/AddProvince.vue'
+import UpdateProvince from './pages/admin/UpdateProvince.vue'
 const routes = [
 
     //User
@@ -24,14 +26,31 @@ const routes = [
         children: [
             {
                 path: '',
+                name: 'admin',
                 component: CategoryProvince,
             },
             {
+                path: 'categoryProvince',
+                name: 'categoryProvince',
+                component: CategoryProvince,
+            },
+            {
+                path: 'categoryProvince/addProvince',
+                component: AddProvince,
+            },
+            {
+                path: 'categoryProvince/update/:id',
+                name: 'updateProvince',
+                component: UpdateProvince,
+            },
+            {
                 path: 'categoryTech',
+                name: 'categoryTech',
                 component: CategoryTech,
             },
             {
                 path: 'categoryMember',
+                name: 'categoryMember',
                 component: CategoryMember,
             },
         ],

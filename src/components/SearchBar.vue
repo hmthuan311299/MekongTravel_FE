@@ -28,8 +28,8 @@ export default {
 </script>
 
 <style>
-.search-bar {
-    width: 80% !important;
-    margin: 10px auto;
+input.form-control{
+    height: 7vh;
 }
+
 </style>

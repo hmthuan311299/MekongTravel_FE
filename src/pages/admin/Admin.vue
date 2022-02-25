@@ -1,13 +1,14 @@
 <template>
     <b-container fluid class="form-container-admin">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-12 col-md-3">
                 <side-bar :itemSideBar="itemSideBar"/>
             </div>
-            <div class="col-md-9 content-tab-admin">
+            <div class="col-12 col-md-9 content-tab-admin">
                 <router-view></router-view>
             </div>
         </div>
+        <icon-add :pathName="getUrlIconAddByPath"/>
     </b-container>
 </template>
 
@@ -15,6 +16,9 @@
 import CategoryTech from './CategoryTech.vue'
 import SideBar from '../../components/SideBar.vue'
 import CategoryProvince from './CategoryProvince.vue'
+import AddProvince from './AddProvince.vue'
+import IconAdd from '../../components/IconAdd.vue'
+import UpdateProvince from '../../pages/admin/UpdateProvince.vue'
 export default {
     name: 'admin',
     data(){
@@ -25,30 +29,49 @@ export default {
                {item: "Danh mục thành viên", path: "/admin/categoryMember"},
                {item: "Thống kê", path: "/admin/statistic"}
            ],
+           urlAddProvice: '/admin/categoryProvince/addProvince',
+           urlAddTech: '/admin/categoryTech/addTech',
+           urlUpdateMember: '/admin/categoryMember/updateMember',
        }
     },
     components:{
-        SideBar, CategoryTech, CategoryProvince
+        SideBar, CategoryTech, CategoryProvince, AddProvince, IconAdd, UpdateProvince
     },
-    
+    computed:{
+        getUrlIconAddByPath(){
+            var path = this.$route.name;
+            if(path == 'admin' || path == 'categoryProvince' ) return this.urlAddProvice;
+            if(path == 'categoryTech' ) return this.urlAddTech;
+            if(path == 'categoryMember' ) return this.urlUpdateMember;
+        }
+    }
 }
 </script>
 
 <style>
+
 .form-container-admin{
     min-height: 100vh;
     background: url('../../assets/admin-img/background-admin-1.jpg');
     background-size: cover;
+    width: 100%;
 }
 .list-content{
-    width: 100%;
+    background: white;
     height: 60px;
-    border: 2px solid black;
+    border: 2px solid blue;
     border-radius: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: 5px;
+}
+@media (max-width: 500px){
+    
+    .list-content{
+        width: 50vh;
+        margin: 0 auto;
+    }
 }
 .list-content-item{
     margin: 0 20px;
@@ -65,14 +88,14 @@ export default {
     margin-left: 20px
 }
 .list-content:hover{
-    background: white;
+    
     position: relative;
     z-index: 10000;
     box-shadow: 6px 6px 6px #aaa;
     transition: 0.5s ease;
 }
 .list-item-update{
-    color: blue;
+    color: #ffc107;
 }
 .list-item-delete{
     color: red;
