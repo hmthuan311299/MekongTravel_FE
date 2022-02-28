@@ -31,5 +31,8 @@ export default {
 input.form-control{
     height: 7vh;
 }
-
+.search-bar {
+    width: 80% !important;
+    margin: 10px auto;
+}
 </style>

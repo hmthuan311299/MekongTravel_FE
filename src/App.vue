@@ -9,19 +9,19 @@
 
 <script>
 import LoginUser from "./pages/user/LoginUser.vue";
-import LoginTechnician from './pages/technician/LoginTechnician'
+import LoginSupporter from './pages/supporter/LoginSupporter'
 import LoginAdmin from './pages/admin/LoginAdmin.vue'
 import Admin from './pages/admin/Admin'
-import Technician from './pages/technician/Technician'
+import Supporter from './pages/supporter/Supporter'
 import CategoryMember from './pages/admin/CategoryMember'
 export default {
   name: "App",
   components: {
     LoginUser,
-	  LoginTechnician,
+	  LoginSupporter,
     LoginAdmin,
     Admin,
-    Technician,
+    Supporter,
     CategoryMember
   },
 

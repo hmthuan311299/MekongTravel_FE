@@ -2,15 +2,15 @@
     <div>
         <h1 class="text-center text-danger">Danh mục Thành Viên</h1>
         <search-bar v-on:getValueSearch="getValueSearch"/>
-        <div class="list-container">
-            <div class="list-content" v-for="item in ListItem" :key="item.id">
-                <div class="list-content-item">
-                    <div class="list-item list-item-avatar"><i class="fa-solid fa-user"></i></div>
-                    <div class="list-item list-item-name">{{item.name}}</div>
+        <div class="admin-list-container">
+            <div class="admin-list-content" v-for="item in ListItem" :key="item.id">
+                <div class="admin-list-content-item">
+                    <div class="admin-list-item admin-list-item-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div class="admin-list-item admin-list-item-name">{{item.name}}</div>
                 </div>
-                <div class="list-content-item">
-                    <div class="list-item list-item-update" @click="handleUpdate(item.id)"><i class="fa-solid fa-pen-to-square"></i></div>
-                    <div class="list-item list-item-delete" @click="handleDelete(item.id)"><i class="fa-solid fa-trash-can"></i></div>
+                <div class="admin-list-content-item">
+                    <div class="admin-list-item admin-list-item-update" @click="handleBlock(item.id)"><i class="fa-solid fa-ban"></i></div>
+                    <div class="admin-list-item admin-list-item-delete" @click="handleDelete(item.id)"><i class="fa-solid fa-trash-can"></i></div>
                 </div>
             </div>
         </div>
@@ -20,7 +20,7 @@
 <script>
 import SearchBar from '../../components/SearchBar.vue'
 export default {
-    name: "categoryTech",
+    name: "category-member",
     data(){
         return{
             search: '',
@@ -53,11 +53,5 @@ export default {
 </script>
 
 <style>
-.list-container{
-    min-width: 500px;
-    min-height: 100%;
-    max-width: 80%;
-    margin: 20px auto;
-}
 
 </style>

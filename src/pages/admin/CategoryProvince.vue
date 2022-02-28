@@ -2,17 +2,17 @@
     <div>
         <h1 class="text-center text-danger">Danh mục Tỉnh Thành</h1>
         <search-bar v-on:getValueSearch="getValueSearch"/>
-        <div class="list-container">
-            <div class="list-content" v-for="item in ListItem" :key="item.id">
-                <div class="list-content-item">
-                    <div class="list-item list-item-avatar"><i class="fa-solid fa-city"></i></div>
-                    <div class="list-item list-item-name">{{item.name}}</div>
+        <div class="admin-list-container">
+            <div class="admin-list-content" v-for="item in ListItem" :key="item.id">
+                <div class="admin-list-content-item">
+                    <div class="admin-list-item admin-list-item-avatar"><i class="fa-solid fa-city"></i></div>
+                    <div class="admin-list-item admin-list-item-name">{{item.name}}</div>
                 </div>
-                <div class="list-content-item">
-                    <router-link tag="div" class="list-item list-item-update" :to="{name: 'updateProvince', params:{ id: item.id}}">
+                <div class="admin-list-content-item">
+                    <router-link tag="div" class="admin-list-item admin-list-item-update" :to="{name: 'updateProvince', params:{ id: item.id}}">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </router-link>
-                    <div class="list-item list-item-delete" @click="handleDeleteProvince(item.id)"><i class="fa-solid fa-trash-can"></i></div>
+                    <div class="admin-list-item admin-list-item-delete" @click="handleDelete(item.id)"><i class="fa-solid fa-trash-can"></i></div>
                 </div>
             </div>
         </div>
@@ -41,10 +41,10 @@ export default {
                 alert("vui long nhap lai")
             }
         },
-        handleUpdateTech(value){
+        handleUpdate(value){
             console.log(value)
         },
-        handleDeleteTech(value){
+        handleDelete(value){
             console.log(value)
         }
     },
@@ -55,11 +55,5 @@ export default {
 </script>
 
 <style>
-.list-container{
-    min-width: 500px;
-    min-height: 100%;
-    max-width: 80%;
-    margin: 20px auto;
-}
 
 </style>

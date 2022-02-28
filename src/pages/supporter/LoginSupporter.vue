@@ -6,7 +6,7 @@
             </div>
             <div class="form-login-tech">
                 <h1 class="pageLoginTech-Title">
-                    <i class="fa-solid fa-user-gear"></i> Đăng nhập
+                    <i class="fa-solid fa-users"></i> Đăng nhập
                 </h1>
                 <v-form class="pageLogin-form" ref="form" v-model="valid" lazy-validation>
                     <v-text-field
@@ -37,7 +37,7 @@
 
 <script>
 export default {
-    name: "comp-login-tech",
+    name: "comp-login-supporter",
     data: () => ({
       valid: false,
       name: '',
