@@ -19,7 +19,7 @@ const store = new Vuex.Store({
         admin: moduleAdmin,
         technician: moduleTechnician,
         member: moduleUser,
-        attraction: moduleTouristAttraction
+        touristAttraction: moduleTouristAttraction
     }
   })
 export default store;

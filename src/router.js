@@ -21,14 +21,32 @@ import AddProvince from './pages/admin/AddProvince.vue'
 import UpdateProvince from './pages/admin/UpdateProvince.vue'
 import AddSupporter from './pages/admin/AddSupporter'
 import UpdateSupporter from './pages/admin/UpdateSupporter'
+import DetailToutistAtraction from './pages/user/DetailToutistAtraction'
+//page user
+import UserIndex from'./pages/user/UserIndex'
+import User from './pages/user/User.vue'
+import CategoryTAByProvince from './pages/user/CategoryTAByProvince'
+import CardTouristAttraction from './components/CardTouristAttraction'
 const routes = [
-
     //User
-    { path: '/', component: LoginUser },
+    { path: '', component: User,
+    
+        children:[
+            {path: '',  component: UserIndex, name: "UserIndex"},
+            {path: '/:provinceName/:provinceId',  component: CategoryTAByProvince,
+                children:[
+                    {path: '', component: CardTouristAttraction , name: "categoryTAByProvince"},
+                    {path: 'listAllTouristAttraction',  component: CardTouristAttraction , name: "categoryListAllTAByProvince"},
+                    {path: 'listRankTouristAttraction',  component: CategoryTAByProvince, name: "CategoryRankTAByProvince"},
+                ]
+            },
+            {path: '/:provinceName/listAllTouristAttraction/detailTouristAttraction/:id',  component: DetailToutistAtraction, name: "detailToutistAtraction"}
+        ]
+    },
     { path: '/login', component: LoginUser },
     //Technician
     { path: '/supporter/login', component: LoginSupporter},
-    { path: '/supporter', component: Supporter, name: 'supporter',
+    { path: '/supporter', component: Supporter,
         children: [
             {
                 path: '',
@@ -36,12 +54,12 @@ const routes = [
                 component: CategoryTA,
             },
             {
-                path: '/supporter/categoryTA',
+                path: 'supporter/categoryTA',
                 name: 'categoryTA',
                 component: CategoryTA,
             },
             {
-                path: '/supporter/categoryTA/addTA',
+                path: 'supporter/categoryTA/addTA',
                 name: 'addTA',
                 component: AddTouristAttraction,
             },
@@ -63,7 +81,7 @@ const routes = [
         ]
     },
     //Admin
-    { path: '/admin', component: Admin, name: 'admin',
+    { path: '/admin', component: Admin,
         children: [
             {
                 path: '',

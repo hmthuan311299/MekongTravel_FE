@@ -13,7 +13,7 @@ import LoginSupporter from './pages/supporter/LoginSupporter'
 import LoginAdmin from './pages/admin/LoginAdmin.vue'
 import Admin from './pages/admin/Admin'
 import Supporter from './pages/supporter/Supporter'
-import CategoryMember from './pages/admin/CategoryMember'
+import User from './pages/user/User.vue'
 export default {
   name: "App",
   components: {
@@ -22,12 +22,15 @@ export default {
     LoginAdmin,
     Admin,
     Supporter,
-    CategoryMember
+    User
   },
-
   data: () => ({
     //
   }),
+  methods:{
+    
+  },
+  
 };
 </script>
 <style>
