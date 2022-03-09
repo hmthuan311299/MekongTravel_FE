@@ -4,10 +4,13 @@
 			<router-view></router-view>
 			<!-- <compLoginUser/> -->
 		</div>
+    <Loading/>
   </v-app>
 </template>
 
 <script>
+import LoadingSuccessError from "./components/LoadingSuccessError.vue"
+import Loading from "./components/Loading.vue"
 import LoginUser from "./pages/user/LoginUser.vue";
 import LoginSupporter from './pages/supporter/LoginSupporter'
 import LoginAdmin from './pages/admin/LoginAdmin.vue'
@@ -22,7 +25,9 @@ export default {
     LoginAdmin,
     Admin,
     Supporter,
-    User
+    User,
+    LoadingSuccessError,
+    Loading
   },
   data: () => ({
     //

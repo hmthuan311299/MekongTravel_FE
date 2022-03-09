@@ -1,5 +1,8 @@
 export default {
     listProvince: '',
     province: '',
-    listTouristAttraction:''
+    listTouristAttraction:'',
+    historyTA: {},
+    currentTA: '',
+    currentImgTA: ''
 }

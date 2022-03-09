@@ -14,31 +14,28 @@
 			</router-link>
 		</div>
 	</div>
-	<hr><p class="text-center m-0 mb-3" >Danh sách tất cả địa điểm</p>
-		<card-touristAttraction :listTA="listTA"/>
+	<hr>
+	<router-view></router-view>
   </div>
 </template>
 
 <script>
+import UserSearch from './UserSearch'
+import UserListAllTA from './UserListAllTA'
 import SearchBar from '../../components/SearchBar.vue'
 import {mapActions, mapState} from 'vuex';
-import CardTouristAttraction from '../../components/CardTouristAttraction.vue'
 import {removeVietnameseFromString} from '../../helpers'
 export default {
     name: 'user-index',
 	data(){
 		return{
-		
+			// listDataSearch: ''
 		}
 	},
 	methods:{
-		...mapActions(['getProvinceAndTouristAttraction']),
+		...mapActions(['getProvinceAndTouristAttraction', 'getTouristAttractionBySearch']),
 		getValueSearch(value){
-            console.log("search", value);
-            this.search = this.search
-            if(!this.search){
-                alert("vui long nhap lai")
-            }
+			this.$router.push({name:'userSearch', query:{valueSearch: value}})
         },
 		handleremoveVietnameseProvinceTitle(provinceTitle){
 			return removeVietnameseFromString(provinceTitle);
@@ -46,18 +43,16 @@ export default {
 		getProvinceId(provinceid){
 			this.provinceid= provinceid
 		},
-		
 	},
 	components:{
-		SearchBar, CardTouristAttraction 
+		SearchBar, UserSearch, UserListAllTA
 	},
 	computed:{
 		...mapState({
 			listProvince: state => state.touristAttraction.listProvince,
-			listTA: state => state.touristAttraction.listTouristAttraction
+			
 		})
 	},
-	
 	created(){
     this.getProvinceAndTouristAttraction();
   }
@@ -85,10 +80,7 @@ export default {
 	display: flex;
 	align-items: center;
 }
-.user-navbar-logoIndex{
-	width: var(--user-navbar-logoIndex-1444);
-	height: var(--user-navbar-logoIndex-1444);
-}
+
 .user-list-province{
 	display: flex;
 	justify-content: center;

@@ -1,7 +1,7 @@
 <template>
 <b-container fluid>
     <b-navbar toggleable="lg" type="dark" variant="info">
-		<router-link tag="b-navbar-brand" :to="{name:'UserIndex'}">
+		<router-link tag="b-navbar-brand" :to="{name:'userIndex'}">
 			<img src="../../assets/user-img/logo.png" class="user-navbar-logoIndex" alt="">
 		</router-link>
 		<b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -28,6 +28,7 @@
 import UserIndex from './UserIndex.vue'
 import CategoryTAByProvince from'./CategoryTAByProvince.vue'
 import DetailToutistAtraction from './DetailToutistAtraction.vue'
+import { mapMutations } from 'vuex'
 export default {
     name: 'user',
 	data(){
@@ -36,6 +37,7 @@ export default {
 		}
 	},
 	methods:{
+		...mapMutations('set_litsTouristAttraction', [])
 	},
 	components:{
 		UserIndex, DetailToutistAtraction, CategoryTAByProvince
@@ -44,8 +46,7 @@ export default {
 	},
 	watch:{
        $route (to, from){
-		   //id page detail
-			this.id = to.params.id
+		   
         }
    }
 	
@@ -53,5 +54,14 @@ export default {
 </script>
 
 <style>
+.user-navbar-logoIndex{
+	height: var(--user-navbar-logoIndex-1444);
+	border-radius: 20px;
+	border: 2px solid rgb(248, 86, 22);
 
+}
+.user-navbar-logoIndex:hover{
+	background: rgb(248, 86, 22);
+	transition: 0.3s ease;
+}
 </style>

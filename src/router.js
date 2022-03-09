@@ -27,20 +27,27 @@ import UserIndex from'./pages/user/UserIndex'
 import User from './pages/user/User.vue'
 import CategoryTAByProvince from './pages/user/CategoryTAByProvince'
 import CardTouristAttraction from './components/CardTouristAttraction'
+import UserSearch from './pages/user/UserSearch'
+import UserListAllTA from './pages/user/UserListAllTA'
+import ListTAByProvince from './pages/user/ListTAByProvince'
 const routes = [
     //User
     { path: '', component: User,
-    
         children:[
-            {path: '',  component: UserIndex, name: "UserIndex"},
-            {path: '/:provinceName/:provinceId',  component: CategoryTAByProvince,
+            {path: '', component: UserIndex,
                 children:[
-                    {path: '', component: CardTouristAttraction , name: "categoryTAByProvince"},
+                    {path: '',  component: UserListAllTA, name: "userIndex"},
+                    {path: 'search',  component: UserSearch, name: "userSearch"}
+                ]
+            },
+            {path: 'province/:provinceName/:provinceId',  component: CategoryTAByProvince,
+                children:[
+                    {path: '', component: ListTAByProvince, name: "categoryTAByProvince"},
                     {path: 'listAllTouristAttraction',  component: CardTouristAttraction , name: "categoryListAllTAByProvince"},
                     {path: 'listRankTouristAttraction',  component: CategoryTAByProvince, name: "CategoryRankTAByProvince"},
                 ]
             },
-            {path: '/:provinceName/listAllTouristAttraction/detailTouristAttraction/:id',  component: DetailToutistAtraction, name: "detailToutistAtraction"}
+            {path: 'province/:provinceName/listAllTouristAttraction/detailTouristAttraction/:id',  component: DetailToutistAtraction, name: "detailToutistAtraction"}
         ]
     },
     { path: '/login', component: LoginUser },

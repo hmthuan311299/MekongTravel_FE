@@ -33,17 +33,18 @@
 
 <script>
 import port_file from '../../port_file'
-import CardTouristAttraction from '../../components/CardTouristAttraction.vue'
+import ListTAByProvince from './ListTAByProvince.vue'
 import {mapActions, mapState} from 'vuex'
 export default {
     name:'',
     components:{
-        CardTouristAttraction
+        ListTAByProvince
     },
     data(){
         return{
             provinceId: this.$route.params.provinceId,
-            port_file
+            port_file,
+            
         }
     },
     computed:{

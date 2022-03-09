@@ -1,6 +1,6 @@
 <template>
     <div class="input-group search-bar">
-        <input type="text" v-model="search" class="form-control" placeholder="Tìm kiếm" @keyup.enter="handleGetValueSearch">
+        <input type="text" v-model="valueSearch" class="form-control" placeholder="Tìm kiếm" @keyup.enter="handleGetValueSearch">
         <div class="input-group-append">
             <button class="btn btn-secondary" type="button" @click="handleGetValueSearch">
                 <i class="fa fa-search"></i>
@@ -14,14 +14,19 @@ export default {
     name: 'search-bar',
     data(){
         return{
-            search: ''
+            valueSearch: ''
         }
     },
     props:{
     },
     methods:{
         handleGetValueSearch(){
-            this.$emit("getValueSearch", this.search)
+            if(!this.valueSearch){
+                alert("Vui lòng nhập từ khóa để tìm kiếm")
+            }
+            else {
+                this.$emit("getValueSearch", this.valueSearch)
+            }
         }
     }
 }

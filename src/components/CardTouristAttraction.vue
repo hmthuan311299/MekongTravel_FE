@@ -25,25 +25,25 @@
 <script>
 import port_file from '../port_file'
 import {removeVietnameseFromString} from '../helpers'
+import {mapState} from 'vuex'
 export default {
     name: 'card-touristAttraction',
 	data(){
 		return{
-			port_file
+			port_file,
 		}
 	},
 	props:{
 		listTA: []
 	},
 	computed:{
-		
 	},
 	methods:{
 		handleremoveVietnameseProvinceTitle(provinceTitle){
 			return removeVietnameseFromString(provinceTitle);
 		},
 		handleRouterPush(provincetitle, tourid){
-			this.$router.push({path: `/${this.handleremoveVietnameseProvinceTitle(provincetitle)}/listAllTouristAttraction/detailTouristAttraction/${tourid}`})
+			this.$router.push({path: `/province/${this.handleremoveVietnameseProvinceTitle(provincetitle)}/listAllTouristAttraction/detailTouristAttraction/${tourid}`})
 		}
 	}
 }
@@ -73,5 +73,8 @@ export default {
 	to{
 		top: -10px
 	}
+}
+.card-img-top{
+	height: 32vh
 }
 </style>
