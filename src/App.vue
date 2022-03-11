@@ -4,7 +4,8 @@
 			<router-view></router-view>
 			<!-- <compLoginUser/> -->
 		</div>
-    <Loading/>
+    <Loading :isPageLoading="isPageLoading"/>
+    <LoadingSuccessError :isLoadingSuccess="isLoadingSuccess" :isLoadingError="isLoadingError"/>
   </v-app>
 </template>
 
@@ -17,6 +18,7 @@ import LoginAdmin from './pages/admin/LoginAdmin.vue'
 import Admin from './pages/admin/Admin'
 import Supporter from './pages/supporter/Supporter'
 import User from './pages/user/User.vue'
+import {mapState, mapMutations} from 'vuex'
 export default {
   name: "App",
   components: {
@@ -27,16 +29,35 @@ export default {
     Supporter,
     User,
     LoadingSuccessError,
-    Loading
+    Loading,
   },
   data: () => ({
     //
   }),
-  methods:{
-    
+  computed:{
+    ...mapState({
+      'isLoadingSuccess': state=> state.isLoadingSuccess,
+      'isLoadingError': state=>state.isLoadingError,
+      'isPageLoading': state=>state.isPageLoading,
+      'isDisplayYesNoForm': state=>state.isDisplayYesNoForm
+    })
   },
-  
-};
+  methods:{
+    ...mapMutations(['setPageLoading']),
+  },
+  watch:{
+		$route (to, from){
+      var pageNoteLoading = ['userLogin', 'supporterLogin', 'adminLogin']
+      if(pageNoteLoading.indexOf(to.name) == -1){
+        this.setPageLoading(true)
+        setTimeout(()=>{
+          this.setPageLoading(false)
+        }, 1000);
+      }
+			
+		}
+	}
+}
 </script>
 <style>
 #app {

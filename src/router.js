@@ -50,9 +50,9 @@ const routes = [
             {path: 'province/:provinceName/listAllTouristAttraction/detailTouristAttraction/:id',  component: DetailToutistAtraction, name: "detailToutistAtraction"}
         ]
     },
-    { path: '/login', component: LoginUser },
+    { path: '/login', component: LoginUser, name:"userLogin" },
     //Technician
-    { path: '/supporter/login', component: LoginSupporter},
+    { path: '/supporter/login', component: LoginSupporter, name:"supporterLogin"},
     { path: '/supporter', component: Supporter,
         children: [
             {
@@ -133,7 +133,7 @@ const routes = [
         ],
     },
 
-    { path: '/admin/login', component: LoginAdmin}
+    { path: '/admin/login', component: LoginAdmin, name:"adminLogin"}
     
 ]
 const router = new VueRouter({

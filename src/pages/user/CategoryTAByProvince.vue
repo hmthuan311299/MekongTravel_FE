@@ -15,7 +15,7 @@
         </b-container>
         <h4 class="text-center user-provinceTitle">Các địa điểm du lịch ở {{province.provincetitle}}</h4>
         <div class="user-menu-categoryTA container p-0 mb-4">
-            <ul class="nav p-0">
+            <ul class="nav p-0 display-flex-center">
                 <li class="nav-item user-menu-nav-item user-nav-item-active">
                     <a class="nav-link " href="#">Danh sách địa điểm</a>
                 </li>
@@ -90,5 +90,9 @@ export default {
 }
 .user-nav-item-active{
     box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 6px;
+}
+.display-flex-center{
+    display: flex;
+    justify-content: center;
 }
 </style>

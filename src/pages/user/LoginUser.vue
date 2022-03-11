@@ -2,7 +2,7 @@
 	<div class="pageLogin-user">
 		<div class="FormLogin-user">
 		<h1 class="pageLogin-Title">Đăng nhập</h1>
-		<v-form class="pageLogin-form" ref="form" v-model="valid" lazy-validation>
+		<v-form class="pageLogin-form" ref="form" v-model="valid" lazy-validation @submit.prevent="handleLogin">
 			<v-text-field
 				v-model="email"
 				:rules="emailRules"
@@ -16,9 +16,9 @@
 				required
 			></v-text-field>
 			<div class="center">
-				<v-btn color="success" class="mr-4" @click="validate" width="100%">
-		<span class="label__btn--login">Đăng nhập</span>
-			</v-btn>
+				<v-btn color="success" type="submit" class="mr-4" @click="validate" width="100%">
+					<span class="label__btn--login">Đăng nhập</span>
+				</v-btn>
 			</div>
 			<div class="center">
 				<a href="">Quên mật khẩu</a> |
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import {mapActions, mapMutations} from 'vuex'
   export default {
     data: () => ({
       valid: false,
@@ -48,10 +49,62 @@
       ],
     }),
 
-    methods: {
-      validate () {
-        this.$refs.form.validate()
-      },
+    methods:{
+		...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
+		...mapActions(['loginMember']),
+		validate() {
+			this.$refs.form.validate()
+		},
+		handleLogin(){
+			let value ={
+				display: true,
+				message: "Dữ liệu nhập vào chưa đúng"
+			}
+			if(!this.valid){
+				this.setLoadingError(value)
+				setTimeout(()=>{
+						this.commentContent='';
+						this.setLoadingError({display: false})
+				}, 1500);
+			}else{
+				this.loginMember({
+					memberEmail: this.email, 
+					memberPass: this.pass
+				}).then(response=>{
+					if(response.ok){
+						let value ={
+							display: true,
+							message: response.message
+						}
+						this.setPageLoading(true)
+						setTimeout(()=>{
+							this.setPageLoading(false)
+							this.setLoadingSuccess(value)
+							setTimeout(()=>{
+								this.commentContent='';
+								this.setLoadingSuccess({display: false})
+								this.$router.push({name:"userIndex"})
+							}, 1500);
+						}, 1000);
+					}
+					else{
+						let value ={
+							display: true,
+							message: response.message
+						}
+						this.setPageLoading(true)
+						setTimeout(()=>{
+							this.setPageLoading(false)
+							this.setLoadingError(value)
+							setTimeout(()=>{
+								this.commentContent='';
+								this.setLoadingError({display: false})
+							}, 1500);
+						}, 1000);
+					}
+				})
+			}
+		}
     },
   }
 

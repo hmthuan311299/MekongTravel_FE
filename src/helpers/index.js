@@ -21,7 +21,7 @@ function removeVietnameseFromString(str) {
       .replace(/-$/, "");
     return str;
 }
-
+const Access_token = 'ACCESS_TOKEN';
 export{
-    removeVietnameseFromString
+    removeVietnameseFromString, Access_token
 }

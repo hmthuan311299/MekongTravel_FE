@@ -1,5 +1,5 @@
 <template>
-  <div class="pageLoading" :class="{'isPageLogin':isPageLoading}">
+  <div class="pageLoading" :class="{'isPageLoading':isPageLoading}">
     <div class="loadingio-spinner-ball-d6bf8x2q54e">
       <div class="ldio-0q9eubndosnh">
         <div></div>
@@ -25,8 +25,10 @@ export default {
     name:"",
     data(){
         return{
-            isPageLoading: false,
+           
         }
+    },props:{
+       isPageLoading: {Type:Boolean, default: false},
     }
 };
 </script>

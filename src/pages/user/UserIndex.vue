@@ -16,6 +16,7 @@
 	</div>
 	<hr>
 	<router-view></router-view>
+	
   </div>
 </template>
 
@@ -45,7 +46,7 @@ export default {
 		},
 	},
 	components:{
-		SearchBar, UserSearch, UserListAllTA
+		SearchBar, UserSearch, UserListAllTA, 
 	},
 	computed:{
 		...mapState({

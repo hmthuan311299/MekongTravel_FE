@@ -4,5 +4,6 @@ export default {
     listTouristAttraction:'',
     historyTA: {},
     currentTA: '',
-    currentImgTA: ''
+    ImgTA: '',
+    listComment:[]
 }

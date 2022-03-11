@@ -34,7 +34,7 @@ export default {
                 url: `touristAttraction`,
             });
             if(result.data && result.data.status){
-            commit('set_litsTouristAttraction', result.data.touristAttraction)
+            commit('set_listTouristAttraction', result.data.touristAttraction)
             }
         } catch (error) {
             console.log(error.message)
@@ -48,7 +48,7 @@ export default {
             });
             console.log(result.data)
             if(result.data && result.data.status){
-            commit('set_litsTouristAttraction', result.data.touristAttraction)
+            commit('set_listTouristAttraction', result.data.touristAttraction)
                 return{
                     ok: true,
                     message: result.data.message,
@@ -104,9 +104,26 @@ export default {
             console.log(error.message)
         }
     },
+    async getcomment({commit}, idTour){
+        try {
+            var result = await axios_instance({
+                method: 'get',
+                url: `/comment?tourId=${idTour}`,
+            });
+            if(result.data && result.data.status == 200){
+                commit('set_comment', result.data.comment);
+            }
+        } catch (error) {
+            console.log(error.message)
+        }
+    },
     async getAllDetailTouristAttraction({commit, dispatch, state}, idTour){
         try {
-            Promise.all([dispatch('getDetailTouristAttraction', idTour), dispatch('getimageTA', idTour)])
+            Promise.all([
+                        dispatch('getDetailTouristAttraction', idTour), 
+                        dispatch('getimageTA', idTour), 
+                        dispatch('getcomment', idTour)
+                    ])
         } catch (error) {
             console.log(error.message)
         }
@@ -125,7 +142,7 @@ export default {
                 url: `/touristAttraction/search?valueSearch=${value}`,
             });
             if(result.data && result.data.status == 200){
-                commit('set_litsTouristAttraction', result.data.touristAttraction)
+                commit('set_listTouristAttraction', result.data.touristAttraction)
                 return{
                     ok: true,
                     message: result.data.message,
@@ -140,6 +157,48 @@ export default {
             }
         } catch (error) {
             console.log(error.message)
+        }
+    },
+    async addComment({commit, dispatch}, {commentContent, memberId, tourId, createAt}){
+        try {
+            // commit('setPageLoading', true)
+            var result = await axios_instance({
+                method: 'post',
+                url: `/comment/addcomment`,
+                data:{
+                    commentContent,
+                    createAt,
+                    tourId,
+                    memberId,
+                }
+            });
+            if(result.data && result.data.status == 200){
+                commit('set_addcomment', {
+                        commentcontent: commentContent,
+                        commentid:memberId,
+                        createat: createAt,
+                        memberavatar:null,
+                        memberid: memberId,
+                        membername:"Kim Luân",
+                        tourid: tourId,
+                })
+                return{
+                    ok: true,
+                    message: result.data.message,
+                }
+            }
+            else{
+                return{
+                    ok: false,
+                    message: result.data.message,
+                }
+            }
+        } catch (error) {
+            console.log(error.message)
+            return{
+                ok: false,
+                message: result.data.message,
+            }
         }
     },
 }

@@ -7,7 +7,7 @@ export default {
     set_province(state, province){
         state.province = province
     },
-    set_litsTouristAttraction(state, value){
+    set_listTouristAttraction(state, value){
         state.listTouristAttraction = value
     },
     set_currentAndHistoryTA(state, value){
@@ -16,11 +16,14 @@ export default {
     },
     set_HistoryTA(state, value){
         var {tourid} = value;
-        
-
     },
     set_imageTA(state, value){
-        state.currentImgTA = value
+        state.ImgTA = value
+    },
+    set_comment(state, value){
+        state.listComment  = value
+    },
+    set_addcomment(state, value){
+        state.listComment.unshift(value)
     }
-
 }
