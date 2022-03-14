@@ -1,40 +1,18 @@
 import axios_instance from '../../plugins/axios'
 export default {
-    async getProvince({commit, dispatch, state}){
-        try {
-            var result = await  axios_instance({
-                                    method: 'get',
-                                    url: 'province',
-                                });
-            // console.log(result.data.province);
-            if(result.data && result.data.status){
-                commit('set_listProvince', result.data.province)
-            }
-        }catch (error) {
-            console.log(error.message)
-        }
-    },
-    async getProvinceById({commit, dispatch, state}, provinceId){
-        try {
-            var result = await axios_instance({
-                                    method: 'get',
-                                    url: `province/${provinceId}`,
-                                });
-            if(result.data && result.data.status){
-                commit('set_province', result.data.province)
-            }
-        }catch (error) {
-            console.log(error.message)
-        }
-    },
-    async getListAllTouristAttraction({commit, dispatch, state}){
+    async getListTA({commit, dispatch, state}){
         try {
             var result = await axios_instance({
                 method: 'get',
                 url: `touristAttraction`,
             });
-            if(result.data && result.data.status){
-            commit('set_listTouristAttraction', result.data.touristAttraction)
+            if(result.data && result.data.status==200){
+            //commit('set_listTouristAttraction', result.data.touristAttraction)
+            return{
+                ok: true,
+                message: result.data.message,
+                data: result.data.touristAttraction
+            }
             }
         } catch (error) {
             console.log(error.message)
@@ -44,15 +22,14 @@ export default {
         try {
             var result = await axios_instance({
                 method: 'get',
-                url: `/touristAttraction/getListTAByProvinceId/1`,
+                url: `/touristAttraction/getListTAByProvinceId/${provinceId}`,
             });
             console.log(result.data)
-            if(result.data && result.data.status){
-            commit('set_listTouristAttraction', result.data.touristAttraction)
+            if(result.data && result.data.status == 200){
                 return{
                     ok: true,
                     message: result.data.message,
-                    listData: result.data.touristAttraction
+                    data: result.data.touristAttraction || []
                 }
             }
             else{
@@ -62,10 +39,9 @@ export default {
                 }
             }
         } catch (error) {
-            console.log(error.message)
             return{
                 ok: false,
-                message: result.data.message,
+                message: error.message,
             }
 
         }
@@ -117,13 +93,27 @@ export default {
             console.log(error.message)
         }
     },
-    async getAllDetailTouristAttraction({commit, dispatch, state}, idTour){
+    async getAllDetailTouristAttraction({commit, dispatch, state}, {tourId, memberId}){
         try {
-            Promise.all([
-                        dispatch('getDetailTouristAttraction', idTour), 
-                        dispatch('getimageTA', idTour), 
-                        dispatch('getcomment', idTour)
-                    ])
+            console.log(memberId)
+            if(memberId){
+                Promise.all([
+                    dispatch('getDetailTouristAttraction', tourId), 
+                    dispatch('getimageTA', tourId), 
+                    dispatch('getcomment', tourId),
+                    dispatch('getEvaluate', tourId),
+                    dispatch('checkEvaluate', {tourId, memberId})
+                ])
+            }
+            else{
+                Promise.all([
+                    dispatch('getDetailTouristAttraction', tourId), 
+                    dispatch('getimageTA', tourId), 
+                    dispatch('getcomment', tourId),
+                    dispatch('getEvaluate', tourId),
+                ])
+            }
+            
         } catch (error) {
             console.log(error.message)
         }
@@ -159,9 +149,8 @@ export default {
             console.log(error.message)
         }
     },
-    async addComment({commit, dispatch}, {commentContent, memberId, tourId, createAt}){
+    async addComment({commit, dispatch}, {commentContent, memberId, tourId, createAt, memberName, memberAvatar}){
         try {
-            // commit('setPageLoading', true)
             var result = await axios_instance({
                 method: 'post',
                 url: `/comment/addcomment`,
@@ -173,15 +162,79 @@ export default {
                 }
             });
             if(result.data && result.data.status == 200){
-                commit('set_addcomment', {
-                        commentcontent: commentContent,
-                        commentid:memberId,
-                        createat: createAt,
-                        memberavatar:null,
-                        memberid: memberId,
-                        membername:"Kim Luân",
-                        tourid: tourId,
-                })
+                return{
+                    ok: true,
+                    message: result.data.message,
+                }
+            }
+            else{
+                return{
+                    ok: false,
+                    message: result.data.message,
+                }
+            }
+        } catch (error) {
+            console.log(error.message)
+            return{
+                ok: false,
+                message: error.message,
+            }
+        }
+    },
+    async getEvaluate({commit}, idTour){
+        try {
+            var result = await axios_instance({
+                method: 'get',
+                url: `/evaluate?tourId=${idTour}`,
+            });
+            if(result.data && result.data.status == 200){
+                commit('set_evaluate', result.data.evaluate);
+            }
+        } catch (error) {
+            console.log(error.message)
+        }
+    },
+    async checkEvaluate({commit}, {memberId, tourId}){
+        try {
+            console.log(memberId, tourId)
+            var result = await axios_instance({
+                method: 'get',
+                url: `/evaluate/check?memberId=${memberId}&tourId=${tourId}`,
+            });
+            console.log(result)
+            if(result.data && result.data.status == 200){
+                commit('set_checkEvaluate', result.data.evaluate);
+            }
+        } catch (error) {
+            console.log(error.message)
+        }
+    },
+    async addEvaluate({commit, dispatch}, {numberStar, evaluateContent, memberId, tourId, createAt, memberName, memberAvatar}){
+        try {
+            // commit('setPageLoading', true)
+            var result = await axios_instance({
+                method: 'post',
+                url: `/evaluate/add`,
+                data:{
+                    evaluateStar:numberStar,
+                    evaluateContent,
+                    createAt,
+                    tourId,
+                    memberId,
+                }
+            });
+            console.log(numberStar, evaluateContent, memberId, tourId, createAt, memberName);
+            console.log(result)
+            if(result.data && result.data.status == 200){
+                // commit('set_addEvaluate', {
+                //         evaluatecontent: evaluateContent,
+                //         evaluatestar:numberStar,
+                //         createat: createAt,
+                //         memberavatar:memberAvatar,
+                //         memberid: memberId,
+                //         membername: memberName,
+                //         tourid: tourId,
+                // })
                 return{
                     ok: true,
                     message: result.data.message,
@@ -201,4 +254,5 @@ export default {
             }
         }
     },
+    
 }

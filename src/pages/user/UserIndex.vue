@@ -30,32 +30,28 @@ export default {
     name: 'user-index',
 	data(){
 		return{
-			// listDataSearch: ''
+			listProvince: [],
 		}
 	},
 	methods:{
-		...mapActions(['getProvinceAndTouristAttraction', 'getTouristAttractionBySearch']),
+		...mapActions(['getProvince', 'getListTA', 'getTouristAttractionBySearch']),
 		getValueSearch(value){
 			this.$router.push({name:'userSearch', query:{valueSearch: value}})
         },
 		handleremoveVietnameseProvinceTitle(provinceTitle){
 			return removeVietnameseFromString(provinceTitle);
 		},
-		getProvinceId(provinceid){
-			this.provinceid= provinceid
-		},
+
 	},
 	components:{
 		SearchBar, UserSearch, UserListAllTA, 
 	},
-	computed:{
-		...mapState({
-			listProvince: state => state.touristAttraction.listProvince,
-			
-		})
-	},
 	created(){
-    this.getProvinceAndTouristAttraction();
+    this.getProvince().then(response=>{
+		if(response.ok){
+			this.listProvince = response.data
+		}
+	});
   }
 }
 </script>

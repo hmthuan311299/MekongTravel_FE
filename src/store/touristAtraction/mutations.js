@@ -23,7 +23,18 @@ export default {
     set_comment(state, value){
         state.listComment  = value
     },
-    set_addcomment(state, value){
-        state.listComment.unshift(value)
+    // set_addcomment(state, value){
+    //     // state.listComment.unshift(value)
+    // },
+    set_evaluate(state, value){
+        state.listEvaluate  = value
+    },
+    set_checkEvaluate(state, value){
+        console.log(value)
+        state.checkEvaluate  = value
     }
+    // set_addEvaluate(state, value){
+    //     console.log(value)
+    //     state.listEvaluate.unshift(value)
+    // }
 }

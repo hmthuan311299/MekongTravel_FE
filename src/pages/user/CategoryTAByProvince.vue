@@ -44,15 +44,16 @@ export default {
         return{
             provinceId: this.$route.params.provinceId,
             port_file,
-            
+            province: {   
+                provincetitle:"",
+                provincedesc:"",
+                provincepicture:""
+            } 
         }
     },
     computed:{
-        ...mapState({
-            province: state => state.touristAttraction.province
-        })
-        ,handleGetURLProvincePicture(){
-            return `${this. port_file}${this.province.provincepicture}`
+        handleGetURLProvincePicture(){
+            return `${this.port_file}${this.province.provincepicture}`
         }
     },
     methods:{
@@ -60,7 +61,17 @@ export default {
     },
     created(){
         this.provinceId = this.$route.params.provinceId
-        this.getProvinceById(this.provinceId)
+        if(this.provinceId){
+            this.getProvinceById(this.provinceId).then(response=>{
+                if(response.ok){
+                    this.province = response.data
+                }
+            })
+        }
+        else{
+            this.$router.push({name:'userIndex'})
+        }
+        
     },
 
 }

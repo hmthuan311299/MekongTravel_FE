@@ -18,7 +18,7 @@ import LoginAdmin from './pages/admin/LoginAdmin.vue'
 import Admin from './pages/admin/Admin'
 import Supporter from './pages/supporter/Supporter'
 import User from './pages/user/User.vue'
-import {mapState, mapMutations} from 'vuex'
+import {mapState, mapActions, mapMutations} from 'vuex'
 export default {
   name: "App",
   components: {
@@ -44,6 +44,10 @@ export default {
   },
   methods:{
     ...mapMutations(['setPageLoading']),
+    ...mapActions(['getKeepLoginUser'])
+  },
+  created(){
+    this.getKeepLoginUser()
   },
   watch:{
 		$route (to, from){

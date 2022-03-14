@@ -50,11 +50,6 @@ export default {
 	},
 	computed:{
 		...mapGetters(['isMemberLogin']),
-		handleResetYesNoForm(){
-			this.isDisplayYesNoForm.display = false;
-			this.isDisplayYesNoForm.titleForm= "";
-			this.answer=""
-		}
 	},
 	methods:{
 		...mapMutations(['set_litsTouristAttraction','set_LogoutUser', 'setPageLoading', 'set_YesNoForm', 'set_YesNo']),
@@ -79,7 +74,9 @@ export default {
 				this.$router.push('/login')
 			}
 			else{
-				this.handleResetYesNoForm;
+				this.isDisplayYesNoForm.display = false;
+				this.isDisplayYesNoForm.titleForm= "";
+				this.answer=""
 			}
 		}
 	},

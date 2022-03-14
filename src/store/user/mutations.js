@@ -1,14 +1,20 @@
-import { Access_token } from "../../helpers";
+import { setToken } from "../../helpers/constans";
 export default {
     set_currentUser(state, value){
         state.currentMember= value.member;
         state.ACCESS_TOKEN = value.access_token;
-        localStorage.setItem(Access_token, value.access_token)
+        localStorage.setItem(setToken, value.access_token)
     },
     set_LogoutUser(state){
         state.currentMember = {};
         state.ACCESS_TOKEN = '';
-        localStorage.removeItem(Access_token);
+        localStorage.removeItem(setToken);
+        state.checkEvaluate  = value
     },
-    
+    set_inforUser(state, value=''){
+        state.currentMember= value;
+    },
+    set_accessToken(state, value=''){
+        state.ACCESS_TOKEN = value;
+    }
 }

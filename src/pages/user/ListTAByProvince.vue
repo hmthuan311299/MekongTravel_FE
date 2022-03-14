@@ -1,6 +1,6 @@
 <template>
   <div>
-        <div v-if="listTAByProvince.length">
+        <div v-if="listTAByProvince && listTAByProvince.length">
             <card-touristAttraction :listTA="listTAByProvince"/>
         </div>
         <div v-else>
@@ -25,30 +25,17 @@ export default {
     },
     methods:{
         ...mapActions(['getListTAByProvince']),
-        handleGetListByProvinceId(provinceId){
-            console.log(provinceId)
-            if(provinceId){
-                this.getListTAByProvince(provinceId).then(response=>{
-                    if(response.ok){
-                        this.listTAByProvince= response.listData
-                    }
-                })
-            }
-            else{
-                this.$router.push({name:'userIndex'})
-            }
-        }
-    },
-    watch:{
-        '$route'(to, from){
-            this.provinceId= to.params.provinceId
-            this.handleGetListByProvinceId(this.provinceId)
-        }
     },
     created(){
         this.provinceId = this.$route.params.provinceId;
-        this.handleGetListByProvinceId(this.provinceId);
-
+        if(this.provinceId){
+            this.getListTAByProvince(this.provinceId).then(response=>{
+                if(response.ok){
+                    this.listTAByProvince= response.data
+                    console.log(response.data)
+                }
+            })
+        }
     }
 }
 </script>

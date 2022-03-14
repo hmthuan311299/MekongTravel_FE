@@ -1,5 +1,5 @@
-import { Access_token } from "../../helpers";
+import { setToken } from "../../helpers/constans";
 export default {
     currentMember:{},
-    ACCESS_TOKEN: localStorage.getItem(Access_token)
+    ACCESS_TOKEN: localStorage.getItem(setToken) || null
 }

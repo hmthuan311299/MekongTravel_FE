@@ -10,10 +10,10 @@ export default {
     setPageLoading(state, display= false){
         state.isPageLoading= display;
     },
-    set_YesNoForm(state, {display, titleForm=''}){
-        state.isDisplayYesNoForm = {display, titleForm};
-    },
-    set_YesNo(state, value=''){
-        state.isYesNo = value;
-    }
+    // set_YesNoForm(state, {display, titleForm=''}){
+    //     state.isDisplayYesNoForm = {display, titleForm};
+    // },
+    // set_YesNo(state, value=''){
+    //     state.isYesNo = value;
+    // }
 }

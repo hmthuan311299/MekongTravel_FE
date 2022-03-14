@@ -5,5 +5,7 @@ export default {
     historyTA: {},
     currentTA: '',
     ImgTA: '',
-    listComment:[]
+    listComment:[],
+    listEvaluate:[],
+    checkEvaluate:''
 }

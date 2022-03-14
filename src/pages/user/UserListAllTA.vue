@@ -7,21 +7,26 @@
 
 <script>
 import CardTouristAttraction from '../../components/CardTouristAttraction.vue'
-import {mapState} from 'vuex'
+import {mapActions} from 'vuex'
 export default {
     name: 'list-all-ta',
     components:{
         CardTouristAttraction
     },
+    methods:{
+        ...mapActions(['getListTA'])
+    },
     data(){
         return{
-            
+            listTA: []
         }
     },
-    computed:{
-        ...mapState({
-			listTA: state => state.touristAttraction.listTouristAttraction
-		})
+    created(){
+        this.getListTA().then(response=>{
+		if(response.ok){
+			this.listTA = response.data
+		}
+	})
     }
 }
 </script>

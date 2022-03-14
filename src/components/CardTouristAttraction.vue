@@ -7,7 +7,7 @@
 			<img :src="`${port_file}${card.tourpicture}`" class="card-img-top" alt="...">
 			<div class="card-body">
 				<h5 class="card-title">{{card.tourtitle}}</h5>
-				<p class="card-text"><i class="fa-solid fa-map-location text-primary"></i> {{card.touraddress}}</p>
+				<p class="card-text" style="height: 3rem"><i class="fa-solid fa-map-location text-primary"></i> {{card.touraddress}}</p>
 				<p class="card-text"><i class="fa-solid fa-city text-primary"></i> {{card.provincetitle}}</p>
 				<p class="card-text">Xếp hạng
 					<span class="fa fa-star checked"></span>
