@@ -24,12 +24,13 @@
 		</b-collapse>
   	</b-navbar>
 	<router-view></router-view>
-	<FromYesNo :isDisplayYesNoForm="isDisplayYesNoForm" v-on:handleConfirm="handleConfirm"/>
+	<FormYesNo :isDisplayYesNoForm="isDisplayYesNoForm" v-on:handleConfirm="handleConfirm"/>
 </b-container>
 </template>
 
 <script>
-import FromYesNo from '../../components/FormYesNo.vue'
+import Recommended from './Recommended.vue'
+import FormYesNo from '../../components/FormYesNo.vue'
 import UserIndex from './UserIndex.vue'
 import CategoryTAByProvince from'./CategoryTAByProvince.vue'
 import DetailToutistAtraction from './DetailToutistAtraction.vue'
@@ -46,7 +47,7 @@ export default {
 		}
 	},
 	components:{
-		UserIndex, DetailToutistAtraction, CategoryTAByProvince, FromYesNo
+		UserIndex, DetailToutistAtraction, CategoryTAByProvince, FormYesNo, Recommended
 	},
 	computed:{
 		...mapGetters(['isMemberLogin']),
@@ -62,7 +63,7 @@ export default {
 		},
 		handleCheckLoginRecommended(){
 			if(this.isMemberLogin){
-				this.$router.push('/userRecommendedTA')
+				this.$router.push('/member/recommended')
 			}else{
 				this.isDisplayYesNoForm.display = true;
 				this.isDisplayYesNoForm.titleForm= "Hãy đăng nhập để thực hiện chức năng này";

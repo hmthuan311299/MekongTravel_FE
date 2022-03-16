@@ -35,7 +35,6 @@ export default {
                 url: `province/${provinceId}`,
             });
             if(result.data && result.data.status){
-                //commit('set_province', result.data.province);
                 return{
                     ok: true,
                     message: result.data.message,

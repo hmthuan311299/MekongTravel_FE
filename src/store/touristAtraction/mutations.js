@@ -1,12 +1,5 @@
 import Vue from "vue";
-
 export default {
-    set_listProvince(state, listProvince){
-        state.listProvince = listProvince
-    },
-    set_province(state, province){
-        state.province = province
-    },
     set_listTouristAttraction(state, value){
         state.listTouristAttraction = value
     },

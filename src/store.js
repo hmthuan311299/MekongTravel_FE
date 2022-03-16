@@ -10,6 +10,8 @@ import moduleTechnician from './store/technician/moduleTechnician'
 import moduleUser from './store/user/moduleUser'
 import moduleTouristAttraction from './store/touristAtraction/moduleTouristAttraction'
 import moduleProvince from './store/province/moduleProvince'
+import moduleEvaluate from './store/evaluate/moduleEvaluate'
+import moduleComment from './store/comment/moduleComment'
 const store = new Vuex.Store({
     state,
     getters,
@@ -20,7 +22,9 @@ const store = new Vuex.Store({
         technician: moduleTechnician,
         member: moduleUser,
         touristAttraction: moduleTouristAttraction,
-        province: moduleProvince
+        province: moduleProvince,
+        evaluate: moduleEvaluate,
+        comment: moduleComment
     }
   })
 export default store;
