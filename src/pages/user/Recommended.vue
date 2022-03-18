@@ -15,11 +15,15 @@
                     <v-file-input
                         type='file'
                         label="Tải ảnh từ máy tính bạn"
-                        accept="imgage/*"
+                        accept="image/*"
                         required
                         @change="handleGetRecommendPicture"
                     ></v-file-input>
                 </div>
+                <div v-if="recommendPicture.base64Url">
+                    <h6>Ảnh xem trước của địa điểm: {{txtRecommendTitle}}</h6>
+                    <img class="img-preview" :src="recommendPicture.base64Url" alt="" width="320px" height="240px">
+                </div>            
                 <div class="mt-3">
                     <label for="input-desc mt-3" class="input-label">Mô tả địa điểm:</label>
                     <b-form-textarea
@@ -56,6 +60,8 @@
                         multiple
                         label="Chọn các ảnh từ thiết bị của bạn"
                         @change="handleGetRecommendImages"
+                        accept="image/*"
+                        required
                     ></v-file-input>
                 </div>
                 <div class="mt-3">
@@ -67,6 +73,8 @@
                         trim
                     ></b-form-input>
                 </div>
+                <div v-html="txtRecommendLinkVideo">  
+                </div>
                 <div class="mt-3">
                     <label for="input-name-province" class="input-label">Link bản đồ về địa điểm</label>
                     <b-form-input
@@ -75,6 +83,8 @@
                         placeholder=""
                         trim
                     ></b-form-input>
+                </div>
+                <div v-html="txtRecommendLinkMap">  
                 </div>
                 <div class="center mt-3 mb-5">
                     <v-btn color="success" type="submit" class="p-4" width="18%">
@@ -90,17 +100,22 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapActions, mapState, mapMutations} from 'vuex'
+import { v4 as uuidv4 } from 'uuid';
 export default {
     name: "recommended",
     data: () => ({
+        recommendId: uuidv4(),
         txtRecommendTitle:'',
         txtRecommendDesc:'',
         txtRecommendAddress: '',
         txtRecommendLinkVideo: '',
         txtRecommendLinkMap: '',
-        recommendPicture:'',
-        recomendImages:'',
+        recommendPicture:{
+            objectFile: null,
+            base64Url: '',
+        },
+        recommendImages:[],
         selected: '',
         listProvince: [
           { provinceid: 'A', provincetitle: 'Option A' },
@@ -108,7 +123,9 @@ export default {
         ],
     }),
     computed: {
-        
+        ...mapState({
+            memberId: state=>state.member.currentMember.memberid
+        }),
     },
     created(){
         this.getProvince().then(response=>{
@@ -121,34 +138,95 @@ export default {
         });
     },
     methods:{
-        ...mapActions(['getProvince']),
-
+        ...mapActions(['getProvince', 'addRecommended']),
+        ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
         handleCancel(){
             this.$router.push({name: 'userIndex'})
         },
         handleGetRecommendPicture(file){
-            console.log(file)
-            if(file && file.length){
-                this.recommendPicture = file
+            if(file){
+                this.recommendPicture.objectFile = file
+                const reader = new FileReader();
+                reader.addEventListener("load", ()=>{
+                    this.recommendPicture.base64Url = reader.result;
+                }, false);
+                if(file) {
+                    reader.readAsDataURL(file);
+                }
             }
-            
         },
         handleGetRecommendImages(files){
-            console.log(files)
-            if(files && files.length){
-                this.recommendImages = files
+            if(files){
+                this.recommendImages = files;
             }
-            
+        },
+        callFormError(message){
+            let value ={
+                display: true,
+                message: message
+            }
+            this.setLoadingError(value)
+            setTimeout(()=>{
+                this.setLoadingError({display: false})
+            }, 1200);
         },
         handleSubmitRecommended(){
-            console.log("txtRecommendTitle", this.txtRecommendTitle);
-            console.log("recommendPicture", this.recommendPicture);
-            console.log("txtRecommendDesc", this.txtRecommendDesc);
-            console.log("txtRecommendAddress", this.txtRecommendAddress);
-            console.log("recommendImages", this.recommendImages);
-            console.log("txtRecommendLinkVideo", this.txtRecommendLinkVideo);
-            console.log("txtRecommendLinkMap", this.txtRecommendLinkMap);
-
+            if(this.txtRecommendTitle){
+                if(this.txtRecommendDesc){
+                    if(this.recommendImages){
+                        if(this.txtRecommendLinkMap){
+                            var value={
+                                recommendId: this.recommendId,
+                                recommendTitle: this.txtRecommendTitle,              
+                                recommendPicture: this.recommendPicture.objectFile,
+                                recommendDesc: this.txtRecommendDesc,
+                                recommendAddress: this.txtRecommendAddress,
+                                recommendImages: this.recommendImages,
+                                recommendLinkVideo: this.txtRecommendLinkVideo,
+                                recommendLinkMap: this.txtRecommendLinkMap,
+                                provinceId: this.selected,
+                                memberId: this.memberId
+                            }
+                            this.addRecommended(value)
+                            .then(response=>{
+                                if(response.ok){
+                                    let value = {
+                                        display: true,
+                                        message: response.message
+                                    }
+                                    this.setPageLoading(true)
+                                    setTimeout(()=>{
+                                        this.setPageLoading(false)
+                                        this.setLoadingSuccess(value)
+                                        setTimeout(()=>{
+                                            this.setLoadingSuccess({display: false});
+                                            this.recommendId = '',
+                                            this.txtRecommendTitle = '',              
+                                            this.recommendPicture.objectFile = null,
+                                            this.txtRecommendDesc = '',
+                                            this.txtRecommendAddress  = '',
+                                            this.recommendImages  = [],
+                                            this.txtRecommendLinkVideo= '',
+                                            this.txtRecommendLinkMap  = '',
+                                            this.recommendPicture.base64Url=''
+                                            this.$router.push({name:'unapprovedList'})
+                                        }, 1000);
+                                    }, 1000);
+                                }
+                            })
+                        }else{
+                            this.callFormError("Cần thêm đường dẫn Google Map địa điểm");
+                        }
+                    }else{
+                        this.callFormError("Cần thêm hình ảnh địa điểm");
+                    }
+                }
+                else{
+                    this.callFormError("Cần nhập mô tả địa điểm");
+                }
+            }else{
+                this.callFormError("Cần nhập tên địa điểm");
+            }
         }
     }
 }
@@ -169,5 +247,7 @@ export default {
     /* .input-label{
         font-size: 25px
     } */
-    
+    .img-preview{
+        border: 1px solid black
+    }
 </style>

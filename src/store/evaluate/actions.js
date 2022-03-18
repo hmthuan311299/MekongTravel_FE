@@ -67,11 +67,12 @@ export default {
     },
     async checkEvaluate({commit}, {memberId, tourId}){
         try {
+            
             var result = await axios_instance({
                 method: 'get',
                 url: `/evaluate/check?memberId=${memberId}&tourId=${tourId}`,
             });
-            console.log('aa',result)
+            console.log('checkEvaluate',result)
             if(result.data && result.data.status == 200){
                 return{
                     ok: true,
@@ -85,6 +86,7 @@ export default {
                     message: result.data.message,
                 }
             }
+            
         } catch (error) {
             console.log(error.message)
         }

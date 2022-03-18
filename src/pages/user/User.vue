@@ -8,7 +8,10 @@
 		<b-collapse id="nav-collapse" is-nav>
 			<!-- Right aligned nav items -->
 			<b-navbar-nav class="ml-auto user-navbar-right">
-				<b-nav-item @click="handleCheckLoginRecommended">Đề xuất mới</b-nav-item>
+				<b-nav-item-dropdown text="Đề Xuất Mới" right>
+					<b-dropdown-item @click="handleCheckLoginListRecommended">Đề xuất của tôi</b-dropdown-item>
+					<b-dropdown-item @click="handleCheckLoginRecommended" >Tạo đề xuất mới</b-dropdown-item>
+				</b-nav-item-dropdown>
 				<b-nav-item v-if="isMemberLogin">Địa điểm quan tâm</b-nav-item>
 				<b-nav-item-dropdown right v-if="isMemberLogin">
 					<template #button-content >
@@ -29,6 +32,7 @@
 </template>
 
 <script>
+import ListRecommended from './ListRecommended.vue'
 import Recommended from './Recommended.vue'
 import FormYesNo from '../../components/FormYesNo.vue'
 import UserIndex from './UserIndex.vue'
@@ -47,7 +51,8 @@ export default {
 		}
 	},
 	components:{
-		UserIndex, DetailToutistAtraction, CategoryTAByProvince, FormYesNo, Recommended
+		UserIndex, DetailToutistAtraction, CategoryTAByProvince, FormYesNo, Recommended,
+		ListRecommended
 	},
 	computed:{
 		...mapGetters(['isMemberLogin']),
@@ -69,6 +74,14 @@ export default {
 				this.isDisplayYesNoForm.titleForm= "Hãy đăng nhập để thực hiện chức năng này";
 			}
 		},
+		handleCheckLoginListRecommended(){
+			if(this.isMemberLogin){
+				this.$router.push('/member/unapprovedList')
+			}else{
+				this.isDisplayYesNoForm.display = true;
+				this.isDisplayYesNoForm.titleForm= "Hãy đăng nhập để thực hiện chức năng này";
+			}
+		},
 		handleConfirm(value){
 			if(value == 'yes'){
 				this.handleResetYesNoForm;
@@ -81,9 +94,6 @@ export default {
 			}
 		}
 	},
-	
-	
-	
 }
 </script>
 

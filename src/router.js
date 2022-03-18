@@ -31,6 +31,7 @@ import UserSearch from './pages/user/UserSearch'
 import UserListAllTA from './pages/user/UserListAllTA'
 import ListTAByProvince from './pages/user/ListTAByProvince'
 import Recommended from './pages/user/Recommended'
+import ListRecommended from './pages/user/ListRecommended'
 const routes = [
     //User
     { path: '', component: User,
@@ -49,7 +50,9 @@ const routes = [
                 ]
             },
             {path: 'province/:provinceName/listAllTouristAttraction/detailTouristAttraction/:id',  component: DetailToutistAtraction, name: "detailToutistAtraction"},
-            {path: 'member/recommended',  component: Recommended, name: "recommended"}
+            {path: 'member/recommended',  component: Recommended, name: "recommended"},
+            {path: 'member/unapprovedList',  component: ListRecommended, name: "unapprovedList"},
+            {path: 'member/approvedList',  component: ListRecommended, name: "approvedList"}
         ]
     },
     { path: '/login', component: LoginUser, name:"userLogin" },

@@ -93,7 +93,6 @@ export default {
     background-size: cover;
     width: 100%;
 }
-
 @media (max-width: 500px){
     .supporter-list-content{
         width: 50vh;
@@ -190,7 +189,6 @@ export default {
     font-size: 22px;
     cursor: pointer;
 }
-
 .custom-select {
     /* height: calc(1.5em + 0.75rem + 13px) !important; */
     height: 7vh !important;

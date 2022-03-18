@@ -12,6 +12,7 @@ import moduleTouristAttraction from './store/touristAtraction/moduleTouristAttra
 import moduleProvince from './store/province/moduleProvince'
 import moduleEvaluate from './store/evaluate/moduleEvaluate'
 import moduleComment from './store/comment/moduleComment'
+import moduleRecommended from './store/recommended/moduleRecommended'
 const store = new Vuex.Store({
     state,
     getters,
@@ -24,7 +25,8 @@ const store = new Vuex.Store({
         touristAttraction: moduleTouristAttraction,
         province: moduleProvince,
         evaluate: moduleEvaluate,
-        comment: moduleComment
+        comment: moduleComment,
+        recommended: moduleRecommended
     }
   })
 export default store;

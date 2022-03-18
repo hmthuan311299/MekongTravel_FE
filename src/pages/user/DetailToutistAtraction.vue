@@ -2,15 +2,15 @@
     <div class="container user-page-detailTA mt-2" v-if="detailTA">
         <h1 >{{detailTA.tourtitle}}</h1>
         <p class="card-text">Xếp hạng
-					<span class="fa fa-star checked"></span>
-					<span class="fa fa-star checked"></span>
-					<span class="fa fa-star checked"></span>
-					<span class="fa fa-star"></span>
-					<span class="fa fa-star"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
         </p>
         <h4>Giới thiệu về {{detailTA.tourtitle}}</h4>
-        <div class="user-introProvince">
-            <img :src="`${port_file}${detailTA.tourpicture}`" class="user-img-introTA" alt="">
+        <div class="user-introProvince" >
+            <img v-if="detailTA.tourpicture" :src="`${port_file}${detailTA.tourpicture}`" class="user-img-introTA" alt="">
             <p class="ml-3">
                 {{detailTA.tourdesc}}
             </p>
@@ -44,145 +44,154 @@
                 </b-carousel-slide>
                 </b-carousel>
             </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-md-6 user-detailTA-video">
-                <h4>Video giới thiệu về {{detailTA.tourtitle}}</h4>
-                <iframe width="550" height="320" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-                    :src="detailTA.tourlinkvideo">
-                </iframe>
             </div>
-            <div class="col-md-6 user-detailTA-map">
-                <h4>Ví trí {{detailTA.tourtitle}} trên Google Map</h4>
-                <iframe :src="detailTA.tourmap" width="550" height="320" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            <div class="row mt-3">
+                <div class="col-md-6 user-detailTA-video">
+                    <h4>Video giới thiệu về {{detailTA.tourtitle}}</h4>
+                    <iframe width="550" height="320" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+                        :src="detailTA.tourlinkvideo">
+                    </iframe>
+                </div>
+                <div class="col-md-6 user-detailTA-map">
+                    <h4>Ví trí {{detailTA.tourtitle}} trên Google Map</h4>
+                    <iframe :src="detailTA.tourmap" width="550" height="320" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+            <h4 class="text-center my-5">Đánh giá của khách du lịch khi đến {{detailTA.tourtitle}}: 3.0 <span class="fa fa-star checked"></span></h4>
+            <div class="mt-3">
+            <h6 class="text-center text-warning">Đánh giá của bạn về {{detailTA.tourtitle}}</h6>
+            <router-link v-if="!isMemberLogin" to="/login" tag="button" type="button"   class="btn btn-primary mb-5">Đăng nhập để viết đánh giá</router-link>
+            <div v-if="!isWriteEvaluate && isMemberLogin" class="user-box-rate mx-auto">
+                <div class="star-widget">
+                    <input type="radio" name="rate" id="rate-5">
+                    <label for="rate-5" @click="handleGetValueEvaluate(['Địa điểm rất đẹp', 5])" class="fa fa-star"></label>               
+                    <input type="radio" name="rate" id="rate-4">
+                    <label for="rate-4" @click="handleGetValueEvaluate(['Địa điểm đẹp', 4])" class="fa fa-star"></label>
+                    <input type="radio" name="rate" id="rate-3">
+                    <label for="rate-3" @click="handleGetValueEvaluate(['Địa điểm bình thường', 3])" class="fa fa-star"></label> 
+                    <input type="radio" name="rate" id="rate-2">
+                    <label for="rate-2" @click="handleGetValueEvaluate(['Địa điểm hơi tệ', 2])" class="fa fa-star"></label>
+                    <input type="radio" name="rate" id="rate-1">
+                    <label for="rate-1" @click="handleGetValueEvaluate(['Địa điểm rất tệ', 1])" class="fa fa-star"></label>
+                    <div>
+                        <header class="text-center my-3 text-warning font-weight-bold">{{textFeelEvalue}}</header>
+                        <b-form-textarea
+                            id="input-desc"
+                            v-model="txtEvaluate"
+                            rows="6"
+                            placeholder="Nhập mô tả của bạn"
+                        ></b-form-textarea>
+                        <div class="right my-3">
+                            <v-btn color="primary" class="p-4 w-100" @click="handleWriteEvaluate">
+                                <span class="input-label">Gửi</span>
+                            </v-btn>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <i v-if="isWriteEvaluate">Bạn đã đánh giá địa điểm này</i>
+        </div>
+        <hr/>
+        <h6 class="mx-1">Các đánh giá của thành viên</h6>
+        <div v-if="listEvaluate && listEvaluate.length > 0" class="user-evaluateTA mt-3">
+            <div class="row">
+                <div class="col-md-6" v-for="(item, index) in listEvaluate" :key="index">
+                    <div class="user-card-evaluate p-2 mx-1" >
+                        <div>
+                            <div class="user-logo-name-time">
+                            <div>
+                                <img v-if="!item.memberavatar" src="../../assets/user-img/user.png" class="user-avatar-evaluate" alt="">
+                                <img v-else :src="`${port_file}${item.memberavatar}`" class="user-avatar-evaluate" alt="">
+                                {{item.membername}}
+                            </div>
+                            <div>
+                                <i>{{item.createat}}</i>
+                                <i class="fa-solid fa-bars ml-2"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        </div>
+                            <div>
+                                {{item.evaluatecontent}} 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <button type="button"  class="btn btn-primary  w-25">Xem Thêm (Còn 5 đánh giá khác)</button>
             </div>
         </div>
-        <h4 class="text-center my-5">Đánh giá của khách du lịch khi đến {{detailTA.tourtitle}}: 3.0 <span class="fa fa-star checked"></span></h4>
-        <div class="mt-3">
-        <h6 class="text-center text-warning">Đánh giá của bạn về {{detailTA.tourtitle}}</h6>
-        <router-link v-if="!isMemberLogin" to="/login" tag="button" type="button"   class="btn btn-primary mb-5">Đăng nhập để viết đánh giá</router-link>
-        <div v-if="!isWriteEvaluate && isMemberLogin" class="user-box-rate mx-auto">
-            <div class="star-widget">
-                <input type="radio" name="rate" id="rate-5">
-                <label for="rate-5" @click="handleGetValueEvaluate(['Địa điểm rất đẹp', 5])" class="fa fa-star"></label>               
-                <input type="radio" name="rate" id="rate-4">
-                <label for="rate-4" @click="handleGetValueEvaluate(['Địa điểm đẹp', 4])" class="fa fa-star"></label>
-                <input type="radio" name="rate" id="rate-3">
-                <label for="rate-3" @click="handleGetValueEvaluate(['Địa điểm bình thường', 3])" class="fa fa-star"></label> 
-                <input type="radio" name="rate" id="rate-2">
-                <label for="rate-2" @click="handleGetValueEvaluate(['Địa điểm hơi tệ', 2])" class="fa fa-star"></label>
-                <input type="radio" name="rate" id="rate-1">
-                <label for="rate-1" @click="handleGetValueEvaluate(['Địa điểm rất tệ', 1])" class="fa fa-star"></label>
-                <div>
-                    <header class="text-center my-3 text-warning font-weight-bold">{{textFeelEvalue}}</header>
+        <div v-else class="text-center">
+            <p>Oh!! Hiện tại địa điểm này vẫn chưa có đánh giá nào</p>
+            <img src="../../assets/user-img/havenotcomment.png" width="40%">
+        </div>
+        <h4>Bình luận của thành viên</h4>
+        <div>
+            <div>
+                <div class="m-1" v-if="isMemberLogin">
+                    <label for="input-desc mt-3" class="input-label">Viểt bình luận về địa điểm:</label>
                     <b-form-textarea
                         id="input-desc"
-                        v-model="txtEvaluate"
+                        v-model="txtComment"
                         rows="6"
-                        placeholder="Nhập mô tả của bạn"
+                        placeholder="Nhập nội dung của bạn"
                     ></b-form-textarea>
                     <div class="right my-3">
-                        <v-btn color="primary" class="p-4 w-100" @click="handleWriteEvaluate">
+                        <v-btn color="primary" class="p-4" @click="handleWriteComment">
                             <span class="input-label">Gửi</span>
                         </v-btn>
                     </div>
                 </div>
+                <div class="my-1" v-else>
+                    <router-link tag="button"  :to="{name: 'userLogin'}" type="button" class="btn btn-primary mb-5" >Đăng nhập để viết bình luận</router-link>
+                </div>
             </div>
-        </div>
-        <i v-if="isWriteEvaluate">Bạn đã đánh giá địa điểm này</i>
-    </div>
-    <hr/>
-    <h6 class="mx-1">Các đánh giá của thành viên</h6>
-    <div v-if="listEvaluate && listEvaluate.length > 0" class="user-evaluateTA mt-3">
-        <div class="row">
-            <div class="col-md-6" v-for="(item, index) in listEvaluate" :key="index">
-                <div class="user-card-evaluate p-2 mx-1" >
-                    <div>
+            <hr/>
+            <h6 class="mx-1">Các bình luận của thành viên</h6>
+            <div v-if="listComment && listComment.length>0">
+                <div class="user-card-evaluate p-2 mx-1 my-5" v-for=" comment in listComment" :key="comment.commentid">
+                    <div >
                         <div class="user-logo-name-time">
-                        <div>
-                            <img v-if="!item.memberavatar" src="../../assets/user-img/user.png" class="user-avatar-evaluate" alt="">
-                            <img v-else :src="`${port_file}${item.memberavatar}`" class="user-avatar-evaluate" alt="">
-                            {{item.membername}}
+                            <div>
+                                <img v-if="!comment.memberavatar" src="../../assets/user-img/user.png" class="user-avatar-evaluate" alt="">
+                                <img v-else :src="`${port_file}${comment.memberavatar}`" class="user-avatar-evaluate" alt="">
+                                {{comment.membername}}
+                            </div>
+                            <i>{{comment.createat}}</i>
                         </div>
                         <div>
-                            <i>{{item.createat}}</i>
-                            <i class="fa-solid fa-bars ml-2"></i>
+                            {{comment.commentcontent}}
                         </div>
-                    </div>
-                    <div>
-                        <span class="fa fa-star checked"></span>
-                        <span class="fa fa-star checked"></span>
-                        <span class="fa fa-star checked"></span>
-                        <span class="fa fa-star"></span>
-                        <span class="fa fa-star"></span>
-                    </div>
-                        <div>
-                            {{item.evaluatecontent}} 
-                        </div>
+                        <span class="answer">Trả lời</span>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="text-center mt-3">
-            <button type="button"  class="btn btn-primary  w-25">Xem Thêm (Còn 5 đánh giá khác)</button>
-        </div>
-    </div>
-    <div v-else class="text-center">
-            <p>Oh!! Hiện tại địa điểm này vẫn chưa có đánh giá nào</p>
-            <img src="../../assets/user-img/havenotcomment.png" width="40%">
-    </div>
-    <h4>Bình luận của thành viên</h4>
-    <div>
-        <div>
-            <div class="m-1" v-if="isMemberLogin">
-                <label for="input-desc mt-3" class="input-label">Viểt bình luận về địa điểm:</label>
-                <b-form-textarea
-                    id="input-desc"
-                    v-model="txtComment"
-                    rows="6"
-                    placeholder="Nhập nội dung của bạn"
-                ></b-form-textarea>
-                <div class="right my-3">
-                    <v-btn color="primary" class="p-4" @click="handleWriteComment">
-                        <span class="input-label">Gửi</span>
-                    </v-btn>
+                <div class="text-center mt-3">
+                    <button type="button"  class="btn btn-primary mb-5 w-25">Xem Thêm</button>
                 </div>
             </div>
-            <div class="my-1" v-else>
-                <router-link tag="button"  :to="{name: 'userLogin'}" type="button" class="btn btn-primary mb-5" >Đăng nhập để viết bình luận</router-link>
-            </div>
-            
-        </div>
-        <hr/>
-        <h6 class="mx-1">Các bình luận của thành viên</h6>
-        <div v-if="listComment && listComment.length>0">
-            <div class="user-card-evaluate p-2 mx-1 my-5" v-for=" comment in listComment" :key="comment.commentid">
-                <div >
-                    <div class="user-logo-name-time">
-                        <div>
-                            <img v-if="!comment.memberavatar" src="../../assets/user-img/user.png" class="user-avatar-evaluate" alt="">
-                            <img v-else :src="`${port_file}${comment.memberavatar}`" class="user-avatar-evaluate" alt="">
-                            {{comment.membername}}
-                        </div>
-                        <i>{{comment.createat}}</i>
-                    </div>
-                    <div>
-                        {{comment.commentcontent}}
-                    </div>
-                    <span class="answer">Trả lời</span>
-                </div>
-            </div>
-            <div class="text-center mt-3">
-                <button type="button"  class="btn btn-primary  w-25">Xem Thêm</button>
+            <div v-else class="text-center">
+                <p>Oh!! Hiện tại địa điểm này vẫn chưa có bình luận nào</p>
+                <img src="../../assets/user-img/havenotcomment.png" width="40%">
             </div>
         </div>
-        <div v-else class="text-center">
-            <p>Oh!! Hiện tại địa điểm này vẫn chưa có bình luận nào</p>
-            <img src="../../assets/user-img/havenotcomment.png" width="40%">
+        <div class="feature-DetailTA">
+            <button type="button" class="btn btn-info">Lưu vào quan tâm</button>
+            <button type="button" class="btn btn-info mt-2">Chia sẻ địa điểm</button>
+            <iframe :src="`https://www.facebook.com/plugins/share_button.php?href=http://10.10.49.10:8080/province/can-tho/listAllTouristAttraction/detailTouristAttraction/benninhkieu&layout=button_count&size=small&width=92&height=20&appId`" width="92" height="20" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://ct594-fontend.vercel.app/" target="_blank">
+                Share on Facebook
+            </a>
         </div>
-        </div>
+        <div id="fb-root"></div>
     </div>
 </template>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v13.0" nonce="BdosC9vy"></script>
 <script>
 import port_file from '../../port_file'
 import {parseJwt} from "../../helpers"
@@ -264,7 +273,6 @@ export default {
                 this.addComment(value).then(response=>{
                     if(response.ok){
                         this.listComment = response.data
-                        console.log('listComment',this.listComment )
                         let value = {
                             display: true,
                             message: "Bình luận thành công"
@@ -362,7 +370,6 @@ export default {
                 this.listEvaluate = response.data
             }
         })
-        this.checkEvaluate({memberId, tourId}),
         this.getComment(tourId).then(response=>{
             if(response.ok){
                 this.listComment = response.data
@@ -371,7 +378,6 @@ export default {
     }
 }
 </script>
-
 <style>
     .user-detailTA-video, .user-detailTA-map{
         text-align: center;
@@ -450,4 +456,12 @@ export default {
     #rate-5:checked ~ header:before{
         content: 'Địa điểm này rất tệ'
     }
+    .feature-DetailTA{
+        position: fixed;
+        right: 10px;
+        bottom: 55%;
+        display:flex;
+        flex-direction: column;
+    }
+    
 </style>
