@@ -12,14 +12,14 @@
 					<b-dropdown-item @click="handleCheckLoginListRecommended">Đề xuất của tôi</b-dropdown-item>
 					<b-dropdown-item @click="handleCheckLoginRecommended" >Tạo đề xuất mới</b-dropdown-item>
 				</b-nav-item-dropdown>
-				<b-nav-item v-if="isMemberLogin">Địa điểm quan tâm</b-nav-item>
+				<router-link :to="{name: 'categorySaveTA'}" tag='b-nav-item' v-if="isMemberLogin">Địa điểm quan tâm</router-link>
 				<b-nav-item-dropdown right v-if="isMemberLogin">
 					<template #button-content >
 						<img src="../../assets/user-img/user.png" class="user-navbar-avatar" alt="">
 					</template>				
 					<!-- <b-dropdown-item >Thông tin cá nhân</b-dropdown-item> -->
-					<router-link tag="b-dropdown-item" to="/member/1/information">Thông tin cá nhân</router-link>
-					<router-link tag="b-dropdown-item" to="/member/1/changePass">Đổi mật khẩu</router-link>
+					<router-link tag="b-dropdown-item" :to="{name: 'userInformation'}">Thông tin cá nhân</router-link>
+					<router-link tag="b-dropdown-item" :to="{name: 'userChangePassword'}">Đổi mật khẩu</router-link>
 					<b-dropdown-item @click="handleLogout">Đăng xuất</b-dropdown-item>
 				</b-nav-item-dropdown>
 				<router-link tag="b-nav-item" to="/login" v-else>Đăng nhập</router-link>
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import userChangePassWord from './UserChangePassword.vue'
 import ListRecommended from './ListRecommended.vue'
 import Recommended from './Recommended.vue'
 import FormYesNo from '../../components/FormYesNo.vue'
@@ -52,10 +53,13 @@ export default {
 	},
 	components:{
 		UserIndex, DetailToutistAtraction, CategoryTAByProvince, FormYesNo, Recommended,
-		ListRecommended
+		ListRecommended, userChangePassWord
 	},
 	computed:{
 		...mapGetters(['isMemberLogin']),
+		...mapState({
+			memberId: state=> state.member.currentMember.memberid
+		})
 	},
 	methods:{
 		...mapMutations(['set_litsTouristAttraction','set_LogoutUser', 'setPageLoading', 'set_YesNoForm', 'set_YesNo']),
@@ -84,7 +88,8 @@ export default {
 		},
 		handleConfirm(value){
 			if(value == 'yes'){
-				this.handleResetYesNoForm;
+				this.isDisplayYesNoForm.titleForm= "";
+				this.answer=""
 				this.$router.push('/login')
 			}
 			else{

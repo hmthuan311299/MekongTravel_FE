@@ -3,16 +3,16 @@
         <h1 class="text-center text-danger">Danh mục địa điểm</h1>
         <search-bar v-on:getValueSearch="getValueSearch"/>
         
-        <div class="supporter-list-container">
+        <div class="supporter-list-container" v-if="ListTA">
             <b-form-select v-model="selected" :options="options" class="mb-4" style="width: 25%"></b-form-select>
-            <div class="supporter-list-content"  v-for="item in ListItem" :key="item.id">
+            <div class="supporter-list-content"  v-for="item in ListTA" :key="item.tourid">
                 <div class="supporter-list-content-item" style="width: 45%">
                     <div class="supporter-list-item supporter-list-item-avatar"><i class="fa-solid fa-map-location-dot"></i></div>
-                    <div class="supporter-list-item supporter-list-item-name">{{item.name}}</div>
+                    <div class="supporter-list-item supporter-list-item-name">{{item.tourtitle}}</div>
                 </div>
-                <div class="supporter-list-item supporter-list-item-name"> <span class="span-fs">{{item.city}}</span></div>
+                <div class="supporter-list-item supporter-list-item-name"> <span class="span-fs">{{item.provincetitle}}</span></div>
                 <div class="supporter-list-content-item">
-                    <router-link tag="div" class="supporter-list-item supporter-list-item-update" :to="{name: 'updateProvince', params:{ id: item.id}}">
+                    <router-link tag="div" class="supporter-list-item supporter-list-item-update" :to="{name: 'categoryUpdateTA', params:{id: item.tourid}}">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </router-link>
                     <div class="supporter-list-item supporter-list-item-delete" @click="handleDelete(item.id)"><i class="fa-solid fa-trash-can"></i></div>
@@ -24,15 +24,14 @@
 
 <script>
 import SearchBar from '../../components/SearchBar.vue'
+import {mapActions} from 'vuex';
 export default {
     name: "categoryTA",
     data(){
         return{
             search: '',
-            ListItem: [
-                {id : 1, name: 'Bến Ninh Kiều', city: 'Cần Thơ'},
-                {id : 2, name: 'Chợ nổi cái răng', city: 'Cần Thơ'},
-                {id : 4, name: 'Xẻo quýt', city: 'Cần Thơ'}
+            ListTA: [
+                
             ],
             selected: null,
             options: [
@@ -45,6 +44,7 @@ export default {
         }
     },
     methods:{
+        ...mapActions(['getListTA']),
         getValueSearch(value){
             console.log("search", value);
             this.search = this.search
@@ -59,9 +59,16 @@ export default {
             console.log(value)
         }
     },
-     components:{
+    components:{
         SearchBar
     },
+    created(){
+        this.getListTA().then(response=>{
+            if(response.ok){
+                this.ListTA = response.data
+            }
+        })
+    }
 }
 </script>
 

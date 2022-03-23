@@ -13,7 +13,6 @@
                     <b-list-group>
                         <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveTA }" tag="b-list-group-item" :to="{name:'supporter'}">Danh mục địa điểm</router-link>
                         <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveReTA }" tag="b-list-group-item" :to="{name:'categoryReTA'}">Danh mục đề xuất địa điểm mới</router-link>
-                        <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveUpdateTA }" tag="b-list-group-item" :to="{name:'categoryUpdateTA'}">Danh mục cập nhật địa điểm</router-link> 
                     </b-list-group>
                </div>
             </div>
@@ -40,10 +39,10 @@ export default {
     data(){
         return {
             search: '',
-            activeRouterTA : ['supporter', 'categoryTA', 'addTA', 'updateTA'],
+            activeRouterTA : ['supporter', 'categoryTA', 'addTouristAttraction', 'updateTA'],
             activeRouterReTA: ['categoryReTA', 'updateReTA'],
-            activeRouterUpdateTA: ['categoryUpdateTA'],
-            urlAddTA: '/supporter/categoryTA/addTA',
+            urlAddTA: '/supporter/categoryTA/add',
+            // urlAddReTA: 'supporter/categoryReTA/edit/:id'
         }
     },
     components:{
@@ -62,9 +61,7 @@ export default {
     computed:{
         getUrlIconAddByPath(){
             var path = this.$route.name;
-            if(path == 'admin' || path == 'categoryProvince' ) return this.urlAddProvice;
-            if(path == 'categoryTech' ) return this.urlAddTech;
-            if(path == 'categoryMember' ) return this.urlUpdateMember;
+            if(path == 'supporter' || path == 'categoryTA' ) return this.urlAddTA;
         },
         getActiveTA(){
             var result = (this.activeRouterTA.indexOf(this.$route.name) > -1)

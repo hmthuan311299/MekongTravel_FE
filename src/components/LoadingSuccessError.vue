@@ -84,57 +84,24 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    animation: var(--speed-display-form) ease-in growthLoadingSuccess;
+    animation: var(--speed-display-form) ease-in growthLoadingSuccessBox;
 }
-@keyframes growthLoadingSuccess{
+@keyframes growthLoadingSuccessBox{
     from{
-        width: var(--form-weight-noti-before);
-        height: var(--form-height-noti-before);
-    }
-    to{
-        width: var(--form-weight-noti);
-        height: var(--form-height-noti);
+        top: 40%
     }
 }
 .loading-icon-success{
     text-align: center;
     color: rgb(0, 196, 88);
     font-size: var(--size-icon-noti);
-    animation:var(--speed-display-form) ease-in growthIconSuccess;
 }
 .loading-title-success{
     text-align: center;
     color: rgb(0, 196, 88);
     font-size: var(--size-title-noti);
-    animation: var(--speed-display-form) ease-in growthTitleSuccess;
 }
-@keyframes growthLoadingSuccess{
-    from{
-        width: var(--form-weight-noti-before);
-        height: var(--form-height-noti-before);
-    }
-    to{
-        width: var(--form-weight-noti);
-        height: var(--form-height-noti);
-    }
-}
-@keyframes growthIconSuccess{
-    from{
-        font-size: var(--size-icon-noti-before)
-    }
-    to{
-        font-size: var(--size-icon-noti);
-    }
-}
-@keyframes growthTitleSuccess{
-    from{
-        font-size: var(----size-title-noti-before);
-    }
-    to{
-        font-size: var(--size-title-noti);
-    }
-}
-/* error */
+
 .box-loading-error{
     width: var(--form-weight-noti);
     height: var(--form-height-noti);

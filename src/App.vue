@@ -51,12 +51,12 @@ export default {
   },
   watch:{
 		$route (to, from){
-      var pageNoteLoading = ['userLogin', 'supporterLogin', 'adminLogin']
+      var pageNoteLoading = ['userLogin', 'supporterLogin', 'adminLogin','userChangePassword']
       if(pageNoteLoading.indexOf(to.name) == -1){
         this.setPageLoading(true)
         setTimeout(()=>{
           this.setPageLoading(false)
-        }, 1000);
+        }, 500);
       }
 			
 		}

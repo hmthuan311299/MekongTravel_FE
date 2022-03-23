@@ -67,7 +67,6 @@ export default {
     },
     async checkEvaluate({commit}, {memberId, tourId}){
         try {
-            
             var result = await axios_instance({
                 method: 'get',
                 url: `/evaluate/check?memberId=${memberId}&tourId=${tourId}`,

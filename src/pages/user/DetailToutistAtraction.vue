@@ -48,13 +48,14 @@
             <div class="row mt-3">
                 <div class="col-md-6 user-detailTA-video">
                     <h4>Video giới thiệu về {{detailTA.tourtitle}}</h4>
-                    <iframe width="550" height="320" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-                        :src="detailTA.tourlinkvideo">
-                    </iframe>
+                    <div v-html="detailTA.tourlinkvideo">
+                    </div>
+                    <div id="player"></div>
                 </div>
-                <div class="col-md-6 user-detailTA-map">
+                <div class="col-md-7 user-detailTA-map">
                     <h4>Ví trí {{detailTA.tourtitle}} trên Google Map</h4>
-                    <iframe :src="detailTA.tourmap" width="550" height="320" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    <div v-html="detailTA.tourmap">
+                    </div>
                 </div>
             </div>
             <h4 class="text-center my-5">Đánh giá của khách du lịch khi đến {{detailTA.tourtitle}}: 3.0 <span class="fa fa-star checked"></span></h4>
@@ -149,7 +150,7 @@
                     </div>
                 </div>
                 <div class="my-1" v-else>
-                    <router-link tag="button"  :to="{name: 'userLogin'}" type="button" class="btn btn-primary mb-5" >Đăng nhập để viết bình luận</router-link>
+                    <router-link tag="button" :to="{name: 'userLogin'}" type="button" class="btn btn-primary mb-5" >Đăng nhập để viết bình luận</router-link>
                 </div>
             </div>
             <hr/>
@@ -181,16 +182,18 @@
             </div>
         </div>
         <div class="feature-DetailTA">
-            <button type="button" class="btn btn-info">Lưu vào quan tâm</button>
+            <button type="button" @click="handleSave" v-if="!checkSaveTA" class="btn btn-info">Lưu lại địa điểm</button>
+            <button type="button" @click="handleDeleteSave" v-if="checkSaveTA" class="btn btn-info">Xóa khỏi quan tâm</button>
             <button type="button" class="btn btn-info mt-2">Chia sẻ địa điểm</button>
             <iframe :src="`https://www.facebook.com/plugins/share_button.php?href=http://10.10.49.10:8080/province/can-tho/listAllTouristAttraction/detailTouristAttraction/benninhkieu&layout=button_count&size=small&width=92&height=20&appId`" width="92" height="20" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
-            <a href="https://www.facebook.com/sharer/sharer.php?u=https://ct594-fontend.vercel.app/" target="_blank">
+            <!-- <a href="https://www.facebook.com/sharer/sharer.php?u=https://ct594-fontend.vercel.app/" target="_blank">
                 Share on Facebook
-            </a>
+            </a> -->
         </div>
         <div id="fb-root"></div>
     </div>
 </template>
+
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v13.0" nonce="BdosC9vy"></script>
 <script>
 import port_file from '../../port_file'
@@ -215,7 +218,8 @@ export default {
             imageTA: [],
             listEvaluate:[],
             isWriteEvaluate: false,
-            listComment: []
+            listComment: [],
+            checkSaveTA: false
         }
     },
     computed:{
@@ -223,22 +227,21 @@ export default {
             historyTA: state=> state.touristAttraction.historyTA,
             currentMember: state=> state.member.currentMember
         }),
-        ...mapGetters(['getDetailCurrentTA', 'isMemberLogin']),
-        currentDetailTA(){
-            if(this.getDetailCurrentTA.currentDetailTA){
-                return this.getDetailCurrentTA.currentDetailTA
+        ...mapGetters(['isMemberLogin']),
+        handleChangeTitleButtonSave(){
+            if(this.buttonSaveTA){
+                return 'Lưu vào quan tâm'
             }
-        },
-        handleComment(){
-            if(this.getDetailCurrentTA && this.getDetailCurrentTA.currentComment){
-                return this.getDetailCurrentTA.currentComment;
-            }
-            return false;
-        },
+            else return 'Xóa khỏi quan tâm'
+        }
     },
     methods:{
         ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
-        ...mapActions(['getTAById','getimageTA' ,'getEvaluate','getComment', 'addComment','addEvaluate','checkEvaluate']),
+        ...mapActions(['getTAById','getimageTA' ,'getEvaluate',
+                        'getComment', 'addComment','addEvaluate',
+                        'checkEvaluate', 'addSaveTA','checkSaveTouristAttraction',
+                        'deleteSaveTA'
+        ]),
         onSlideStart(slide) {
         this.sliding = true
         },
@@ -340,6 +343,84 @@ export default {
                 });
             }
         },
+        handleSave(){
+            var d = new Date();
+                var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
+                d.getHours() + ":" + d.getMinutes();
+            var value = { 
+                memberId: this.currentMember.memberid,
+                tourId: this.id,
+                createAt: datestring
+            }
+            this.addSaveTA(value).then(response=>{
+                if(response.ok){
+                    let value = {
+                        display: true,
+                        message: response.message
+                    }
+                    this.setPageLoading(true)
+                    setTimeout(()=>{
+                        this.setPageLoading(false)
+                        this.setLoadingSuccess(value)
+                        setTimeout(()=>{
+                            this.setLoadingSuccess({display: false});
+                            this.checkSaveTA = false;
+                        }, 1200);
+                    }, 1000);
+                }
+                else{
+                    let value ={
+                        display: true,
+                        message: response.message
+                    }
+                    this.setPageLoading(true)
+                    setTimeout(()=>{
+                        this.setPageLoading(false)
+                        this.setLoadingError(value)
+                        setTimeout(()=>{
+                            this.setLoadingError({display: false})
+                        }, 1200);
+                    }, 1000);  
+                }
+            })
+        },
+        handleDeleteSave(){
+            var value = { 
+                memberId: this.currentMember.memberid,
+                tourId: this.id,
+            }
+            this.deleteSaveTA(value).then(response=>{
+                if(response.ok){
+                    let value = {
+                        display: true,
+                        message: response.message
+                    }
+                    this.setPageLoading(true)
+                    setTimeout(()=>{
+                        this.setPageLoading(false)
+                        this.setLoadingSuccess(value)
+                        setTimeout(()=>{
+                            this.setLoadingSuccess({display: false});
+                            this.checkSaveTA = true;
+                        }, 1200);
+                    }, 1000);
+                }
+                else{
+                    let value ={
+                        display: true,
+                        message: response.message
+                    }
+                    this.setPageLoading(true)
+                    setTimeout(()=>{
+                        this.setPageLoading(false)
+                        this.setLoadingError(value)
+                        setTimeout(()=>{
+                            this.setLoadingError({display: false})
+                        }, 1200);
+                    }, 1000);  
+                }
+            })
+        }
     },
     created(){
         var tourId = this.$route.params.id;
@@ -351,6 +432,14 @@ export default {
                 this.checkEvaluate({memberId, tourId}).then(response=>{
                     if(response.ok && response.data == 'true'){
                         this.isWriteEvaluate = true
+                    }
+                })
+                this.checkSaveTouristAttraction({memberId, tourId}).then(response=>{
+                    if(response.ok && response.data == 'true'){
+                        this.checkSaveTA = false
+                    }
+                    else{
+                         this.checkSaveTA = true
                     }
                 })
             }

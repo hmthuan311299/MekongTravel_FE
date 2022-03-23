@@ -56,11 +56,11 @@ import {mapActions, mapMutations} from 'vuex'
 			this.$refs.form.validate()
 		},
 		handleLogin(){
-			let value ={
-				display: true,
-				message: "Dữ liệu nhập vào chưa đúng"
-			}
 			if(!this.valid){
+				let value ={
+					display: true,
+					message: "Dữ liệu nhập vào chưa đúng"
+				}
 				this.setLoadingError(value)
 				setTimeout(()=>{
 						this.commentContent='';

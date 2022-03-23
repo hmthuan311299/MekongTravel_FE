@@ -6,13 +6,14 @@ import getters from './store/getters'
 import mutations from './store/mutations'
 import actions from './store/actions'
 import moduleAdmin from './store/admin/moduleAdmin'
-import moduleTechnician from './store/technician/moduleTechnician'
+import moduleSupporter from './store/supporter/moduleSupporter'
 import moduleUser from './store/user/moduleUser'
 import moduleTouristAttraction from './store/touristAtraction/moduleTouristAttraction'
 import moduleProvince from './store/province/moduleProvince'
 import moduleEvaluate from './store/evaluate/moduleEvaluate'
 import moduleComment from './store/comment/moduleComment'
 import moduleRecommended from './store/recommended/moduleRecommended'
+import moduleSaveTourist from './store/saveTourist/moduleSaveTourist'
 const store = new Vuex.Store({
     state,
     getters,
@@ -20,13 +21,14 @@ const store = new Vuex.Store({
     actions,
     modules:{
         admin: moduleAdmin,
-        technician: moduleTechnician,
+        supporter: moduleSupporter,
         member: moduleUser,
         touristAttraction: moduleTouristAttraction,
         province: moduleProvince,
         evaluate: moduleEvaluate,
         comment: moduleComment,
-        recommended: moduleRecommended
+        recommended: moduleRecommended,
+        saveTourist: moduleSaveTourist
     }
   })
 export default store;

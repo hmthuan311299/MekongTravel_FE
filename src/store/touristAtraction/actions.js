@@ -122,4 +122,73 @@ export default {
             console.log(error.message)
         }
     },
+    async addTA({commit, dispatch}, value){
+        try {
+            var formData = new FormData();
+            formData.append("avatar", value.tourPicture);
+            formData.append("tourId", value.tourId);
+            formData.append("tourTitle", value.tourTitle);
+            formData.append("tourDesc", value.tourDesc);
+            formData.append("tourAddress", value.tourAddress);
+            formData.append("tourLinkVideo", value.tourLinkVideo);
+            formData.append("tourLinkMap", value.tourLinkMap);
+            formData.append("provinceId", value.provinceId);
+            let config ={
+                headers: {
+                    'accept':'multipart/form-data',
+                }
+            }
+            var result1 = await axios_instance.post('/touristAttraction/add', formData, config)
+            var result2 = await dispatch('addImageTA', value);
+            console.log(result1)
+            if(result1.data && result1.data.status==200 && result2.ok){
+                return {
+                    ok: true,
+                    message: result1.data.message
+                }
+            }
+            else{
+                return {
+                    ok: false,
+                    message: 'Đã xảy ra lỗi'
+                }
+            }
+        } catch (error) {
+            return {
+                ok: false,
+                message: error.message
+            }
+        }
+    },
+    async addImageTA({commit}, value){
+        try {
+            console.log(value.tourImages, value.tourId)
+            let config ={
+                headers: {
+                    'accept':'multipart/form-data',
+                }
+            }
+            var formData = new FormData();
+            formData.append("tourId", value.tourId);
+            for (const i of Object.keys(value.tourImages)) {
+                formData.append('photos', value.tourImages[i])
+            }
+            var result = await axios_instance.post('image/add', formData, config);
+            console.log("result", result)
+            if(result.data && result.data.status==200){
+                return {
+                    ok: true,
+                }
+            }
+            else{
+                return {
+                    ok: false,
+                }
+            }
+        } catch (error) {
+            return {
+                ok: false,
+            }
+        }
+    },
 }

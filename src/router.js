@@ -21,8 +21,10 @@ import AddProvince from './pages/admin/AddProvince.vue'
 import UpdateProvince from './pages/admin/UpdateProvince.vue'
 import AddSupporter from './pages/admin/AddSupporter'
 import UpdateSupporter from './pages/admin/UpdateSupporter'
-import DetailToutistAtraction from './pages/user/DetailToutistAtraction'
+import AdminChangePassword from './pages/admin/AdminChangePassword.vue'
+import UpdateAdmin from './pages/admin/UpdateAdmin'
 //page user
+import DetailToutistAtraction from './pages/user/DetailToutistAtraction'
 import UserIndex from'./pages/user/UserIndex'
 import User from './pages/user/User.vue'
 import CategoryTAByProvince from './pages/user/CategoryTAByProvince'
@@ -32,6 +34,9 @@ import UserListAllTA from './pages/user/UserListAllTA'
 import ListTAByProvince from './pages/user/ListTAByProvince'
 import Recommended from './pages/user/Recommended'
 import ListRecommended from './pages/user/ListRecommended'
+import CategorySaveTA from './pages/user/CategorySaveTA'
+import UserInformation from './pages/user/UserInformation'
+import UserChangePassWord from './pages/user/UserChangePassword'
 const routes = [
     //User
     { path: '', component: User,
@@ -52,7 +57,10 @@ const routes = [
             {path: 'province/:provinceName/listAllTouristAttraction/detailTouristAttraction/:id',  component: DetailToutistAtraction, name: "detailToutistAtraction"},
             {path: 'member/recommended',  component: Recommended, name: "recommended"},
             {path: 'member/unapprovedList',  component: ListRecommended, name: "unapprovedList"},
-            {path: 'member/approvedList',  component: ListRecommended, name: "approvedList"}
+            {path: 'member/approvedList',  component: ListRecommended, name: "approvedList"},
+            {path: 'member/categorySaveTA',  component: CategorySaveTA, name: "categorySaveTA"},
+            {path: 'member/information',  component: UserInformation, name: "userInformation"},
+            {path: 'member/changePassword',  component: UserChangePassWord, name: "userChangePassword"}
         ]
     },
     { path: '/login', component: LoginUser, name:"userLogin" },
@@ -66,29 +74,24 @@ const routes = [
                 component: CategoryTA,
             },
             {
-                path: 'supporter/categoryTA',
+                path: 'categoryTA',
                 name: 'categoryTA',
                 component: CategoryTA,
             },
             {
-                path: 'supporter/categoryTA/addTA',
-                name: 'addTA',
+                path: 'categoryTA/add',
+                name: 'addTouristAttraction',
                 component: AddTouristAttraction,
             },
             {
-                path: 'supporter/categoryReTA',
+                path: 'categoryReTA',
                 name: 'categoryReTA',
                 component: CategoryReTA,
             },
             {
-                path: 'supporter/categoryReTA/edit/:id',
+                path: 'categoryReTA/edit/:id',
                 name: 'editReTA',
                 component: ApprovalRecommendedTA,
-            },
-            {
-                path: 'supporter/categoryUpdateTA',
-                name: 'categoryUpdateTA',
-                component: CategoryUpdateTA,
             },
         ]
     },
@@ -99,6 +102,11 @@ const routes = [
                 path: '',
                 name: 'admin',
                 component: CategoryProvince,
+            },
+            {
+                path: 'update',
+                name: 'updateAdmin',
+                component: UpdateAdmin,
             },
             {
                 path: 'categoryProvince',
@@ -134,6 +142,11 @@ const routes = [
                 path: 'categoryMember',
                 name: 'categoryMember',
                 component: CategoryMember,
+            },
+            {
+                path: 'changePassword',
+                name: 'adminChangePassword',
+                component: AdminChangePassword,
             },
         ],
     },

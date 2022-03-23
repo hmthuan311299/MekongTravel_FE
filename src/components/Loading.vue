@@ -1,23 +1,23 @@
 <template>
-  <div class="pageLoading" :class="{'isPageLoading':isPageLoading}">
-    <div class="loadingio-spinner-ball-d6bf8x2q54e">
-      <div class="ldio-0q9eubndosnh">
-        <div></div>
-      </div>
+    <div class="pageLoading" :class="{'isPageLoading':isPageLoading}">
+		<div class="loadingio-spinner-ball-d6bf8x2q54e">
+			<div class="ldio-0q9eubndosnh">
+				<div></div>
+			</div>
+		</div>
+		<div class="loadingio-spinner-spin-arue3w1mm9r">
+			<div class="ldio-xd2f7wtb1sp">
+			<div><div></div></div>
+			<div><div></div></div>
+			<div><div></div></div>
+			<div><div></div></div>
+			<div><div></div></div>
+			<div><div></div></div>
+			<div><div></div></div>
+			<div><div></div></div>
+			</div>
+		</div>
     </div>
-      <div class="loadingio-spinner-spin-arue3w1mm9r">
-        <div class="ldio-xd2f7wtb1sp">
-          <div><div></div></div>
-          <div><div></div></div>
-          <div><div></div></div>
-          <div><div></div></div>
-          <div><div></div></div>
-          <div><div></div></div>
-          <div><div></div></div>
-          <div><div></div></div>
-        </div>
-      </div>
-  </div>
 </template>
 
 <script>
@@ -55,16 +55,7 @@ export default {
     left: 50%;
     z-index: 10000;
 }
-@keyframes growthLoadingSuccess{
-    from{
-        width: 200px;
-        height:200px;
-    }
-    to{
-        width: 480px;
-        height:300px;
-    }
-}
+
 @keyframes ldio-xd2f7wtb1sp {
   0% {
     opacity: 1;

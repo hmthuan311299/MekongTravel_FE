@@ -74,5 +74,34 @@ export default {
         } catch (error) {
             console.log(error.message)
         }
+    },
+    async userChangePassword({dispatch, commit}, {oldPass, newPass, memberId}){
+        try {
+            console.log({oldPass, newPass, memberId})
+            var result = await axios_instance({
+                method: 'put',
+                url: 'member/changePassword',
+                data:{
+                    oldPass, newPass, memberId
+                }
+            })
+            if(result.data && result.data.status == 200){
+                return{
+                    ok: true,
+                    message: result.data.message,
+                }
+            }
+            else{
+                return{
+                    ok: false,
+                    message: result.data.message,
+                }
+            }
+        } catch (error) {
+            return{
+                ok: false,
+                message: error.message,
+            }
+        }
     }
 }

@@ -17,7 +17,7 @@
                         label="Tải ảnh từ máy tính bạn"
                         accept="image/*"
                         required
-                        @change="handleGetRecommendPicture"
+                        @change="handleGetPicture"
                     ></v-file-input>
                 </div>
                 <div v-if="recommendPicture.base64Url">
@@ -127,23 +127,23 @@ export default {
             memberId: state=>state.member.currentMember.memberid
         }),
     },
-    created(){
-        this.getProvince().then(response=>{
-            if(response.ok){
-                this.listProvince= response.data
-                if(this.listProvince.length){
-                    this.selected=this.listProvince[0].provinceid
-                }
-            }
-        });
-    },
+    // created(){
+    //     this.getProvince().then(response=>{
+    //         if(response.ok){
+    //             this.listProvince= response.data
+    //             if(this.listProvince.length){
+    //                 this.selected=this.listProvince[0].provinceid
+    //             }
+    //         }
+    //     });
+    // },
     methods:{
         ...mapActions(['getProvince', 'addRecommended']),
         ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
         handleCancel(){
             this.$router.push({name: 'userIndex'})
         },
-        handleGetRecommendPicture(file){
+        handleGetPicture(file){
             if(file){
                 this.recommendPicture.objectFile = file
                 const reader = new FileReader();
@@ -211,6 +211,20 @@ export default {
                                             this.recommendPicture.base64Url=''
                                             this.$router.push({name:'unapprovedList'})
                                         }, 1000);
+                                    }, 1000);
+                                }else{
+                                    let value ={
+                                        display: true,
+                                        message: response.message
+                                    }
+                                    this.setPageLoading(true)
+                                    setTimeout(()=>{
+                                        this.setPageLoading(false)
+                                        this.setLoadingError(value)
+                                        setTimeout(()=>{
+                                            this.commentContent='';
+                                            this.setLoadingError({display: false})
+                                        }, 1500);
                                     }, 1000);
                                 }
                             })
