@@ -1,66 +1,63 @@
 <template>
     <div>
-        <h1 class="text-center text-danger">Danh mục Tỉnh Thành</h1>
-        <div class="admin-list-container">
-            <div class="admin-list-content" v-for="item in listProvince" :key="item.provinceid">
-                <div class="admin-list-content-item">
-                    <div class="admin-list-item admin-list-item-avatar"><i class="fa-solid fa-city"></i></div>
-                    <div class="admin-list-item admin-list-item-name">{{item.provincetitle}}</div>
+        <h1 class="text-center text-danger">Duyệt đề xuất địa điểm mới</h1>
+        <div class="supporter-list-container" v-if="ListTA">
+            <div class="supporter-list-content"  v-for="item in ListTA" :key="item.recommendid">
+                <div class="supporter-list-content-item" style="width: 45%">
+                    <div class="supporter-list-item supporter-list-item-avatar"><i class="fa-solid fa-map-location-dot"></i></div>
+                    <div class="supporter-list-item supporter-list-item-name">{{item.recommendtitle}}</div>
                 </div>
-                <div class="admin-list-content-item">
-                    <router-link tag="div" class="admin-list-item admin-list-item-update" :to="{name: 'updateProvince', params:{ id: item.provinceid}}">
+                <div class="supporter-list-item supporter-list-item-name"> <span class="span-fs">{{item.provincetitle}}</span></div>
+                <div class="supporter-list-content-item">
+                    <router-link tag="div" class="supporter-list-item supporter-list-item-update" :to="{name: 'approvalRecommended', params:{id: item.recommendid}}">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </router-link>
-                    <div class="admin-list-item admin-list-item-delete" @click="handleDelete(item.provinceid)"><i class="fa-solid fa-trash-can"></i></div>
+                    <div class="supporter-list-item supporter-list-item-delete" @click="handleDelete(item.recommendid)"><i class="fa-solid fa-trash-can"></i></div>
                 </div>
             </div>
         </div>
-        <FormYesNo :isDisplayYesNoForm="isDisplayYesNoForm" v-on:handleConfirm="handleConfirm"/>
     </div>
 </template>
+
 <script>
-import SearchBar from '../../components/SearchBar.vue'
-import FormYesNo from '../../components/FormYesNo.vue'
-import {mapActions, mapMutations} from 'vuex';
+import {mapActions} from 'vuex';
 export default {
-    name: "categoryProvince",
-    components: {
-        FormYesNo, SearchBar
-    },
+    name: "categoryReTA",
     data(){
         return{
-            search: '',
-            listProvince:[],
+            ListTA: [
+                
+            ],
+            recommendId,
             isDisplayYesNoForm:{
 				display: false,
 				titleForm: 'Form xác nhận',
 				answer: ''
 			},
-            provinceId: ''
         }
     },
     methods:{
-        ...mapActions(['getProvince', 'deleteProvince']),
-        ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
-        getValueSearch(value){
-            console.log("search", value);
-            this.search = this.search
-            if(!this.search){
-                alert("vui long nhap lai")
-            }
+        ...mapActions(['getListReTA', 'deleteRecommended']),
+        handleUpdate(value){
+            console.log(value)
         },
         handleDelete(value){
             this.isDisplayYesNoForm.display = true;
             this.isDisplayYesNoForm.titleForm= 
-            "Xóa tỉnh thành sẽ xóa toàn bộ dữ liệu liên quan đến tỉnh thành như: Địa điểm, đánh giá, bình luận của tỉnh thành này! Bạn có chắc muốn xóa?";
-            this.provinceId = value;
+            "Xác nhận xóa địa điểm";
+            this.recommendId = value;
         },
 		handleConfirm(value){
 			if(value == 'yes'){
 				this.isDisplayYesNoForm.titleForm= "";
 				this.answer=""
-				this.deleteProvince(this.provinceId).then(response=>{
+				this.deleteRecommended(this.recommendId).then(response=>{
                     if(response.ok){
+                        this.getListReTA().then(response=>{
+                            if(response.ok){
+                                this.listTA = response.data
+                            }
+                        });
                         this.isDisplayYesNoForm.display = false;
                         this.isDisplayYesNoForm.titleForm= "";
                         this.answer=""
@@ -73,14 +70,7 @@ export default {
                             this.setPageLoading(false)
                             this.setLoadingSuccess(value)
                             setTimeout(()=>{
-                                
                                 this.setLoadingSuccess({display: false});
-                                this.getProvince().then(response=>{
-                                    if(response.ok){
-                                        this.listProvince = response.data
-
-                                    }
-                                });
                             }, 1200);
                         }, 1000);
                     }else{
@@ -109,15 +99,15 @@ export default {
 			}
 		}
     },
-    computed:{
-	},
-	created(){
-        this.getProvince().then(response=>{
-            if(response.ok){
-                this.listProvince = response.data
-            }
-        });
+     components:{
     },
+    created(){
+        this.getListReTA().then(response=>{
+            if(response.ok){
+                this.ListTA = response.data
+            }
+        })
+    }
 }
 </script>
 

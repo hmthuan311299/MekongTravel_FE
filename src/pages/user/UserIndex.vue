@@ -36,7 +36,7 @@ export default {
 	methods:{
 		...mapActions(['getProvince', 'getListTA', 'getTouristAttractionBySearch']),
 		getValueSearch(value){
-			this.$router.push({name:'userSearch', query:{valueSearch: value}})
+			this.$router.push({name:'userSearch', query:{valueSearch: value}}).catch(()=>{})
         },
 		handleremoveVietnameseProvinceTitle(provinceTitle){
 			return removeVietnameseFromString(provinceTitle);

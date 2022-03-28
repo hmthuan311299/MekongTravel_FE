@@ -14,6 +14,7 @@ import moduleEvaluate from './store/evaluate/moduleEvaluate'
 import moduleComment from './store/comment/moduleComment'
 import moduleRecommended from './store/recommended/moduleRecommended'
 import moduleSaveTourist from './store/saveTourist/moduleSaveTourist'
+import moduleStatistic from './store/statistic/moduleStatistic'
 const store = new Vuex.Store({
     state,
     getters,
@@ -28,7 +29,8 @@ const store = new Vuex.Store({
         evaluate: moduleEvaluate,
         comment: moduleComment,
         recommended: moduleRecommended,
-        saveTourist: moduleSaveTourist
+        saveTourist: moduleSaveTourist,
+        statistic: moduleStatistic
     }
   })
 export default store;

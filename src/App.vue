@@ -44,10 +44,11 @@ export default {
   },
   methods:{
     ...mapMutations(['setPageLoading']),
-    ...mapActions(['getKeepLoginUser'])
+    ...mapActions(['getKeepLoginUser', 'getKeepLoginSupporter'])
   },
   created(){
     this.getKeepLoginUser()
+    this.getKeepLoginSupporter()
   },
   watch:{
 		$route (to, from){
@@ -66,5 +67,9 @@ export default {
 <style>
 #app {
   min-height: 100vh;
+}
+.sticky{
+    position: sticky;
+    top: 0;
 }
 </style>

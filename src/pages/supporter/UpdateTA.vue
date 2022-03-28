@@ -1,36 +1,38 @@
 <template>
     <div class="container">
-        <h1 class="text-center text-danger mt-3">Thêm địa điểm mới</h1>
+        <h1 class="text-center text-danger mt-3">Cập nhật thông tin địa điểm</h1>
         <form @submit.prevent="handleSubmit">
             <div role="group">
                 <label for="input-name-province" class="input-label">Tên địa điểm:</label>
                 <b-form-input
                     id="input-name-province"
-                    v-model="title"
+                    :value="currentTA.tourtitle"
+                    ref="bInputTitle"
+                    @input="title = $refs.bInputTitle.localValue"
                     placeholder=""
                 ></b-form-input>
                 <div class="mt-3">
-                    <label for="input-name-province" class="input-label">Ảnh đại diện cho địa điểm:</label>
-                    <v-file-input
-                        type='file'
-                        label="Tải ảnh từ máy tính bạn"
-                        accept="image/*"
-                        required
-                        @change="handleGetPicture"
-                    ></v-file-input>
-                </div>
-                <div v-if="picture.base64Url">
-                    <h6>Ảnh xem trước của địa điểm: {{title}}</h6>
-                    <img class="img-preview" :src="picture.base64Url" alt="" width="320px" height="240px">
-                </div>            
+                    <h5>Ảnh hiện tại</h5>
+                    <img v-if="currentTA.tourpicture" class="img-preview" :src="getUrlPicture" alt="" width="400px" height="240px">
+                    <input type="file" accept="image/*" @change="handleGetPicture($event)" ref="inputFile" style="display: none"/>
+                    <div class="mt-3">
+                        <v-btn color="primary" class="p-4" width="18%" @click="handleCallRefs">
+                            <span class="input-label">Thay đổi</span>
+                        </v-btn>
+                        <v-btn v-if="picture.base64Url" @click="handleRemove" color="error" class="p-4 ml-2" width="18%">
+                            <span class="input-label" >Xóa chọn</span>
+                        </v-btn>
+                    </div>
+                </div>           
                 <div class="mt-3">
                     <label for="input-desc mt-3" class="input-label">Mô tả địa điểm:</label>
                     <b-form-textarea
                         id="input-desc"
-                        v-model="desc"
                         rows="8"
                         placeholder=""
-                        trim
+                        :value="currentTA.tourdesc"
+                        ref="bInputDesc"
+                        @input="desc = $refs.bInputDesc.localValue"
                     ></b-form-textarea>
                 </div>
                 <div class="mt-3">
@@ -48,12 +50,13 @@
                     <label for="input-name-province" class="input-label">Địa chỉ địa điểm:</label>
                     <b-form-input
                         id="input-name-province"
-                        v-model="address"
+                        :value="currentTA.touraddress"
+                        ref="bInputAddress"
                         placeholder=""
-                        trim
+                        @input="address = $refs.bInputAddress.localValue"
                     ></b-form-input>
                 </div>
-                <div class="mt-3">
+                <!-- <div class="mt-3">
                     <label for="input-name-province" class="input-label">Các hình ảnh của địa điểm:</label>
                     <v-file-input
                         multiple
@@ -62,14 +65,24 @@
                         accept="image/*"
                         required
                     ></v-file-input>
+                </div> -->
+                <div class="mt-3 display-flex flex-wap" v-if="currentImageTA">
+                    <div class="display-flex flexDirection-column  m-2  " v-for="item in currentImageTA" :key="item.imageid">
+                        <img :src="`${port_file}${item.imagepath}`" width="200px" height="120px" alt="">
+                        <v-btn @click="handleDeleteIMG(item.imageid)" color="error mt-2" class="" width="18%">
+                            <span class="input-label" >Xóa</span>
+                        </v-btn>
+                    </div>
                 </div>
                 <div class="mt-3">
                     <label for="input-name-province" class="input-label">Link video về địa điểm (nếu có)</label>
                     <b-form-input
                         id="input-name-province"
-                        v-model="linkVideo"
+                        :value="currentTA.tourlinkvideo"
                         placeholder=""
                         trim
+                        ref="bInputLinkVideo"
+                        @input="linkVideo = $refs.bInputLinkVideo.localValue"
                     ></b-form-input>
                 </div>
                 <video-embed :src="linkVideo"></video-embed>
@@ -77,9 +90,11 @@
                     <label for="input-name-province" class="input-label">Link bản đồ về địa điểm</label>
                     <b-form-input
                         id="input-name-province"
-                        v-model="linkMap"
+                        :value="currentTA.tourmap"
                         placeholder=""
                         trim
+                        ref="bInputLinkMap"
+                        @input="linkMap = $refs.bInputLinkMap.localValue"
                     ></b-form-input>
                 </div>
                 <div v-html="linkMap">  
@@ -98,10 +113,11 @@
 </template>
 
 <script>
+import port_file from '../../port_file'
 import {mapActions, mapState, mapMutations} from 'vuex'
 import { v4 as uuidv4 } from 'uuid';
 export default {
-    name: "recommended",
+    name: "update-TA",
     data: () => ({
         id: uuidv4(),
         title:'',
@@ -119,37 +135,41 @@ export default {
           { provinceid: 'A', provincetitle: 'Option A' },
           { provinceid: 'B', provincetitle: 'Option B' },
         ],
+        port_file
     }),
     computed: {
-    
+        ...mapState({
+            currentTA: state=> state.touristAttraction.currentTA,
+            currentImageTA: state=> state.touristAttraction.currentImageTA
+        }),
+        getUrlPicture(){
+            if(this.picture.base64Url){
+                return this.picture.base64Url
+            }
+            else{
+                return this.port_file + this.currentTA.tourpicture
+            }
+        },
     },
     created(){
+        this.id= this.$route.params.id
         this.getProvince().then(response=>{
             if(response.ok){
                 this.listProvince= response.data
-                if(this.listProvince.length){
-                    this.selected=this.listProvince[0].provinceid
-                }
             }
         });
+        this.getTAById(this.id).then(response=>{
+            if(response.ok){
+                this.selected= response.data.provinceid
+            }
+        });
+        this.getimageTA(this.id);
     },
     methods:{
-        ...mapActions(['getProvince', 'addTA']),
+        ...mapActions(['getProvince', 'getTAById', 'getimageTA', 'deleteImage']),
         ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
         handleCancel(){
             this.$router.push({name: 'supporter'})
-        },
-        handleGetPicture(file){
-            if(file){
-                this.picture.objectFile = file
-                const reader = new FileReader();
-                reader.addEventListener("load", ()=>{
-                    this.picture.base64Url = reader.result;
-                }, false);
-                if(file) {
-                    reader.readAsDataURL(file);
-                }
-            }
         },
         handleGetRecommendImages(files){
             if(files){
@@ -236,8 +256,49 @@ export default {
             }else{
                 this.callFormError("Cần nhập tên địa điểm");
             }
+        },
+        handleGetPicture(e){
+            var file = e.target.files[0]
+            console.log(file)
+            if(file){
+                this.picture.objectFile = file
+                const reader = new FileReader();
+                reader.addEventListener("load", ()=>{
+                    this.picture.base64Url = reader.result;
+                }, false);
+                if(file) {
+                    reader.readAsDataURL(file);
+                }
+            }
+        },
+        handleCallRefs(){
+            this.$refs.inputFile.click();
+        },
+        handleRemove(){
+            this.picture.objectFile= null;
+            this.picture.base64Url= ''
+        },
+        handleDeleteIMG(imageId){
+            console.log(imageId)
+            this.deleteImage({imageId, tourId: this.id}).then(response=>{
+                if(response.ok){
+                    this.getimageTA(this.id);
+                    let value = {
+                        display: true,
+                        message: response.message
+                    }
+                    this.setPageLoading(true)
+                    setTimeout(()=>{
+                        this.setPageLoading(false)
+                        this.setLoadingSuccess(value)
+                        setTimeout(()=>{
+                            this.setLoadingSuccess({display: false});
+                        }, 1000);
+                    }, 1000);
+                }
+            })
         }
-    }
+    },
 }
 </script>
 
@@ -258,5 +319,18 @@ export default {
     } */
     .img-preview{
         border: 1px solid black
+    }
+    .display-flex{
+        display: flex;
+    }
+    .flexDirection-column{
+        flex-direction: column;
+        align-items: center;
+    }
+    .flex-wap{
+        flex-wrap: wrap;
+    }
+    .justify-content-center{
+        justify-content: center;
     }
 </style>

@@ -25,16 +25,14 @@ export default {
             listTABySearch:[]
         }
     },
-    computed:{
-       
-    },
+    computed:{},
     methods:{
         ...mapActions(['getTouristAttractionBySearch']),
-        handleGetListBySearch(valueSearch){
+        handleSearch(valueSearch){
             if(valueSearch){
                 this.getTouristAttractionBySearch(valueSearch).then(response=>{
                     if(response.ok){
-                        this.listTABySearch = response.listData
+                        this.listTABySearch = response.data
                     }
                 })
             }
@@ -46,12 +44,12 @@ export default {
     watch:{
         '$route'(to, form){
             this.valueSearch= to.query.valueSearch
-            this.handleGetListBySearch(this.valueSearch)
+            this.handleSearch(this.valueSearch)
         }
     },
     created(){
         this.valueSearch = this.$route.query.valueSearch;
-        this.handleGetListBySearch(this.valueSearch);
+        this.handleSearch(this.valueSearch);
 
     }
 }

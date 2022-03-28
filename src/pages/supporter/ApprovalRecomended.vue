@@ -1,36 +1,42 @@
 <template>
     <div class="container">
-        <h1 class="text-center text-danger mt-3">Thêm địa điểm mới</h1>
-        <form @submit.prevent="handleSubmit">
+        <h1 class="text-center text-danger mt-3">Duyệt địa điểm đề xuất</h1>
+        <form @submit.prevent="handleSubmit" v-if="recommended">
             <div role="group">
+                <div class="text-center bg-warning">
+                    Đề xuất bởi {{recommended.membername}}
+                </div>
                 <label for="input-name-province" class="input-label">Tên địa điểm:</label>
                 <b-form-input
                     id="input-name-province"
-                    v-model="title"
+                    :value="recommended.recommendtitle"
+                    ref="bInputTitle"
+                    @input="title = $refs.bInputTitle.localValue"
                     placeholder=""
                 ></b-form-input>
                 <div class="mt-3">
-                    <label for="input-name-province" class="input-label">Ảnh đại diện cho địa điểm:</label>
-                    <v-file-input
-                        type='file'
-                        label="Tải ảnh từ máy tính bạn"
-                        accept="image/*"
-                        required
-                        @change="handleGetPicture"
-                    ></v-file-input>
+                    <h5>Ảnh hiện tại</h5>
+                    <img v-if="recommended.recommendpicture" class="img-preview" :src="getUrlPicture" alt="" width="400px" height="240px">
+                    <input type="file" accept="image/*" @change="handleGetPicture($event)" ref="inputFile" style="display: none"/>
+                    <div class="mt-3">
+                        <v-btn color="primary" class="p-4" width="18%" @click="handleCallRefs">
+                            <span class="input-label">Thay đổi</span>
+                        </v-btn>
+                        <v-btn v-if="picture.base64Url" @click="handleRemove" color="error" class="p-4 ml-2" width="18%">
+                            <span class="input-label" >Xóa chọn</span>
+                        </v-btn>
+                    </div>
                 </div>
-                <div v-if="picture.base64Url">
-                    <h6>Ảnh xem trước của địa điểm: {{title}}</h6>
-                    <img class="img-preview" :src="picture.base64Url" alt="" width="320px" height="240px">
-                </div>            
                 <div class="mt-3">
                     <label for="input-desc mt-3" class="input-label">Mô tả địa điểm:</label>
                     <b-form-textarea
+                        v-if="recommended.recommenddesc"
                         id="input-desc"
-                        v-model="desc"
                         rows="8"
                         placeholder=""
-                        trim
+                        :value="recommended.recommenddesc"
+                        ref="bInputDesc"
+                        @input="desc = $refs.bInputDesc.localValue"
                     ></b-form-textarea>
                 </div>
                 <div class="mt-3">
@@ -48,48 +54,55 @@
                     <label for="input-name-province" class="input-label">Địa chỉ địa điểm:</label>
                     <b-form-input
                         id="input-name-province"
-                        v-model="address"
+                        :value="recommended.recommendaddress"
+                        ref="bInputAddress"
                         placeholder=""
-                        trim
+                        @input="address = $refs.bInputAddress.localValue"
                     ></b-form-input>
                 </div>
-                <div class="mt-3">
-                    <label for="input-name-province" class="input-label">Các hình ảnh của địa điểm:</label>
-                    <v-file-input
-                        multiple
-                        label="Chọn các ảnh từ thiết bị của bạn"
-                        @change="handleGetRecommendImages"
-                        accept="image/*"
-                        required
-                    ></v-file-input>
+                <div class=" mt-3" v-if="listIMG">
+                    <label class="input-label">Hình ảnh về địa điểm:</label>
+                    <div>
+                        <b-carousel
+                            id="carousel-1"
+                            v-model="slide"
+                            :interval="4000"
+                            controls
+                            indicators
+                            img-width="854"
+                            img-height="480"
+                            style="text-shadow: 1px 1px 2px #333;"
+                            @sliding-start="onSlideStart"
+                            @sliding-end="onSlideEnd"
+                        >
+                        <b-carousel-slide v-for="(item, index) in listIMG" :key="index">  
+                            <template #img>
+                                <img
+                                    width="100%"
+                                    height="600"
+                                    :src="`${port_file}${item.reimagepath}`"
+                                    alt="image slot"
+                                >
+                            </template>
+                        </b-carousel-slide>
+                        </b-carousel>
+                    </div>
                 </div>
-                <div class="mt-3">
-                    <label for="input-name-province" class="input-label">Link video về địa điểm (nếu có)</label>
-                    <b-form-input
-                        id="input-name-province"
-                        v-model="linkVideo"
-                        placeholder=""
-                        trim
-                    ></b-form-input>
+                <div class="col-md-8 mt-3" v-if="recommended.recommendlinkvideo">
+                    <label for="input-name-province" class="input-label">Link video về địa điểm:</label>
+                    <video-embed :src="recommended.recommendlinkvideo"></video-embed>
                 </div>
-                <video-embed :src="linkVideo"></video-embed>
-                <div class="mt-3">
+                <div class="col-md-6 mt-3" v-if="recommended.recommendmap">
                     <label for="input-name-province" class="input-label">Link bản đồ về địa điểm</label>
-                    <b-form-input
-                        id="input-name-province"
-                        v-model="linkMap"
-                        placeholder=""
-                        trim
-                    ></b-form-input>
-                </div>
-                <div v-html="linkMap">  
+                    <div class="text-center" v-html="recommended.recommendmap">  
+                    </div>
                 </div>
                 <div class="center mt-3 mb-5">
                     <v-btn color="success" type="submit" class="p-4" width="18%">
-                        <span class="input-label">Thêm</span>
+                        <span class="input-label">Duyệt</span>
                     </v-btn>
                     <v-btn color="error" class="p-4 ml-2" width="18%" @click="handleCancel">
-                        <span class="input-label" >Trở về</span>
+                        <span class="input-label" >Xóa</span>
                     </v-btn>
                 </div>
             </div>
@@ -98,12 +111,14 @@
 </template>
 
 <script>
-import {mapActions, mapState, mapMutations} from 'vuex'
-import { v4 as uuidv4 } from 'uuid';
+import port_file from '../../port_file'
+import {mapActions, mapMutations, mapState} from 'vuex'
 export default {
-    name: "recommended",
+    name: "approval-recomended-TA",
     data: () => ({
-        id: uuidv4(),
+        slide: 0,
+        sliding: null,
+        id: 0,
         title:'',
         desc:'',
         address: '',
@@ -113,7 +128,8 @@ export default {
             objectFile: null,
             base64Url: '',
         },
-        images:[],
+        listIMG:[],
+        port_file,
         selected: '',
         listProvince: [
           { provinceid: 'A', provincetitle: 'Option A' },
@@ -121,24 +137,48 @@ export default {
         ],
     }),
     computed: {
-    
+        ...mapState({
+            recommended: state=> state.recommended.recommended
+        }),
+        getUrlPicture(){
+            if(this.picture.base64Url){
+                return this.picture.base64Url
+            }
+            else{
+                return this.port_file + this.recommended.recommendpicture
+            }
+        }
     },
     created(){
         this.getProvince().then(response=>{
             if(response.ok){
                 this.listProvince= response.data
-                if(this.listProvince.length){
-                    this.selected=this.listProvince[0].provinceid
-                }
+            }
+        });
+        this.id= this.$route.params.id
+        this.getRecommendedById(this.id).then(response=>{
+            if(response.ok){
+                this.selected= response.data.provinceid
+            }
+        });
+        this.getIMGRecommendedById(this.id).then(response=>{
+            if(response.ok){
+                this.listIMG= response.data
             }
         });
     },
     methods:{
-        ...mapActions(['getProvince', 'addTA']),
+        ...mapActions(['getProvince', 'approvalTA', 'getRecommendedById', 'getIMGRecommendedById']),
         ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
         handleCancel(){
             this.$router.push({name: 'supporter'})
         },
+        onSlideStart(slide) {
+        this.sliding = true
+        },
+        onSlideEnd(slide) {
+            this.sliding = false
+        },  
         handleGetPicture(file){
             if(file){
                 this.picture.objectFile = file
@@ -167,22 +207,25 @@ export default {
             }, 1200);
         },
         handleSubmit(){
+            this.title = this.title ? this.title : this.recommended.recommendtitle;
+            this.desc = this.desc ? this.desc : this.recommended.recommenddesc;
+            this.address = this.address ? this.address : this.recommended.recommendaddress;
             if(this.title){
                 if(this.desc){
-                    if(this.images){
-                        if(this.linkMap){
+                    if(this.address){
                             var value={
                                 tourId: this.id,
                                 tourTitle: this.title,              
                                 tourPicture: this.picture.objectFile,
+                                urlCurrentPicture: this.recommended.recommendpicture,
                                 tourDesc: this.desc,
                                 tourAddress: this.address,
-                                tourImages: this.images,
-                                tourLinkVideo: this.linkVideo,
-                                tourLinkMap: this.linkMap,
+                                tourImages: this.listIMG,
+                                tourLinkVideo: this.recommended.recommendlinkvideo,
+                                tourLinkMap: this.recommended.recommendmap,
                                 provinceId: this.selected,
                             }
-                            this.addTA(value)
+                            this.approvalTA(value)
                             .then(response=>{
                                 if(response.ok){
                                     let value = {
@@ -199,7 +242,7 @@ export default {
                                             this.title = '',              
                                             this.picture.objectFile = null,
                                             this.desc = '',
-                                            this.txtAddress  = '',
+                                            this.address  = '',
                                             this.images  = [],
                                             this.linkVideo= '',
                                             this.linkMap  = '',
@@ -223,11 +266,9 @@ export default {
                                     }, 1000);
                                 }
                             })
-                        }else{
-                            this.callFormError("Cần thêm đường dẫn Google Map địa điểm");
-                        }
+                        
                     }else{
-                        this.callFormError("Cần thêm hình ảnh địa điểm");
+                        this.callFormError("Cần địa chỉ địa điểm");
                     }
                 }
                 else{
@@ -236,6 +277,27 @@ export default {
             }else{
                 this.callFormError("Cần nhập tên địa điểm");
             }
+        },
+        handleGetPicture(e){
+            var file = e.target.files[0]
+            console.log(file)
+            if(file){
+                this.picture.objectFile = file
+                const reader = new FileReader();
+                reader.addEventListener("load", ()=>{
+                    this.picture.base64Url = reader.result;
+                }, false);
+                if(file) {
+                    reader.readAsDataURL(file);
+                }
+            }
+        },
+        handleCallRefs(){
+            this.$refs.inputFile.click();
+        },
+        handleRemove(){
+            this.picture.objectFile= null;
+            this.picture.base64Url= ''
         }
     }
 }
@@ -260,3 +322,5 @@ export default {
         border: 1px solid black
     }
 </style>
+
+

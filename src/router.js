@@ -8,21 +8,25 @@ import LoginSupporter from './pages/supporter/LoginSupporter'
 import Supporter from './pages/supporter/Supporter'
 import CategoryTA from './pages/supporter/CategoryTA'
 import AddTouristAttraction from './pages/supporter/AddTouristAttraction'
-import CategoryReTA from './pages/supporter/CategoryReTA'
-import CategoryUpdateTA from './pages/supporter/CategoryUpdateTA'
-import ApprovalRecommendedTA from './pages/supporter/ApprovalRecomendedTA.vue'
+import CategoryRecommended from './pages/supporter/CategoryRecommended'
+import ApprovalRecommended from './pages/supporter/ApprovalRecomended.vue'
+import UpdateTA from './pages/supporter/UpdateTA.vue'
+import SupporterChangePassword from './pages/supporter/SupporterChangePassword'
+
 //page admin
 import LoginAdmin from './pages/admin/LoginAdmin'
 import Admin from './pages/admin/Admin'
 import CategorySupporter from './pages/admin/CategorySupporter'
 import CategoryProvince from './pages/admin/CategoryProvince.vue'
-import CategoryMember from './pages/admin/CategoryMember.vue'
 import AddProvince from './pages/admin/AddProvince.vue'
 import UpdateProvince from './pages/admin/UpdateProvince.vue'
 import AddSupporter from './pages/admin/AddSupporter'
 import UpdateSupporter from './pages/admin/UpdateSupporter'
 import AdminChangePassword from './pages/admin/AdminChangePassword.vue'
 import UpdateAdmin from './pages/admin/UpdateAdmin'
+import AdminStatistic from './pages/admin/AdminStatistic'
+import StatisticPlace from './pages/admin/StatisticPlace'
+import StatisticView from './pages/admin/StatisticView'
 //page user
 import DetailToutistAtraction from './pages/user/DetailToutistAtraction'
 import UserIndex from'./pages/user/UserIndex'
@@ -84,14 +88,24 @@ const routes = [
                 component: AddTouristAttraction,
             },
             {
-                path: 'categoryReTA',
-                name: 'categoryReTA',
-                component: CategoryReTA,
+                path: 'categoryRecommended',
+                name: 'categoryRecommended',
+                component: CategoryRecommended,
             },
             {
-                path: 'categoryReTA/edit/:id',
-                name: 'editReTA',
-                component: ApprovalRecommendedTA,
+                path: 'categoryRecommended/edit/:id',
+                name: 'approvalRecommended',
+                component: ApprovalRecommended,
+            },
+            {
+                path: 'categoryTA/update/:id',
+                name: 'updateTA',
+                component: UpdateTA,
+            },
+            {
+                path: 'changePassword',
+                name: 'supporterChangePassword',
+                component: SupporterChangePassword,
             },
         ]
     },
@@ -139,10 +153,23 @@ const routes = [
                 component: UpdateSupporter,
             },
             {
-                path: 'categoryMember',
-                name: 'categoryMember',
-                component: CategoryMember,
+                path: 'categoryStatistic',
+                name: 'categoryStatistic',
+                component: AdminStatistic,
+                children: [
+                    {
+                        path: '',
+                        name: 'statisticPlace',
+                        component: StatisticPlace,
+                    },
+                    {
+                        path: 'statisticView',
+                        name: 'statisticView',
+                        component: StatisticView,
+                    }
+                ]
             },
+            
             {
                 path: 'changePassword',
                 name: 'adminChangePassword',

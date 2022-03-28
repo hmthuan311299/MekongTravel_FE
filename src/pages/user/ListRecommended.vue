@@ -7,13 +7,14 @@
         </ul>
         <div class="listRecommended">
             <template v-if="listData.length">
-                <div class="supporter-list-content">
+                <div class="supporter-list-content" v-for="item in listData" :key="item.recommendid">
                     <div class="supporter-list-content-item" style="width: 45%">
                         <div class="supporter-list-item supporter-list-item-avatar"><i class="fa-solid fa-map-location-dot"></i></div>
-                        <div class="supporter-list-item supporter-list-item-name">Bến Ninh Kiều</div>
+                        <div class="supporter-list-item supporter-list-item-name">{{item.recommendtitle}}</div>
                     </div>
-                    <div class="supporter-list-item supporter-list-item-name"> <span class="span-fs">Cần Thơ</span></div>
-                    <div class="supporter-list-item supporter-list-item-name"> <span class="span-fs-status">Đang xem xét</span></div>
+                    <div class="supporter-list-item supporter-list-item-name"> <span class="span-fs">{{item.provincetitle}}</span></div>
+                    <div v-if="$route.name == 'approvedList'" class="supporter-list-item supporter-list-item-name"> <span class="span-fs-status-approvedList">{{item.status}}</span></div>
+                    <div v-else class="supporter-list-item supporter-list-item-name"> <span class="span-fs-status-unapprovedList">{{item.status}}</span></div>
                     <div class="supporter-list-content-item">
                         <!-- <router-link tag="div" class="supporter-list-item supporter-list-item-update" :to="{name: 'updateProvince'}">
                             <i class="fa-solid fa-pen-to-square"></i>
@@ -37,7 +38,7 @@ export default {
     name: 'list-Recommended',
     data(){
         return{
-            listData: []
+            listData: [],
         }
     },
     computed:{
@@ -48,6 +49,25 @@ export default {
     methods:{
         ...mapActions(['getApprovedListByMemberId', 'getUnapprovedListByMemberId'])
     },
+    watch:{
+		$route (to, from){
+            
+            if(to.name == 'unapprovedList'){
+                this.getUnapprovedListByMemberId(this.memberId).then(response=>{
+                    if(response.ok){
+                        this.listData = response.data
+                    }
+                });
+            }
+            if(to.name == 'approvedList'){
+                this.getApprovedListByMemberId(this.memberId).then(response=>{
+                    if(response.ok){
+                        this.listData = response.data
+                    }
+                });
+            }
+		}
+	},
     created(){
         // console.log("sss")
         var getToken = localStorage.getItem(setToken) || null;
@@ -78,9 +98,18 @@ export default {
 </script>
 
 <style scoped>
-    .span-fs-status{
+    .span-fs-status-unapprovedList{
         font-size: 2vmin;
-        background: rgb(247, 231, 18)
+        background: rgb(255, 196, 0);
+        padding: 3px;
+        border-radius: 5px;
+    }
+    .span-fs-status-approvedList{
+        font-size: 2vmin;
+        background: rgb(0, 255, 42);
+        padding: 3px;
+        border-radius: 5px;
+        color:rgb(51, 51, 51)
     }
     .supporter-list-content{
     background: white;

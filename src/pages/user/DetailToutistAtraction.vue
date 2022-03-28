@@ -2,11 +2,11 @@
     <div class="container user-page-detailTA mt-2" v-if="detailTA">
         <h1 >{{detailTA.tourtitle}}</h1>
         <p class="card-text">Xếp hạng
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star"></span>
+            <span class="fa fa-star"></span>
         </p>
         <h4>Giới thiệu về {{detailTA.tourtitle}}</h4>
         <div class="user-introProvince" >
@@ -45,17 +45,16 @@
                 </b-carousel>
             </div>
             </div>
-            <div class="row mt-3">
-                <div class="col-md-6 user-detailTA-video">
-                    <h4>Video giới thiệu về {{detailTA.tourtitle}}</h4>
-                    <div v-html="detailTA.tourlinkvideo">
-                    </div>
-                    <div id="player"></div>
-                </div>
-                <div class="col-md-7 user-detailTA-map">
-                    <h4>Ví trí {{detailTA.tourtitle}} trên Google Map</h4>
-                    <div v-html="detailTA.tourmap">
-                    </div>
+            <div class="user-detailTA-video">
+                <h4>Video giới thiệu về {{detailTA.tourtitle}}</h4>
+                <!-- <div v-html="detailTA.tourlinkvideo">
+                </div> -->
+                <video-embed :src="detailTA.tourlinkvideo"></video-embed>
+                
+            </div>
+            <div class="user-detailTA-map">
+                <h4>Ví trí {{detailTA.tourtitle}} trên Google Map</h4>
+                <div v-html="detailTA.tourmap">
                 </div>
             </div>
             <h4 class="text-center my-5">Đánh giá của khách du lịch khi đến {{detailTA.tourtitle}}: 3.0 <span class="fa fa-star checked"></span></h4>
@@ -184,8 +183,7 @@
         <div class="feature-DetailTA">
             <button type="button" @click="handleSave" v-if="!checkSaveTA" class="btn btn-info">Lưu lại địa điểm</button>
             <button type="button" @click="handleDeleteSave" v-if="checkSaveTA" class="btn btn-info">Xóa khỏi quan tâm</button>
-            <button type="button" class="btn btn-info mt-2">Chia sẻ địa điểm</button>
-            <iframe :src="`https://www.facebook.com/plugins/share_button.php?href=http://10.10.49.10:8080/province/can-tho/listAllTouristAttraction/detailTouristAttraction/benninhkieu&layout=button_count&size=small&width=92&height=20&appId`" width="92" height="20" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+            <!-- <button type="button" class="btn btn-info mt-2">Chia sẻ địa điểm</button> -->
             <!-- <a href="https://www.facebook.com/sharer/sharer.php?u=https://ct594-fontend.vercel.app/" target="_blank">
                 Share on Facebook
             </a> -->
@@ -193,7 +191,6 @@
         <div id="fb-root"></div>
     </div>
 </template>
-
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v13.0" nonce="BdosC9vy"></script>
 <script>
 import port_file from '../../port_file'
@@ -240,7 +237,7 @@ export default {
         ...mapActions(['getTAById','getimageTA' ,'getEvaluate',
                         'getComment', 'addComment','addEvaluate',
                         'checkEvaluate', 'addSaveTA','checkSaveTouristAttraction',
-                        'deleteSaveTA'
+                        'deleteSaveTA', 'countView'
         ]),
         onSlideStart(slide) {
         this.sliding = true
@@ -345,7 +342,7 @@ export default {
         },
         handleSave(){
             var d = new Date();
-                var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
+            var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
                 d.getHours() + ":" + d.getMinutes();
             var value = { 
                 memberId: this.currentMember.memberid,
@@ -464,6 +461,10 @@ export default {
                 this.listComment = response.data
             }
         })
+        var d = new Date();
+        var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
+            d.getHours() + ":" + d.getMinutes();
+        this.countView({tourId, createAt: datestring})
     }
 }
 </script>

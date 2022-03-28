@@ -8,7 +8,6 @@
                     id="input-name-province"
                     v-model="txtRecommendTitle"
                     placeholder=""
-                    trim
                 ></b-form-input>
                 <div class="mt-3">
                     <label for="input-name-province" class="input-label">Ảnh đại diện cho địa điểm:</label>
@@ -73,8 +72,7 @@
                         trim
                     ></b-form-input>
                 </div>
-                <div v-html="txtRecommendLinkVideo">  
-                </div>
+                <video-embed :src="txtRecommendLinkVideo"></video-embed>
                 <div class="mt-3">
                     <label for="input-name-province" class="input-label">Link bản đồ về địa điểm</label>
                     <b-form-input
@@ -127,16 +125,16 @@ export default {
             memberId: state=>state.member.currentMember.memberid
         }),
     },
-    // created(){
-    //     this.getProvince().then(response=>{
-    //         if(response.ok){
-    //             this.listProvince= response.data
-    //             if(this.listProvince.length){
-    //                 this.selected=this.listProvince[0].provinceid
-    //             }
-    //         }
-    //     });
-    // },
+    created(){
+        this.getProvince().then(response=>{
+            if(response.ok){
+                this.listProvince= response.data
+                if(this.listProvince.length){
+                    this.selected=this.listProvince[0].provinceid
+                }
+            }
+        });
+    },
     methods:{
         ...mapActions(['getProvince', 'addRecommended']),
         ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),

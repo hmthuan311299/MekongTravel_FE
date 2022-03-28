@@ -21,12 +21,8 @@ export default {
     },
     methods:{
         handleGetValueSearch(){
-            if(!this.valueSearch){
-                alert("Vui lòng nhập từ khóa để tìm kiếm")
-            }
-            else {
-                this.$emit("getValueSearch", this.valueSearch)
-            }
+           
+            this.$emit("getValueSearch", this.valueSearch)
         }
     }
 }

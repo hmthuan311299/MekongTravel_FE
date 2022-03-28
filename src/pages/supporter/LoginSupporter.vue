@@ -8,7 +8,7 @@
                 <h1 class="pageLoginTech-Title">
                     <i class="fa-solid fa-users"></i> Đăng nhập
                 </h1>
-                <v-form class="pageLogin-form" ref="form" v-model="valid" lazy-validation>
+                <v-form class="pageLogin-form" ref="form" v-model="valid" lazy-validation @submit.prevent="handleLogin"> 
                     <v-text-field
                         v-model="email"
                         :rules="emailRules"
@@ -22,7 +22,7 @@
                         required
                     ></v-text-field>
                     <div class="center" style="margin-top: 10px">
-                        <v-btn color="blue" class="mr-4" @click="validate" width="100%">
+                        <v-btn type="submit" color="blue" class="mr-4" @click="validate" width="100%">
                             <span class="label__btn--login">Đăng nhập</span>
                         </v-btn>
                     </div>
@@ -36,7 +36,8 @@
 </template>
 
 <script>
-export default {
+import {mapActions, mapMutations} from 'vuex'
+export default { 
     name: "comp-login-supporter",
     data: () => ({
       valid: false,
@@ -49,10 +50,62 @@ export default {
       ],
     }),
 
-    methods: {
-      validate () {
-        this.$refs.form.validate()
-      },
+    methods:{
+		...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
+		...mapActions(['loginSupporter']),
+		validate() {
+			this.$refs.form.validate()
+		},
+		handleLogin(){
+			if(!this.valid){
+				let value ={
+					display: true,
+					message: "Dữ liệu nhập vào chưa đúng"
+				}
+				this.setLoadingError(value)
+				setTimeout(()=>{
+						this.commentContent='';
+						this.setLoadingError({display: false})
+				}, 1500);
+			}else{
+				this.loginSupporter({
+					suppEmail: this.email, 
+					suppPass: this.pass
+				}).then(response=>{
+					if(response.ok){
+						let value ={
+							display: true,
+							message: response.message
+						}
+						this.setPageLoading(true)
+						setTimeout(()=>{
+							this.setPageLoading(false)
+							this.setLoadingSuccess(value)
+							setTimeout(()=>{
+								this.commentContent='';
+								this.setLoadingSuccess({display: false})
+								this.$router.push({name:"supporter"})
+							}, 1500);
+						}, 1000);
+					}
+					else{
+						let value ={
+							display: true,
+							message: response.message
+						}
+						this.setPageLoading(true)
+						setTimeout(()=>{
+							this.setPageLoading(false)
+							this.setLoadingError(value)
+							setTimeout(()=>{
+								this.commentContent='';
+								this.setLoadingError({display: false})
+							}, 1500);
+						}, 1000);
+					}
+				})
+			}
+		}
     },
 }
 

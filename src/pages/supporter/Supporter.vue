@@ -2,7 +2,7 @@
     <b-container fluid class="supporter-form-container">
         <div class="row">
             <div class="col-12 col-md-3">
-                <div style="position: sticky; top: 0;">
+                <div class="sticky">
                     <div class="supporter-sidebar_avatar"> 
                     <div class="supporter-sidebar_logo supporter-sidebar_avatar-item"><i class="fa-solid fa-user supporter-sidebar_fs-icon"></i></div>
                     <div class="supporter-sidebar_avatar-item">
@@ -12,53 +12,91 @@
                     </div>
                     <b-list-group>
                         <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveTA }" tag="b-list-group-item" :to="{name:'supporter'}">Danh mục địa điểm</router-link>
-                        <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveReTA }" tag="b-list-group-item" :to="{name:'categoryReTA'}">Danh mục đề xuất địa điểm mới</router-link>
+                        <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveReTA }" tag="b-list-group-item" :to="{name:'categoryRecommended'}">Duyệt đề xuất địa điểm mới <span v-if="ListTA && ListTA.length" class="noti-recommended">{{ListTA.length}}</span></router-link>
+                        <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveCategoryMember }" tag="b-list-group-item" :to="{name:'supporter'}">Danh mục thành viên</router-link>
+                        <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveChangePass}" tag="b-list-group-item" :to="{name:'supporterChangePassword'}">Đổi mật khẩu</router-link>
+                        <b-list-group-item class="b-list-group-item supporter-sidebar_fs" exactActiveClass="active" @click="handleLogout">Đăng xuất</b-list-group-item>
                     </b-list-group>
                </div>
             </div>
             <div class="col-12 col-md-9 supporter-content-tab">
                 <router-view></router-view>
             </div>
-            <IconAdd v-if="getActiveTA" :pathName="getUrlIconAddByPath"/>
+            <IconAdd v-if="showIconAdd" :pathName="getUrlIconAddByPath"/>
+            <FormYesNo :isDisplayYesNoForm="isDisplayYesNoForm" v-on:handleConfirm="handleConfirm"/>
         </div>
     </b-container>
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 //import component
+import FormYesNo from '../../components/FormYesNo.vue'
 import IconAdd from '../../components/IconAdd.vue'
 import SearchBar from '../../components/SearchBar.vue'
 //import Page
-import ApprovalRecommendedTA from './ApprovalRecomendedTA.vue'
+import ApprovalRecommended from './ApprovalRecomended.vue'
 import CategoryTA from './CategoryTA.vue'
 import AddTouristAttraction from './AddTouristAttraction.vue'
-import CategoryReTA from './CategoryReTA.vue'
-import CategoryUpdateTA from './CategoryUpdateTA.vue'
+import CategoryRecommended from './CategoryRecommended.vue'
+import SupporterChangePassword from './SupporterChangePassword.vue'
+import UpdateTA from './UpdateTA.vue'
 export default {
     name: 'supporter',
     data(){
         return {
             search: '',
             activeRouterTA : ['supporter', 'categoryTA', 'addTouristAttraction', 'updateTA'],
-            activeRouterReTA: ['categoryReTA', 'updateReTA'],
+            activeRouterReTA: ['categoryRecommended', 'updateRecommended'],
             urlAddTA: '/supporter/categoryTA/add',
-            // urlAddReTA: 'supporter/categoryReTA/edit/:id'
+            activeRouterChangePass: ['supporterChangePassword'],
+            activeCategoryMember: ['categoryMember'],
+            // urlAddReTA: 'supporter/categoryReTA/edit/:id',
+            isDisplayYesNoForm:{
+				display: false,
+				titleForm: 'Form xác nhận',
+				answer: ''
+			},
+            ListTA: [],
         }
     },
     components:{
-        SearchBar, CategoryTA, CategoryReTA, CategoryUpdateTA, ApprovalRecommendedTA
-        ,IconAdd, AddTouristAttraction
+        SearchBar, CategoryTA, CategoryRecommended, ApprovalRecommended
+        ,IconAdd, AddTouristAttraction, SupporterChangePassword, FormYesNo,
+        UpdateTA
     },
     methods:{
+        ...mapActions(['getListReTA']),
         getValueSearch(value){
             console.log("search", value);
             this.search = value
             if(!this.search){
                 alert("vui long nhap lai")
             }
-        }
+        },
+        handleLogout(){
+				this.isDisplayYesNoForm.display = true;
+				this.isDisplayYesNoForm.titleForm= "Xác nhận đăng xuất";
+		},
+        handleConfirm(value){
+			if(value == 'yes'){
+				this.isDisplayYesNoForm.titleForm= "";
+				this.answer=""
+				this.$router.push({name:'supporterLogin'})
+			}
+			else{
+				this.isDisplayYesNoForm.display = false;
+				this.isDisplayYesNoForm.titleForm= "";
+				this.answer=""
+			}
+		}
     },
     computed:{
+        showIconAdd(){
+            var name = this.$route.name;
+            if(name == 'categoryTA' || name == 'supporter' ) return true;
+            else false
+        },
         getUrlIconAddByPath(){
             var path = this.$route.name;
             if(path == 'supporter' || path == 'categoryTA' ) return this.urlAddTA;
@@ -71,19 +109,35 @@ export default {
             var result = (this.activeRouterReTA.indexOf(this.$route.name) > -1)
             return Boolean(result);
         },
-        getActiveUpdateTA(){
-           var result = (this.activeRouterUpdateTA.indexOf(this.$route.name) > -1)
+        getActiveCategoryMember(){
+           var result = (this.activeCategoryMember.indexOf(this.$route.name) > -1)
             return Boolean(result);
         },
         getUrlIconAddByPath(){
             if(this.$route.name == 'supporter' || 'categoryTA'){
                 return this.urlAddTA;
             }
-        }
+        },
+        getActiveChangePass(){
+            var result = (this.activeRouterChangePass.indexOf(this.$route.name) > -1)
+            return Boolean(result);
+        },
+    },
+    created(){
+        this.getListReTA().then(response=>{
+            if(response.ok){
+                this.ListTA = response.data
+            }
+        })
     }
 }
 </script>
 <style>
+.noti-recommended{
+    background-color: rgb(255, 107, 8);
+    padding: 2px 5px;
+    border-radius: 5px
+}
 .supporter-form-container{
     min-height: 100vh;
     background: url('../../assets/admin-img/background-admin-1.jpg');

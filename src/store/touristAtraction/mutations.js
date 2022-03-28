@@ -25,9 +25,11 @@ export default {
     set_checkEvaluate(state, value){
         console.log(value)
         state.checkEvaluate  = value
-    }
-    // set_addEvaluate(state, value){
-    //     console.log(value)
-    //     state.listEvaluate.unshift(value)
-    // }
+    },
+    set_currentTA(state, value){
+        state.currentTA = value
+    },
+    set_currentImageTA(state, value){
+        state.currentImageTA = value
+    },
 }

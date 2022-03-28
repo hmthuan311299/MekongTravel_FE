@@ -1,8 +1,9 @@
 <template>
     <b-container fluid class="admin-form-container">
         <div class="row">
-            <div class="col-12 col-md-3">
-                <div class="admin-sidebar_avatar"> 
+            <div class="col-12 col-md-3 sticky" >
+                <div class="sticky">
+                    <div class="admin-sidebar_avatar"> 
                     <div class="admin-sidebar_logo admin-sidebar_avatar-item"><i class="fa-solid fa-user admin-sidebar_fs-icon"></i></div>
                     <div class="admin-sidebar_avatar-item">
                         <div class="admin-sidebar_avatar-title">Xin chào Admin</div>
@@ -12,10 +13,11 @@
                 <b-list-group>
                     <router-link class="b-list-group-item admin-sidebar_fs" :class="{ 'active': getActiveProvince }" tag="b-list-group-item" :to="{name:'admin'}">Danh mục tỉnh thành</router-link>
                     <router-link class="b-list-group-item admin-sidebar_fs" :class="{ 'active': getActiveSupporter }" tag="b-list-group-item" :to="{name:'categorySupporter'}">Danh mục hỗ trợ viên</router-link>
-                    <router-link class="b-list-group-item admin-sidebar_fs" :class="{ 'active': getActiveMember }" tag="b-list-group-item" :to="{name:'categoryMember'}">Danh mục thành viên</router-link>
+                    <router-link class="b-list-group-item admin-sidebar_fs" :class="{ 'active': getActiveStatistic }" tag="b-list-group-item" :to="{name:'statisticPlace'}">Thống kê</router-link>
                     <router-link class="b-list-group-item admin-sidebar_fs" :class="{ 'active': getActiveChangePass}" tag="b-list-group-item" :to="{name:'adminChangePassword'}">Đổi mật khẩu</router-link>
                     <b-list-group-item class="b-list-group-item admin-sidebar_fs" exactActiveClass="active" @click="handleLogout">Đăng xuất</b-list-group-item>
                 </b-list-group>
+                </div>
             </div>
             <div class="col-12 col-md-9 admin-content-tab">
                 <router-view></router-view>
@@ -36,6 +38,7 @@ import IconAdd from '../../components/IconAdd.vue'
 import UpdateProvince from '../../pages/admin/UpdateProvince.vue'
 import AdminChangePassword from './AdminChangePassword.vue'
 import UpdateAdmin from './UpdateAdmin.vue'
+import AdminStatistic from './AdminStatistic'
 import {mapActions, mapState, mapMutations} from 'vuex'
 export default {
     name: 'admin',
@@ -43,11 +46,10 @@ export default {
        return{
             activeRouterProvince : ['admin', 'categoryProvince', 'addProvince', 'updateProvince'],
             activeRouterSupporter: ['categorySupporter', 'addSupporter', 'updateSupporter'],
-            activeRouterMember: ['categoryMember'],
+            activeRouterStatistic: ['statisticPlace', 'statisticView'],
             activeRouterChangePass: ['adminChangePassword'],
             urlAddProvice: '/admin/categoryProvince/addProvince',
             urlAddSupporter: '/admin/categorySupporter/addSupporter',
-            urlUpdateMember: '/admin/categoryMember/updateMember',
             isDisplayYesNoForm:{
 				display: false,
 				titleForm: 'Form xác nhận',
@@ -58,7 +60,7 @@ export default {
     components:{
         CategoryProvince, AddProvince, IconAdd, UpdateProvince,
         AddSupporter, UpdateSupporter, CategorySupporter, AdminChangePassword,
-        FormYesNo, UpdateAdmin
+        FormYesNo, UpdateAdmin, AdminStatistic
     },
     computed:{
         ...mapState({
@@ -68,7 +70,6 @@ export default {
             var path = this.$route.name;
             if(path == 'admin' || path == 'categoryProvince' ) return this.urlAddProvice;
             if(path == 'categorySupporter' ) return this.urlAddSupporter;
-            if(path == 'categoryMember' ) return this.urlUpdateMember;
         },
         getActiveProvince(){
             var result = (this.activeRouterProvince.indexOf(this.$route.name) > -1)
@@ -78,8 +79,8 @@ export default {
             var result = (this.activeRouterSupporter.indexOf(this.$route.name) > -1)
             return Boolean(result);
         },
-        getActiveMember(){
-           var result = (this.activeRouterMember.indexOf(this.$route.name) > -1)
+        getActiveStatistic(){
+           var result = (this.activeRouterStatistic.indexOf(this.$route.name) > -1)
             return Boolean(result);
         },
         getActiveChangePass(){

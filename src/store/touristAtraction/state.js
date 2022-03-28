@@ -1,10 +1,11 @@
 export default {
+    currentTA: '',
+    currentImageTA: '',
     listProvince: '',
     province: '',
     listTouristAttraction:'',
     historyTA: {},
-    currentTA: '',
-    ImgTA: '',
+    
     listComment:[],
     listEvaluate:[],
     checkEvaluate:''
