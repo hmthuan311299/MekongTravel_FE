@@ -56,16 +56,15 @@
                         @input="address = $refs.bInputAddress.localValue"
                     ></b-form-input>
                 </div>
-                <!-- <div class="mt-3">
+                <div class="mt-3">
                     <label for="input-name-province" class="input-label">Các hình ảnh của địa điểm:</label>
                     <v-file-input
                         multiple
                         label="Chọn các ảnh từ thiết bị của bạn"
-                        @change="handleGetRecommendImages"
+                        @change="handleGetImages"
                         accept="image/*"
-                        required
                     ></v-file-input>
-                </div> -->
+                </div>
                 <div class="mt-3 display-flex flex-wap" v-if="currentImageTA">
                     <div class="display-flex flexDirection-column  m-2  " v-for="item in currentImageTA" :key="item.imageid">
                         <img :src="`${port_file}${item.imagepath}`" width="200px" height="120px" alt="">
@@ -100,23 +99,23 @@
                 <div v-html="linkMap">  
                 </div>
                 <div class="center mt-3 mb-5">
-                    <v-btn color="success" type="submit" class="p-4" width="18%">
-                        <span class="input-label">Thêm</span>
-                    </v-btn>
-                    <v-btn color="error" class="p-4 ml-2" width="18%" @click="handleCancel">
-                        <span class="input-label" >Trở về</span>
-                    </v-btn>
+                    <button-success title="Cập nhật"/>
+                    <button-error title="Trở về" routeName="supporter"/>
                 </div>
             </div>
         </form>
     </div>
 </template>
-
 <script>
+import ButtonError from '../../components/ButtonError.vue'
+import ButtonSuccess from '../../components/ButtonSuccess.vue'
 import port_file from '../../port_file'
 import {mapActions, mapState, mapMutations} from 'vuex'
 import { v4 as uuidv4 } from 'uuid';
 export default {
+    components:{
+        ButtonSuccess, ButtonError
+    },
     name: "update-TA",
     data: () => ({
         id: uuidv4(),
@@ -135,7 +134,8 @@ export default {
           { provinceid: 'A', provincetitle: 'Option A' },
           { provinceid: 'B', provincetitle: 'Option B' },
         ],
-        port_file
+        port_file,
+        listIdDelete: []
     }),
     computed: {
         ...mapState({
@@ -166,12 +166,10 @@ export default {
         this.getimageTA(this.id);
     },
     methods:{
-        ...mapActions(['getProvince', 'getTAById', 'getimageTA', 'deleteImage']),
-        ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
-        handleCancel(){
-            this.$router.push({name: 'supporter'})
-        },
-        handleGetRecommendImages(files){
+        ...mapActions(['getProvince', 'getTAById', 'getimageTA', 'deleteImage', 'updateTA']),
+        ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading', 'set_currentImageTA']),
+        
+        handleGetImages(files){
             if(files){
                 this.images = files;
             }
@@ -187,62 +185,74 @@ export default {
             }, 1200);
         },
         handleSubmit(){
+            this.title = this.title ? this.title : this.currentTA.tourtitle;
+            this.desc = this.desc ? this.desc : this.currentTA.tourdesc;
+            this.address = this.address ? this.address : this.currentTA.touraddress;
+            this.linkMap = this.linkMap ? this.linkMap : this.currentTA.tourmap
+            this.linkVideo = this.linkVideo ? this.linkVideo : this.currentTA.tourlinkvideo
             if(this.title){
                 if(this.desc){
                     if(this.images){
                         if(this.linkMap){
-                            var value={
-                                tourId: this.id,
-                                tourTitle: this.title,              
-                                tourPicture: this.picture.objectFile,
-                                tourDesc: this.desc,
-                                tourAddress: this.address,
-                                tourImages: this.images,
-                                tourLinkVideo: this.linkVideo,
-                                tourLinkMap: this.linkMap,
-                                provinceId: this.selected,
-                            }
-                            this.addTA(value)
-                            .then(response=>{
-                                if(response.ok){
-                                    let value = {
-                                        display: true,
-                                        message: response.message
-                                    }
-                                    this.setPageLoading(true)
-                                    setTimeout(()=>{
-                                        this.setPageLoading(false)
-                                        this.setLoadingSuccess(value)
-                                        setTimeout(()=>{
-                                            this.setLoadingSuccess({display: false});
-                                            this.id = '',
-                                            this.title = '',              
-                                            this.picture.objectFile = null,
-                                            this.desc = '',
-                                            this.txtAddress  = '',
-                                            this.images  = [],
-                                            this.linkVideo= '',
-                                            this.linkMap  = '',
-                                            this.picture.base64Url=''
-                                            this.$router.push({name:'categoryTA'})
-                                        }, 1000);
-                                    }, 1000);
-                                }else{
-                                    let value ={
-                                        display: true,
-                                        message: response.message
-                                    }
-                                    this.setPageLoading(true)
-                                    setTimeout(()=>{
-                                        this.setPageLoading(false)
-                                        this.setLoadingError(value)
-                                        setTimeout(()=>{
-                                            this.commentContent='';
-                                            this.setLoadingError({display: false})
-                                        }, 1500);
-                                    }, 1000);
+                            if(this.images.length || this.currentImageTA.length){
+                                var value={
+                                    tourId: this.id,
+                                    tourTitle: this.title,              
+                                    tourPicture: this.picture.objectFile,
+                                    urlCurrentPicture: this.currentTA.tourpicture,
+                                    tourDesc: this.desc,
+                                    tourAddress: this.address,
+                                    tourImages: this.images,
+                                    tourLinkVideo: this.linkVideo,
+                                    tourLinkMap: this.linkMap,
+                                    provinceId: this.selected,
                                 }
-                            })
+                                this.updateTA(value).then(response=>{
+                                    if(response.ok){
+                                        if(this.listIdDelete.length){
+                                            this.deleteImage(this.listIdDelete)
+                                        }
+                                        let value = {
+                                            display: true,
+                                            message: response.message
+                                        }
+                                        this.setPageLoading(true)
+                                        setTimeout(()=>{
+                                            this.setPageLoading(false)
+                                            this.setLoadingSuccess(value)
+                                            setTimeout(()=>{
+                                                this.setLoadingSuccess({display: false});
+                                                this.id = '',
+                                                this.title = '',              
+                                                this.picture.objectFile = null,
+                                                this.desc = '',
+                                                this.txtAddress  = '',
+                                                this.images  = [],
+                                                this.linkVideo= '',
+                                                this.linkMap  = '',
+                                                this.picture.base64Url=''
+                                                this.$router.push({name:'categoryTA'})
+                                            }, 1000);
+                                        }, 1000);
+                                    }else{
+                                        let value ={
+                                            display: true,
+                                            message: response.message
+                                        }
+                                        this.setPageLoading(true)
+                                        setTimeout(()=>{
+                                            this.setPageLoading(false)
+                                            this.setLoadingError(value)
+                                            setTimeout(()=>{
+                                                this.commentContent='';
+                                                this.setLoadingError({display: false})
+                                            }, 1500);
+                                        }, 1000);
+                                    }
+                                })
+                            }else{
+                                this.callFormError("Cần thêm các hình ảnh cho địa điểm");
+                            }
                         }else{
                             this.callFormError("Cần thêm đường dẫn Google Map địa điểm");
                         }
@@ -279,24 +289,9 @@ export default {
             this.picture.base64Url= ''
         },
         handleDeleteIMG(imageId){
-            console.log(imageId)
-            this.deleteImage({imageId, tourId: this.id}).then(response=>{
-                if(response.ok){
-                    this.getimageTA(this.id);
-                    let value = {
-                        display: true,
-                        message: response.message
-                    }
-                    this.setPageLoading(true)
-                    setTimeout(()=>{
-                        this.setPageLoading(false)
-                        this.setLoadingSuccess(value)
-                        setTimeout(()=>{
-                            this.setLoadingSuccess({display: false});
-                        }, 1000);
-                    }, 1000);
-                }
-            })
+            var newArr = this.currentImageTA.filter(item => item.imageid != imageId);
+            this.listIdDelete.push(imageId)
+            this.set_currentImageTA(newArr)
         }
     },
 }
@@ -311,9 +306,7 @@ export default {
             padding: 0 20px;
         }
     }
-    .input-label{
-        font-size: 20px
-    }
+    
     /* .input-label{
         font-size: 25px
     } */

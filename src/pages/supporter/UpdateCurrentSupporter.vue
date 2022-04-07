@@ -1,39 +1,30 @@
 <template>
   <div class="container">
-    <h1 class="text-center text-danger">Sửa thông tin Hỗ trợ viên</h1>
-    <v-form v-if="supporterById" ref="form" v-model="valid" lazy-validation @submit.prevent="handleUpdate">
+    <h1 class="text-center text-danger">Sửa thông tin</h1>
+    <v-form v-if="currentSupporter" ref="form" v-model="valid" lazy-validation @submit.prevent="handleUpdate">
         <v-text-field
 			label="Họ Tên"
-            :value="supporterById.suppname"
+            :value="currentSupporter.suppname"
 			ref="vTextName"
 			@input="name = $refs.vTextName.internalValue"
             required
         ></v-text-field>
         <v-text-field
-            :value="supporterById.suppemail"
-			ref="vTextEmail"
-			@input="email = $refs.vTextEmail.internalValue"
-            :rules="emailRules"
-            label="E-mail"
-            required
-        ></v-text-field>
-        
-        <v-text-field
-            :value="supporterById.suppaddress"
+            :value="currentSupporter.suppaddress"
 			ref="vTextAddress"
 			@input="address = $refs.vTextAddress.internalValue"
             label="Địa chỉ"
             required
         ></v-text-field>
         <v-text-field
-            :value="supporterById.suppyearofbirth"
+            :value="currentSupporter.suppyearofbirth"
 			ref="vTextYear"
 			@input="year = $refs.vTextYear.internalValue"
             label="Năm sinh"
             required
         ></v-text-field>
         <v-select
-            :value="supporterById.suppgender"
+            :value="currentSupporter.suppgender"
 			ref="vTextGender"
 			@input="gender = $refs.vTextGender.internalValue"
             :items="items"
@@ -42,7 +33,7 @@
             required
         ></v-select>
         <v-text-field
-            :value="supporterById.suppphone || ''"
+            :value="currentSupporter.suppphone || ''"
 			ref="vTextPhone"
 			@input="numberPhone = $refs.vTextPhone.internalValue"
           label="Số điện thoại (Không bắt buộc)"
@@ -81,11 +72,11 @@ export default {
     }),
 	computed:{
 		...mapState({
-            supporterById: state=> state.supporter.supporterById
+            currentSupporter: state=> state.supporter.currentSupporter
         }),
 	},
     methods: {
-        ...mapActions(['getSupporterById','updateSupporterByAdmin']),
+        ...mapActions(['updateSupporter']),
         ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
         handleCancel(){
             this.$router.push({name: 'categorySupporter'})
@@ -101,12 +92,12 @@ export default {
             }, 1200);
         },
         handleUpdate(){
-			this.name = this.name ? this.name : this.supporterById.suppname
-			this.email = this.email ? this.email : this.supporterById.suppemail
-			this.address = this.address ? this.address : this.supporterById.suppaddress
-			this.year = this.year ? this.year : this.supporterById.suppyearofbirth
-			this.gender = this.gender ? this.gender : this.supporterById.suppgender
-			this.numberPhone = this.numberPhone ? this.numberPhone : this.supporterById.suppphone
+			this.name = this.name ? this.name : this.currentSupporter.suppname
+			this.email = this.email ? this.email : this.currentSupporter.suppemail
+			this.address = this.address ? this.address : this.currentSupporter.suppaddress
+			this.year = this.year ? this.year : this.currentSupporter.suppyearofbirth
+			this.gender = this.gender ? this.gender : this.currentSupporter.suppgender
+			this.numberPhone = this.numberPhone ? this.numberPhone : this.currentSupporter.suppphone
             if(this.name){
                 if(this.email){
 					if(this.address){
@@ -119,9 +110,9 @@ export default {
 								suppAddress: this.address,
 								suppYearOfBirth: this.year,
 								suppPhone: this.numberPhone,
-								suppId: this.suppId
+								suppId: this.currentSupporter.suppid
 							}
-							this.updateSupporterByAdmin(value).then(response=>{
+							this.updateSupporter(value).then(response=>{
 								if(response.ok){
 									let value = {
 										display: true,
@@ -139,7 +130,7 @@ export default {
 											this.address = '',
 											this.year = '',
 											this.numberPhone = ''
-											this.$router.push({name:'categorySupporter'})
+											this.$router.push({name:'supporter'})
 										}, 1000);
 									}, 1000);
 								}
@@ -159,12 +150,6 @@ export default {
             }
         },
     },
-    created(){
-        this.suppId = this.$route.params.id;
-        if(this.suppId){
-            this.getSupporterById(this.suppId);
-        }
-    }
 };
 </script>
 

@@ -1,31 +1,33 @@
 <template>
   <div>  
       <h2 class="text-white text-center my-5 text-danger">Danh sách địa điểm đã lưu</h2>
-        <div v-if="listSaveTourist && listSaveTourist.length">
-            <div 
-                v-for="card in listSaveTourist" :key="card.tourid" class="card mb-3" style="width: 24rem;" 
-            >
-                <img @click="handleRouterPush(card.provincetitle, card.tourid)" :src="`${port_file}${card.tourpicture}`" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <div @click="handleRouterPush(card.provincetitle, card.tourid)">
-                        <h5 class="card-title">{{card.tourtitle}}</h5>
-                        <p class="card-text" style="height: 3rem"><i class="fa-solid fa-map-location text-primary"></i> {{card.touraddress}}</p>
-                        <p class="card-text"><i class="fa-solid fa-city text-primary"></i> {{card.provincetitle}}</p>
-                        <p class="card-text">Xếp hạng
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star"></span>
-                            <span class="fa fa-star"></span>
-                        </p>
+        <div class="container">
+            <div v-if="listSaveTourist && listSaveTourist.length" class="row">
+                <div 
+                    v-for="card in listSaveTourist" :key="card.tourid" class="card mb-3 ml-1 col-md-4" style="width: 24rem;" 
+                >
+                    <img @click="handleRouterPush(card.provincetitle, card.tourid)" :src="`${port_file}${card.tourpicture}`" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <div @click="handleRouterPush(card.provincetitle, card.tourid)">
+                            <h5 class="card-title">{{card.tourtitle}}</h5>
+                            <p class="card-text" style="height: 3rem"><i class="fa-solid fa-map-location text-primary"></i> {{card.touraddress}}</p>
+                            <p class="card-text"><i class="fa-solid fa-city text-primary"></i> {{card.provincetitle}}</p>
+                            <p class="card-text">Xếp hạng
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                            </p>
+                        </div>
+                        <a  @click="handleDelete({memberId:card.memberid, tourId:card.tourid})" class="mt-3 btn btn-danger text-white w-100">Xóa</a>
                     </div>
-                    <a  @click="handleDelete({memberId:card.memberid, tourId:card.tourid})" class="mt-3 btn btn-danger text-white w-100">Xóa</a>
                 </div>
             </div>
+            <template v-else>
+                    <h5 class="text-center mt-10">Hiện tại bạn vẫn chưa lưu địa điểm nào hết</h5>
+            </template>
         </div>
-        <template v-else>
-                <h5 class="text-center mt-10">Hiện tại bạn vẫn chưa lưu địa điểm nào hết</h5>
-        </template>
   </div>
 </template>
 <script>
@@ -107,7 +109,6 @@ export default {
                 this.getListSaveTourist(memberId).then(response=>{
                     if(response.ok){
                         this.listSaveTourist = response.data
-                        console.log('this.listSaveTourist', this.listSaveTourist)
                     }
                 })
             }

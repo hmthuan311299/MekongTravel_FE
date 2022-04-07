@@ -48,7 +48,6 @@ export default {
     },
     async addProvince({commit, dispatch}, value){
         try {
-            console.log(value)
             var formData = new FormData();
             formData.append("avatar", value.provincePicture);
             formData.append("provinceTitle", value.provinceTitle);

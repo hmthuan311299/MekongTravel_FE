@@ -2,7 +2,6 @@ import axios_instance from '../../plugins/axios'
 export default {
     async getListReTA({commit, dispatch, state}){
         try {
-            console.log('aaa')
             var result = await axios_instance({
                 method: 'get',
                 url: `recommendedPlace`,
@@ -89,7 +88,6 @@ export default {
     },
     async getApprovedListByMemberId({commit}, memberId){
         try {
-            console.log(memberId)
             var result = await axios_instance({
                 method: 'get',
                 url: `/recommendedPlace/approvedListByMemberId?memberId=${memberId}`,
@@ -116,7 +114,6 @@ export default {
         }
     },
     async getUnapprovedListByMemberId({commit}, memberId){
-        console.log(memberId)
         try {
             var result = await axios_instance({
                 method: 'get',
@@ -225,6 +222,32 @@ export default {
                 url: `recommendedPlace/delete/${recommendId}`,
             });
             console.log(result);
+            if(result.data && result.data.status){
+                return{
+                    ok: true,
+                    message: result.data.message,
+                }
+            }
+            else{
+                return{
+                    ok: false,
+                    message: result.data.message,
+                }
+            }
+        }catch (error) {
+            console.log(error.message);
+            return{
+                ok: false,
+                message: error.message,
+            }
+        }
+    },
+    async deleteRecommendedByMemberId({commit}, memberId){
+        try {
+            var result = await axios_instance({
+                method: 'delete',
+                url: `recommendedPlace/deleteByMemberId/${memberId}`,
+            });
             if(result.data && result.data.status){
                 return{
                     ok: true,

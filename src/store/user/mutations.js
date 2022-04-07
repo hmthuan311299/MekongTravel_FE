@@ -11,10 +11,14 @@ export default {
         localStorage.removeItem(setToken);
         state.checkEvaluate  = value
     },
-    set_inforUser(state, value=''){
+    set_currentMember(state, value=''){
         state.currentMember= value;
     },
     set_accessToken(state, value=''){
         state.ACCESS_TOKEN = value;
+    },
+    set_listMember(state, value){
+        state.listMember = value
+        console.log(value)
     }
 }

@@ -16,19 +16,19 @@
                 </div>
             </div>
         </div>
+        <FormYesNo :isDisplayYesNoForm="isDisplayYesNoForm" v-on:handleConfirm="handleConfirm"/> 
     </div>
 </template>
 
 <script>
-import {mapActions} from 'vuex';
+import FormYesNo from '../../components/FormYesNo.vue'
+import {mapActions, mapMutations} from 'vuex';
 export default {
     name: "categoryReTA",
     data(){
         return{
-            ListTA: [
-                
-            ],
-            recommendId,
+            ListTA: [],
+            recommendId:'',
             isDisplayYesNoForm:{
 				display: false,
 				titleForm: 'Form xác nhận',
@@ -38,6 +38,7 @@ export default {
     },
     methods:{
         ...mapActions(['getListReTA', 'deleteRecommended']),
+        ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
         handleUpdate(value){
             console.log(value)
         },
@@ -53,11 +54,8 @@ export default {
 				this.answer=""
 				this.deleteRecommended(this.recommendId).then(response=>{
                     if(response.ok){
-                        this.getListReTA().then(response=>{
-                            if(response.ok){
-                                this.listTA = response.data
-                            }
-                        });
+                        var newArr = [...this.listTA]
+                        this.listTA = newArr.filter(item => item.recommendid != this.recommendId);
                         this.isDisplayYesNoForm.display = false;
                         this.isDisplayYesNoForm.titleForm= "";
                         this.answer=""
@@ -100,6 +98,7 @@ export default {
 		}
     },
      components:{
+         FormYesNo
     },
     created(){
         this.getListReTA().then(response=>{

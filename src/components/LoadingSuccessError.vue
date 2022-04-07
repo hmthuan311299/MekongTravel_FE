@@ -126,7 +126,7 @@ export default {
 .loading-icon-error{
     text-align: center;
     color: rgb(253, 55, 55);
-    font-size: var(--size-icon-noti);
+    font-size: var(--size-icon-noti) !important;
 }
 .loading-title-error{
     text-align: center;

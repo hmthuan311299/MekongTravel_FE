@@ -4,9 +4,8 @@ export default {
         try {
             var result = await axios_instance({
                 method: 'get',
-                url: `/statistic/statisticTAByProvince`,
+                url: `/statistic/TAByProvince`,
             });
-            console.log(result)
             if(result.data && result.data.status == 200){
                 return{
                     ok: true,
@@ -27,5 +26,31 @@ export default {
             }
         }
     },
-    
+    async statisticProvince({commit}, {provinceId='', year='', month=''}){
+        try {
+            console.log('provinceId, year, month', provinceId, year, month)
+            var result = await axios_instance({
+                method: 'get',
+                url: `/statistic/province?provinceId=${provinceId}&year=${year}&month=${month}`,
+            });
+            if(result.data && result.data.status == 200){
+                return{
+                    ok: true,
+                    message: result.data.message,
+                    data: result.data.statistic || []
+                }
+            }
+            else{
+                return{
+                    ok: false,
+                    message: result.data.message,
+                }
+            }
+        } catch (error) {
+            return{
+                ok: false,
+                message: error.message,
+            }
+        }
+    },
 }

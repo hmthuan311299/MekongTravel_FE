@@ -8,7 +8,6 @@ export default {
                 method: 'get',
                 url: `/supporter`,
             });
-            console.log(result)
             if(result.data && result.data.status == 200){
                 return{
                     ok: true,
@@ -31,12 +30,11 @@ export default {
     },
     async deleteSupporter({commit, dispatch}, suppId){
         try {
-            console.log(suppId);
+
             var result = await axios_instance({
                 method: 'delete',
                 url: `supporter/delete/${suppId}`,
             });
-            console.log(result);
             if(result.data && result.data.status){
                 return{
                     ok: true,
@@ -214,7 +212,6 @@ export default {
                 method: 'get',
                 url: `/supporter/${suppId}`,
             });
-            console.log(result)
             if(result.data && result.data.status == 200){
                 commit('set_inforSupporter', result.data.supporter)
                 return{
@@ -239,7 +236,6 @@ export default {
     async getKeepLoginSupporter({dispatch, commit}){
         try {
             var getToken = localStorage.getItem(setToken_Supporter) || null;
-            console.log(getToken)
             if(getToken){
                 var value = parseJwt(getToken);
                 if(value && value.suppId){
@@ -248,6 +244,37 @@ export default {
             }
         } catch (error) {
             console.log(error.message)
+        }
+    },
+    async updateSupporter({commit}, {suppId, suppEmail, suppName, suppAddress, suppGender, suppYearOfBirth, suppPhone}){
+        try {
+            console.log(suppEmail, suppName, suppAddress, suppGender, suppYearOfBirth, suppPhone, suppId)
+            var result = await axios_instance({
+                method: 'put',
+                url: `/supporter/update/${suppId}`,
+                data:{
+                    suppEmail, suppName, suppAddress, suppGender, suppYearOfBirth, suppPhone
+                }
+            });
+            console.log(result)
+            if(result.data && result.data.status == 200){
+                return{
+                    ok: true,
+                    message: result.data.message,
+                }
+            }
+            else{
+                return{
+                    ok: false,
+                    message: result.data.message,
+                }
+            }
+        } catch (error) {
+            console.log(error.message)
+            return{
+                ok: false,
+                message: error.message,
+            }
         }
     },
 }

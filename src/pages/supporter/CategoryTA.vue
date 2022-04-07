@@ -12,6 +12,8 @@
                 </div>
                 <div class="supporter-list-item supporter-list-item-name"> <span class="span-fs">{{item.provincetitle}}</span></div>
                 <div class="supporter-list-content-item">
+                    <i class="fa-solid fa-star supporter-list-item supporter-list-item-update" v-b-modal.modal-tall-1 @click="getTourId(item.tourid)"></i>
+                    <i class="fa-solid fa-comment supporter-list-item supporter-list-item-update" v-b-modal.modal-tall-2 @click="getTourId(item.tourid)"></i>
                     <router-link tag="div" class="supporter-list-item supporter-list-item-update" :to="{name: 'updateTA', params:{id: item.tourid}}">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </router-link>
@@ -20,17 +22,35 @@
             </div>
             </template>
         </div>
-        <FormYesNo :isDisplayYesNoForm="isDisplayYesNoForm" v-on:handleConfirm="handleConfirm"/>
+        <FormYesNo :isDisplayYesNoForm="isDisplayYesNoForm" v-on:handleConfirm="handleConfirm"/> 
+        <b-modal id="modal-tall-2" title="Tất cả bình luận">
+                <card-comment propsClass="col-md-12" :tourId="tourId"/>    
+        </b-modal>
+        <b-modal id="modal-tall-1" title="Tất cả đánh giá">
+            <div class="row">
+                <card-evaluate propsClass="col-md-12" :tourId="tourId"/>
+            </div>
+        </b-modal>
     </div>
 </template>
 <script>
+import CardEvaluate from '../../components/CardEvaluate.vue'
+import CardComment from '../../components/CardComment.vue'
 import SearchBar from '../../components/SearchBar.vue'
 import FormYesNo from '../../components/FormYesNo.vue'
 import {mapActions, mapMutations} from 'vuex';
 export default {
     name: "categoryTA",
+    components:{
+        SearchBar,
+        FormYesNo,
+        CardEvaluate,
+        CardComment
+    },
     data(){
         return{
+            tourId:'',
+            listEvaluate:[],
             ListTA: [],
             renderListTA: [],
             selected: null,
@@ -50,17 +70,17 @@ export default {
         }
     },
     methods:{
-        ...mapActions(['getListTA', 'deleteTA', 'getProvince', 'getListTAByProvince', 'getTouristAttractionBySearch']),
+        ...mapActions(['getEvaluate','getListTA', 'deleteTA', 'getProvince', 'getListTAByProvince', 'getTouristAttractionBySearch']),
         ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
+        getTourId(value){
+            this.tourId =value
+        },
         getValueSearch(value){
             this.getTouristAttractionBySearch(value).then(response=>{
                 if(response.ok){
                     this.renderListTA = response.data
                 }
             })
-        },
-        handleUpdate(value){
-            console.log(value)
         },
         handleDelete(value){
             this.isDisplayYesNoForm.display = true;
@@ -125,10 +145,6 @@ export default {
             console.log(this.renderListTA)
         }
     },
-    components:{
-        SearchBar,
-        FormYesNo
-    },
     created(){
         this.getListTA().then(response=>{
             if(response.ok){
@@ -150,4 +166,10 @@ export default {
 </script>
 
 <style>
+div#modal-scrollable-1.modal.fade.show{
+    padding: 0px !important
+}
+div#modal-scrollable-2.modal.fade.show{
+    padding: 0px !important
+}
 </style>

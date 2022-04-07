@@ -10,13 +10,15 @@
 					<h5 class="card-title">{{card.tourtitle}}</h5>
 					<p class="card-text" style="height: 3rem"><i class="fa-solid fa-map-location text-primary"></i> {{card.touraddress}}</p>
 					<p class="card-text"><i class="fa-solid fa-city text-primary"></i> {{card.provincetitle}}</p>
-					<p class="card-text">Xếp hạng
-						<span class="fa fa-star checked"></span>
-						<span class="fa fa-star checked"></span>
-						<span class="fa fa-star checked"></span>
-						<span class="fa fa-star"></span>
-						<span class="fa fa-star"></span>
+					<div class="card-text" v-if="card.avg" style="margin-bottom: 16px">
+						Xếp hạng 
+						<span v-html="getStars(card.avg)"></span>
+						({{formatNumberStar(card.avg)}})
+					</div>
+					<p class="card-text" v-else>
+						Xếp hạng: <i>Hiện tại chưa có đánh giá nào</i>
 					</p>
+					
 					<a class="btn btn-primary text-white w-100">Xem thử</a>
 				</div>
 			</div>
@@ -45,6 +47,25 @@ export default {
 		handleRouterPush(provincetitle, tourid){
 			this.$router.push({path: `/province/${this.handleremoveVietnameseProvinceTitle(provincetitle)}/listAllTouristAttraction/detailTouristAttraction/${tourid}`})
 		},
+		formatNumberStar(number){
+			return parseFloat(number).toFixed(1)
+		},
+		getStars(rating) {
+			// Round to nearest half
+			rating = Math.round(rating * 2) / 2;
+			let output = [];
+			// Append all the filled whole stars
+			for (var i = rating; i >= 1; i--)
+				output.push('<i class="fa fa-star" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+			// If there is a half a star, append it
+			if (i == .5) output.push('<i class="fa fa-star-half-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+			// Fill the empty stars
+			for (let i = (5 - rating); i >= 1; i--)
+				output.push('<i class="fa-regular fa-star" style="color: gold;"></i>&nbsp;');
+			return output.join('');
+		}
+	},computed:{
+		
 	}
 }
 </script>

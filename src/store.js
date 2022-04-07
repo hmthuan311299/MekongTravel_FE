@@ -15,6 +15,7 @@ import moduleComment from './store/comment/moduleComment'
 import moduleRecommended from './store/recommended/moduleRecommended'
 import moduleSaveTourist from './store/saveTourist/moduleSaveTourist'
 import moduleStatistic from './store/statistic/moduleStatistic'
+import moduleReplyComment from './store/replyComment/moduleReplyComment'
 const store = new Vuex.Store({
     state,
     getters,
@@ -30,7 +31,8 @@ const store = new Vuex.Store({
         comment: moduleComment,
         recommended: moduleRecommended,
         saveTourist: moduleSaveTourist,
-        statistic: moduleStatistic
+        statistic: moduleStatistic,
+        replyComment: moduleReplyComment
     }
   })
 export default store;

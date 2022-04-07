@@ -14,11 +14,14 @@
 				</b-nav-item-dropdown>
 				<router-link :to="{name: 'categorySaveTA'}" tag='b-nav-item' v-if="isMemberLogin">Địa điểm quan tâm</router-link>
 				<b-nav-item-dropdown right v-if="isMemberLogin">
-					<template #button-content >
+					<template #button-content v-if="!member.memberavatar" >
 						<img src="../../assets/user-img/user.png" class="user-navbar-avatar" alt="">
+					</template>
+					<template #button-content v-else>
+						<img :src="`${port_file}${member.memberavatar}`" class="user-navbar-avatar" alt="">
 					</template>				
 					<!-- <b-dropdown-item >Thông tin cá nhân</b-dropdown-item> -->
-					<router-link tag="b-dropdown-item" :to="{name: 'userInformation'}">Thông tin cá nhân</router-link>
+					<router-link tag="b-dropdown-item" :to="{name: 'userInformation', params:{id:member.memberid}}">Thông tin cá nhân</router-link>
 					<router-link tag="b-dropdown-item" :to="{name: 'userChangePassword'}">Đổi mật khẩu</router-link>
 					<b-dropdown-item @click="handleLogout">Đăng xuất</b-dropdown-item>
 				</b-nav-item-dropdown>
@@ -32,6 +35,8 @@
 </template>
 
 <script>
+import port_file from '../../port_file'
+import ListRankTAByProvince from './ListRankTAByProvince.vue'
 import userChangePassWord from './UserChangePassword.vue'
 import ListRecommended from './ListRecommended.vue'
 import Recommended from './Recommended.vue'
@@ -47,18 +52,19 @@ export default {
 			isDisplayYesNoForm:{
 				display: false,
 				titleForm: 'Form xác nhận',
-				answer: ''
+				answer: '',
 			},
+			port_file
 		}
 	},
 	components:{
 		UserIndex, DetailToutistAtraction, CategoryTAByProvince, FormYesNo, Recommended,
-		ListRecommended, userChangePassWord
+		ListRecommended, userChangePassWord, ListRankTAByProvince
 	},
 	computed:{
 		...mapGetters(['isMemberLogin']),
 		...mapState({
-			memberId: state=> state.member.currentMember.memberid
+			member: state=> state.member.currentMember
 		})
 	},
 	methods:{

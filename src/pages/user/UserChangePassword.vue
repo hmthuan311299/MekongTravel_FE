@@ -16,7 +16,6 @@ export default {
         }
     },
     computed:{
-        
         ...mapState({memberId: state=> state.member.currentMember.memberid})
     },
     methods:{

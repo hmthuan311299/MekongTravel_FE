@@ -58,7 +58,7 @@
                     <v-file-input
                         multiple
                         label="Chọn các ảnh từ thiết bị của bạn"
-                        @change="handleGetRecommendImages"
+                        @change="handleGetImages"
                         accept="image/*"
                         required
                     ></v-file-input>
@@ -85,12 +85,8 @@
                 <div v-html="linkMap">  
                 </div>
                 <div class="center mt-3 mb-5">
-                    <v-btn color="success" type="submit" class="p-4" width="18%">
-                        <span class="input-label">Thêm</span>
-                    </v-btn>
-                    <v-btn color="error" class="p-4 ml-2" width="18%" @click="handleCancel">
-                        <span class="input-label" >Trở về</span>
-                    </v-btn>
+                    <button-success title="Thêm"/>
+                    <button-error title="Trở về" routeName="supporter"/>
                 </div>
             </div>
         </form>
@@ -98,9 +94,15 @@
 </template>
 
 <script>
+import ButtonError from '../../components/ButtonError.vue'
+import ButtonSuccess from '../../components/ButtonSuccess.vue'
 import {mapActions, mapState, mapMutations} from 'vuex'
 import { v4 as uuidv4 } from 'uuid';
 export default {
+    components:{
+        ButtonError,
+        ButtonSuccess
+    },
     name: "recommended",
     data: () => ({
         id: uuidv4(),
@@ -151,7 +153,7 @@ export default {
                 }
             }
         },
-        handleGetRecommendImages(files){
+        handleGetImages(files){
             if(files){
                 this.images = files;
             }

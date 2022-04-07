@@ -16,30 +16,39 @@
                     <div v-if="$route.name == 'approvedList'" class="supporter-list-item supporter-list-item-name"> <span class="span-fs-status-approvedList">{{item.status}}</span></div>
                     <div v-else class="supporter-list-item supporter-list-item-name"> <span class="span-fs-status-unapprovedList">{{item.status}}</span></div>
                     <div class="supporter-list-content-item">
-                        <!-- <router-link tag="div" class="supporter-list-item supporter-list-item-update" :to="{name: 'updateProvince'}">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </router-link> -->
-                        <div class="supporter-list-item supporter-list-item-delete" @click="handleDelete()"><i class="fa-solid fa-trash-can"></i></div>
+                        
+                        <div class="supporter-list-item supporter-list-item-delete" @click="handleDelete(item.recommendid)"><i class="fa-solid fa-trash-can"></i></div>
                     </div>
                 </div>
             </template>
             <template v-else>
                 <h5 class="text-center mt-10">Hiện tại bạn vẫn chưa có đề xuất nào hết</h5>
             </template>
+            <FormYesNo :isDisplayYesNoForm="isDisplayYesNoForm" v-on:handleConfirm="handleConfirm"/> 
         </div>
     </div>
 </template>
 
 <script>
+import FormYesNo from '../../components/FormYesNo.vue'
 import {parseJwt} from "../../helpers"
 import { setToken } from "../../helpers/constans"
-import {mapActions, mapState} from 'vuex'
+import {mapActions, mapState, mapMutations} from 'vuex'
 export default {
     name: 'list-Recommended',
     data(){
         return{
             listData: [],
+            recommendId:'',
+            isDisplayYesNoForm:{
+				display: false,
+				titleForm: 'Form xác nhận',
+				answer: ''
+			},
         }
+    },
+    components:{
+        FormYesNo
     },
     computed:{
         ...mapState({
@@ -47,11 +56,65 @@ export default {
         })
     },
     methods:{
-        ...mapActions(['getApprovedListByMemberId', 'getUnapprovedListByMemberId'])
+        ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
+        ...mapActions(['getApprovedListByMemberId', 'getUnapprovedListByMemberId','deleteRecommended']),
+        handleDelete(value){
+            this.isDisplayYesNoForm.display = true;
+            this.isDisplayYesNoForm.titleForm= 
+            "Xác nhận xóa?";
+            this.recommendId = value;
+        },
+		handleConfirm(value){
+			if(value == 'yes'){
+				this.isDisplayYesNoForm.titleForm= "";
+				this.answer=""
+				this.deleteRecommended(this.recommendId).then(response=>{
+                    if(response.ok){
+                        var newArr = [...this.listData]
+                        this.listData = newArr.filter(item => item.recommendid != this.recommendId);
+                        this.isDisplayYesNoForm.display = false;
+                        this.isDisplayYesNoForm.titleForm= "";
+                        this.answer=""
+                        let value = {
+                        display: true,
+                        message: response.message
+                        }
+                        this.setPageLoading(true)
+                        setTimeout(()=>{
+                            this.setPageLoading(false)
+                            this.setLoadingSuccess(value)
+                            setTimeout(()=>{
+                                this.setLoadingSuccess({display: false});
+                            }, 1200);
+                        }, 1000);
+                    }else{
+                        let value ={
+                            display: true,
+                            message: response.message
+                        }
+                        this.setPageLoading(true)
+                        setTimeout(()=>{
+                            this.setPageLoading(false)
+                            this.setLoadingError(value)
+                            setTimeout(()=>{
+                                this.setLoadingError({display: false})
+                                this.isDisplayYesNoForm.display = false;
+                                this.isDisplayYesNoForm.titleForm= "";
+                                this.answer=""
+                            }, 1200);
+                        }, 1000);
+                    }
+                })
+			}
+			else{
+				this.isDisplayYesNoForm.display = false;
+				this.isDisplayYesNoForm.titleForm= "";
+				this.answer=""
+			}
+		}
     },
     watch:{
-		$route (to, from){
-            
+		$route (to, from){ 
             if(to.name == 'unapprovedList'){
                 this.getUnapprovedListByMemberId(this.memberId).then(response=>{
                     if(response.ok){
@@ -69,7 +132,6 @@ export default {
 		}
 	},
     created(){
-        // console.log("sss")
         var getToken = localStorage.getItem(setToken) || null;
         if(getToken){
             var value = parseJwt(getToken);

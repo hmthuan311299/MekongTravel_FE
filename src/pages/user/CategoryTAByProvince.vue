@@ -16,15 +16,10 @@
         <h4 class="text-center user-provinceTitle">Các địa điểm du lịch ở {{province.provincetitle}}</h4>
         <div class="user-menu-categoryTA container p-0 mb-4">
             <ul class="nav p-0 display-flex-center">
-                <li class="nav-item user-menu-nav-item user-nav-item-active">
-                    <a class="nav-link " href="#">Danh sách địa điểm</a>
-                </li>
-                <li class="nav-item user-menu-nav-item">
-                    <a class="nav-link" href="#">Bảng xếp hạng</a>
-                </li>
-                <li class="nav-item user-menu-nav-item">
-                    <a class="nav-link" href="#">Gợi ý cho tôi</a>
-                </li>
+                <router-link v-for="(item,index) in listMenu" :key="index" :to="{name: item.routeName}" exact-active-class="user-nav-item-active" class="nav-item user-menu-nav-item ">
+                    <a class="nav-link">{{item.title}}</a>
+                </router-link>
+
             </ul>
         </div>
         <router-view></router-view>
@@ -48,7 +43,12 @@ export default {
                 provincetitle:"",
                 provincedesc:"",
                 provincepicture:""
-            } 
+            },
+            listMenu: [
+                {title: 'Danh sách địa điểm', routeName: 'categoryTAByProvince'},
+                {title: 'Địa điểm quan tâm', routeName: 'listRank'},
+                {title: 'Gợi ý cho tôi', routeName: 'listSuggestion'}
+            ]
         }
     },
     computed:{

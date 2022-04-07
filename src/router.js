@@ -12,7 +12,8 @@ import CategoryRecommended from './pages/supporter/CategoryRecommended'
 import ApprovalRecommended from './pages/supporter/ApprovalRecomended.vue'
 import UpdateTA from './pages/supporter/UpdateTA.vue'
 import SupporterChangePassword from './pages/supporter/SupporterChangePassword'
-
+import CategoryMember from './pages/supporter/CategoryMember'
+import UpdateCurrentSupporter from './pages/supporter/UpdateCurrentSupporter'
 //page admin
 import LoginAdmin from './pages/admin/LoginAdmin'
 import Admin from './pages/admin/Admin'
@@ -31,8 +32,8 @@ import StatisticView from './pages/admin/StatisticView'
 import DetailToutistAtraction from './pages/user/DetailToutistAtraction'
 import UserIndex from'./pages/user/UserIndex'
 import User from './pages/user/User.vue'
-import CategoryTAByProvince from './pages/user/CategoryTAByProvince'
-import CardTouristAttraction from './components/CardTouristAttraction'
+import CategoryTAByProvince from  './pages/user/CategoryTAByProvince'
+import UserUpdateInformation from './pages/user/UserUpdateInformation'
 import UserSearch from './pages/user/UserSearch'
 import UserListAllTA from './pages/user/UserListAllTA'
 import ListTAByProvince from './pages/user/ListTAByProvince'
@@ -41,6 +42,8 @@ import ListRecommended from './pages/user/ListRecommended'
 import CategorySaveTA from './pages/user/CategorySaveTA'
 import UserInformation from './pages/user/UserInformation'
 import UserChangePassWord from './pages/user/UserChangePassword'
+import ListRankTAByProvince from './pages/user/ListRankTAByProvince'
+import ListSuggestionTA from './pages/user/ListSuggestionTA'
 const routes = [
     //User
     { path: '', component: User,
@@ -54,8 +57,8 @@ const routes = [
             {path: 'province/:provinceName/:provinceId',  component: CategoryTAByProvince,
                 children:[
                     {path: '', component: ListTAByProvince, name: "categoryTAByProvince"},
-                    {path: 'listAllTouristAttraction',  component: CardTouristAttraction , name: "categoryListAllTAByProvince"},
-                    {path: 'listRankTouristAttraction',  component: CategoryTAByProvince, name: "CategoryRankTAByProvince"},
+                    {path: 'listRank',  component: ListRankTAByProvince , name: "listRank"},
+                    {path: 'listSuggestion',  component: ListSuggestionTA, name: "listSuggestion"},
                 ]
             },
             {path: 'province/:provinceName/listAllTouristAttraction/detailTouristAttraction/:id',  component: DetailToutistAtraction, name: "detailToutistAtraction"},
@@ -63,7 +66,8 @@ const routes = [
             {path: 'member/unapprovedList',  component: ListRecommended, name: "unapprovedList"},
             {path: 'member/approvedList',  component: ListRecommended, name: "approvedList"},
             {path: 'member/categorySaveTA',  component: CategorySaveTA, name: "categorySaveTA"},
-            {path: 'member/information',  component: UserInformation, name: "userInformation"},
+            {path: 'member/information/:id',  component: UserInformation, name: "userInformation"},
+            {path: 'member/information/:id/update', component: UserUpdateInformation, name: "userUpdateInformation"},
             {path: 'member/changePassword',  component: UserChangePassWord, name: "userChangePassword"}
         ]
     },
@@ -103,9 +107,24 @@ const routes = [
                 component: UpdateTA,
             },
             {
+                path: 'categoryMember',
+                name: 'categoryMember',
+                component: CategoryMember,
+            },
+            {
+                path: 'categoryBlockedMember',
+                name: 'categoryBlockedMember',
+                component: CategoryMember,
+            },
+            {
                 path: 'changePassword',
                 name: 'supporterChangePassword',
                 component: SupporterChangePassword,
+            },
+            {
+                path: 'updateCurrentSupporter',
+                name: 'updateCurrentSupporter',
+                component: UpdateCurrentSupporter,
             },
         ]
     },

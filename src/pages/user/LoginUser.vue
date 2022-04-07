@@ -111,9 +111,6 @@ import {mapActions, mapMutations} from 'vuex'
 </script>
 
 <style>
-#app {
-	
-}
 .pageLogin-user{
 	display: flex;
 	align-items: center;

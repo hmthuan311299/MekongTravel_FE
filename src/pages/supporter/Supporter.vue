@@ -7,13 +7,13 @@
                     <div class="supporter-sidebar_logo supporter-sidebar_avatar-item"><i class="fa-solid fa-user supporter-sidebar_fs-icon"></i></div>
                     <div class="supporter-sidebar_avatar-item">
                         <div class="supporter-sidebar_avatar-title">Xin chào!</div>
-                        <div class="supporter-sidebar_fullName">Nguyễn Văn A <i class="fa-solid fa-pen-to-square sidebar_fullName-edit"></i></div>
+                        <div class="supporter-sidebar_fullName">{{currentSupporter.suppname}} <router-link :to="{name: 'updateCurrentSupporter'}" tag="i" class="fa-solid fa-pen-to-square sidebar_fullName-edit"></router-link></div>
                     </div>
                     </div>
                     <b-list-group>
                         <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveTA }" tag="b-list-group-item" :to="{name:'supporter'}">Danh mục địa điểm</router-link>
-                        <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveReTA }" tag="b-list-group-item" :to="{name:'categoryRecommended'}">Duyệt đề xuất địa điểm mới <span v-if="ListTA && ListTA.length" class="noti-recommended">{{ListTA.length}}</span></router-link>
-                        <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveCategoryMember }" tag="b-list-group-item" :to="{name:'supporter'}">Danh mục thành viên</router-link>
+                        <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveReTA }" tag="b-list-group-item" :to="{name:'categoryRecommended'}">Duyệt đề xuất địa điểm mới <span class="noti-recommended">{{numberRecommended}}</span></router-link>
+                        <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveCategoryMember }" tag="b-list-group-item" :to="{name:'categoryMember'}">Danh mục thành viên</router-link>
                         <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveChangePass}" tag="b-list-group-item" :to="{name:'supporterChangePassword'}">Đổi mật khẩu</router-link>
                         <b-list-group-item class="b-list-group-item supporter-sidebar_fs" exactActiveClass="active" @click="handleLogout">Đăng xuất</b-list-group-item>
                     </b-list-group>
@@ -29,7 +29,8 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import CategoryMember from './CategoryMember.vue'
+import {mapActions, mapState} from 'vuex'
 //import component
 import FormYesNo from '../../components/FormYesNo.vue'
 import IconAdd from '../../components/IconAdd.vue'
@@ -41,6 +42,7 @@ import AddTouristAttraction from './AddTouristAttraction.vue'
 import CategoryRecommended from './CategoryRecommended.vue'
 import SupporterChangePassword from './SupporterChangePassword.vue'
 import UpdateTA from './UpdateTA.vue'
+import UpdateCurrentSupporter from './UpdateCurrentSupporter.vue'
 export default {
     name: 'supporter',
     data(){
@@ -63,7 +65,7 @@ export default {
     components:{
         SearchBar, CategoryTA, CategoryRecommended, ApprovalRecommended
         ,IconAdd, AddTouristAttraction, SupporterChangePassword, FormYesNo,
-        UpdateTA
+        UpdateTA, CategoryMember, UpdateCurrentSupporter
     },
     methods:{
         ...mapActions(['getListReTA']),
@@ -92,6 +94,13 @@ export default {
 		}
     },
     computed:{
+        ...mapState({
+            currentSupporter: state=> state.supporter.currentSupporter
+        }),
+        numberRecommended(){
+            if(this.ListTA)
+            return this.ListTA.length;
+        },
         showIconAdd(){
             var name = this.$route.name;
             if(name == 'categoryTA' || name == 'supporter' ) return true;

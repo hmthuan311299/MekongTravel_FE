@@ -6,7 +6,6 @@ export default {
                 method: 'get',
                 url: `touristAttraction`,
             });
-            console.log(result)
             if(result.data && result.data.status==200){
             return{
                 ok: true,
@@ -22,9 +21,8 @@ export default {
         try {
             var result = await axios_instance({
                 method: 'get',
-                url: `/touristAttraction/getListTAByProvinceId/${provinceId}`,
+                url: `/touristAttraction/getByProvince/${provinceId}`,
             });
-            console.log(result)
             if(result.data && result.data.status == 200){
                 return{
                     ok: true,
@@ -356,18 +354,104 @@ export default {
             }
         }
     },
-    async deleteImage({commit}, {imageId}){
+    async deleteImage({commit}, listIdDelete){
         try {
-            console.log(imageId)
-            var result = await axios_instance({
-                method: 'delete',
-                url: `image/delete/${imageId}`,
-            });
+            for(var i = 0; i<listIdDelete.length; i++){
+                var result = await axios_instance({
+                    method: 'delete',
+                    url: `image/delete/${listIdDelete[i]}`,
+                });
+            }
             console.log(result);
-            if(result.data && result.data.status){
+            
+        }catch (error) {
+        }
+    },
+    async updateTA({commit, dispatch}, value){
+        try {
+            if(value.tourPicture){
+                var formData = new FormData();
+                formData.append("avatar", value.tourPicture);
+                formData.append("tourTitle", value.tourTitle);
+                formData.append("tourDesc", value.tourDesc);
+                formData.append("tourAddress", value.tourAddress);
+                formData.append("tourLinkVideo", value.tourLinkVideo);
+                formData.append("tourLinkMap", value.tourLinkMap);
+                formData.append("provinceId", value.provinceId);
+                let config ={
+                    headers: {
+                        'accept':'multipart/form-data',
+                    }
+                }
+                var result = await axios_instance.put(`/touristAttraction/updateHavePicture/${value.tourId}`, formData, config)
+                console.log(result);
+                if(value.tourImages && value.tourImages.length){
+                    await dispatch('addImageTA', value);
+                }
+                if(result.data && result.data.status==200){
+                    return {
+                        ok: true,
+                        message: result.data.message
+                    }
+                }
+                else{
+                    return {
+                        ok: false,
+                        message: 'Đã xảy ra lỗi'
+                    }
+                }
+            }else{
+                var result = await axios_instance({
+                    method: 'put',
+                    url: `/touristAttraction/update/${value.tourId}`,
+                    data:{
+                        tourId: value.tourId,
+                        tourTitle: value.tourTitle,              
+                        path: value.urlCurrentPicture,
+                        tourDesc: value.tourDesc,
+                        tourAddress: value.tourAddress,
+                        tourLinkVideo: value.tourLinkVideo,
+                        tourLinkMap: value.tourLinkMap,
+                        provinceId: value.provinceId,
+                    }
+                });
+                console.log(result);
+                if(value.tourImages && value.tourImages.length){
+                    await dispatch('addImageTA', value);
+                }
+                if(result.data && result.data.status==200){
+                    return {
+                        ok: true,
+                        message: result.data.message
+                    }
+                }
+                else{
+                    return {
+                        ok: false,
+                        message: 'Đã xảy ra lỗi'
+                    }
+                }
+            }
+        }catch (error) {
+            console.log(error.message)
+            return{
+                ok: false,
+                message: error.message,
+            }
+        }
+    },
+    async getRankTAByProvince({commit, dispatch, state}, provinceId){
+        try {
+            var result = await axios_instance({
+                method: 'get',
+                url: `/touristAttraction/rank/${provinceId}`,
+            });
+            console.log('rank', result)
+            if(result.data && result.data.status == 200){
                 return{
                     ok: true,
                     message: result.data.message,
+                    data: result.data.touristAttraction || []
                 }
             }
             else{
@@ -376,12 +460,40 @@ export default {
                     message: result.data.message,
                 }
             }
-        }catch (error) {
-            console.log(error.message);
+        } catch (error) {
             return{
                 ok: false,
                 message: error.message,
             }
+
+        }
+    },
+    async getSuggestionTAByProvince({commit, dispatch, state}, provinceId){
+        try {
+            var result = await axios_instance({
+                method: 'get',
+                url: `/touristAttraction/suggestion/${provinceId}`,
+            });
+            console.log(result)
+            if(result.data && result.data.status == 200){
+                return{
+                    ok: true,
+                    message: result.data.message,
+                    data: result.data.touristAttraction || []
+                }
+            }
+            else{
+                return{
+                    ok: false,
+                    message: result.data.message,
+                }
+            }
+        } catch (error) {
+            return{
+                ok: false,
+                message: error.message,
+            }
+
         }
     },
 }

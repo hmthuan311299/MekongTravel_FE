@@ -2,7 +2,7 @@
     <div>
         <h1 class="text-center text-danger">{{statisticTitle}}</h1>
         <template v-if="labels && labels.length">
-            <chart-bar  :labels="labels" :datasets="datasets" :options="options" :height="200"></chart-bar>
+            <chart-bar :labels="labels" :datasets="datasets" :options="options" :height="200"></chart-bar>
         </template>
         
     </div>
@@ -40,7 +40,7 @@ export default {
             ],
             datasets: [{
                 label: 'Số địa điểm',
-                data: [0],
+                data: [],
                 backgroundColor: 'rgba(255, 205, 86)',
                 borderColor: 'rgb(75, 192, 192)',
                 borderWidth: 1
@@ -52,14 +52,10 @@ export default {
         this.statisticTAByProvince().then(response=>{
             if(response.ok){
                 response.data.map(item => this.labels.push(item.provincetitle));
-                response.data.map(item => this.datasets[0].data.unshift(item.count));
-                
-            }else{
-
+                response.data.map(item => this.datasets[0].data.push(item.count));
+                this.datasets[0].data.push[0]
             }
-        }
-            
-        )
+        })
     }
 }
 </script>

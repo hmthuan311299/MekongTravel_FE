@@ -101,16 +101,21 @@
                     <v-btn color="success" type="submit" class="p-4" width="18%">
                         <span class="input-label">Duyệt</span>
                     </v-btn>
-                    <v-btn color="error" class="p-4 ml-2" width="18%" @click="handleCancel">
+                    <v-btn color="error" class="p-4 ml-2" width="18%" @click="handleDelete">
                         <span class="input-label" >Xóa</span>
+                    </v-btn>
+                    <v-btn color="error" class="p-4 ml-2" width="30%" @click="handleBlock">
+                        <span class="input-label" >Khóa tài khoản này</span>
                     </v-btn>
                 </div>
             </div>
         </form>
+        <FormYesNo :isDisplayYesNoForm="isDisplayYesNoForm" v-on:handleConfirm="handleConfirm"/>
     </div>
 </template>
 
 <script>
+import FormYesNo from '../../components/FormYesNo.vue'
 import port_file from '../../port_file'
 import {mapActions, mapMutations, mapState} from 'vuex'
 export default {
@@ -135,6 +140,11 @@ export default {
           { provinceid: 'A', provincetitle: 'Option A' },
           { provinceid: 'B', provincetitle: 'Option B' },
         ],
+        isDisplayYesNoForm:{
+				display: false,
+				titleForm: 'Form xác nhận',
+				answer: ''
+			},
     }),
     computed: {
         ...mapState({
@@ -167,13 +177,113 @@ export default {
             }
         });
     },
+    components:{
+        FormYesNo
+    },
     methods:{
-        ...mapActions(['getProvince', 'approvalTA', 'getRecommendedById', 'getIMGRecommendedById']),
+        ...mapActions(['getProvince', 'approvalTA', 'getRecommendedById', 'getIMGRecommendedById', 'setBlockedMember']),
         ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
-        handleCancel(){
-            this.$router.push({name: 'supporter'})
+        handleDelete(){
+            this.isDisplayYesNoForm.display = true;
+            this.isDisplayYesNoForm.titleForm= 
+            "Xác nhận xóa đề xuất?";
+            //this.recommendId = value;
         },
-        onSlideStart(slide) {
+        handleBlock(){
+            this.isDisplayYesNoForm.display = true;
+            this.isDisplayYesNoForm.titleForm= 
+            "Khóa người dùng này?";
+        },
+		handleConfirm(value){
+			if(value == 'yes'){
+                if(this.isDisplayYesNoForm.titleForm=="Xác nhận xóa đề xuất?"){
+                    this.isDisplayYesNoForm.titleForm= "";
+                    this.answer=""
+                    this.deleteRecommended(this.recommended.recommendid).then(response=>{
+                        if(response.ok){
+                            this.isDisplayYesNoForm.display = false;
+                            this.isDisplayYesNoForm.titleForm= "";
+                            this.answer=""
+                            let value = {
+                            display: true,
+                            message: response.message
+                            }
+                            this.setPageLoading(true)
+                            setTimeout(()=>{
+                                this.setPageLoading(false)
+                                this.setLoadingSuccess(value)
+                                setTimeout(()=>{
+                                    this.setLoadingSuccess({display: false});
+                                    this.$router.push({name: 'categoryRecommended'})
+                                }, 1200);
+                            }, 1000);
+                        }else{
+                            let value ={
+                                display: true,
+                                message: response.message
+                            }
+                            this.setPageLoading(true)
+                            setTimeout(()=>{
+                                this.setPageLoading(false)
+                                this.setLoadingError(value)
+                                setTimeout(()=>{
+                                    this.setLoadingError({display: false})
+                                    this.isDisplayYesNoForm.display = false;
+                                    this.isDisplayYesNoForm.titleForm= "";
+                                    this.answer=""
+                                }, 1200);
+                            }, 1000);
+                        }
+                    })
+                }
+                if(this.isDisplayYesNoForm.titleForm=="Khóa người dùng này?"){
+                    this.isDisplayYesNoForm.titleForm= "";
+                    this.answer=""
+                    this.setBlockedMember(this.recommended.memberid).then(response=>{
+                        if(response.ok){
+                            this.isDisplayYesNoForm.display = false;
+                            this.isDisplayYesNoForm.titleForm= "";
+                            this.answer=""
+                            let value = {
+                            display: true,
+                            message: response.message
+                            }
+                            this.setPageLoading(true)
+                            setTimeout(()=>{
+                                this.setPageLoading(false)
+                                this.setLoadingSuccess(value)
+                                setTimeout(()=>{
+                                    this.setLoadingSuccess({display: false});
+                                    this.$router.push({name: 'categoryRecommended'})
+                                }, 1200);
+                            }, 1000);
+                        }else{
+                            let value ={
+                                display: true,
+                                message: response.message
+                            }
+                            this.setPageLoading(true)
+                            setTimeout(()=>{
+                                this.setPageLoading(false)
+                                this.setLoadingError(value)
+                                setTimeout(()=>{
+                                    this.setLoadingError({display: false})
+                                    this.isDisplayYesNoForm.display = false;
+                                    this.isDisplayYesNoForm.titleForm= "";
+                                    this.answer=""
+                                }, 1200);
+                            }, 1000);
+                        }
+                    })
+			    }
+			
+            }else{
+                    this.isDisplayYesNoForm.display = false;
+                    this.isDisplayYesNoForm.titleForm= "";
+                    this.answer=""
+            }
+        },
+        onSlideStart(slide){
         this.sliding = true
         },
         onSlideEnd(slide) {
@@ -191,11 +301,6 @@ export default {
                 }
             }
         },
-        handleGetRecommendImages(files){
-            if(files){
-                this.images = files;
-            }
-        },
         callFormError(message){
             let value ={
                 display: true,
@@ -205,6 +310,11 @@ export default {
             setTimeout(()=>{
                 this.setLoadingError({display: false})
             }, 1200);
+        },
+        handleGetImages(files){
+            if(files){
+                this.images = files;
+            }
         },
         handleSubmit(){
             this.title = this.title ? this.title : this.recommended.recommendtitle;

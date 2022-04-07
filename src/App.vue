@@ -51,7 +51,7 @@ export default {
     this.getKeepLoginSupporter()
   },
   watch:{
-		$route (to, from){
+		$route(to, from){
       var pageNoteLoading = ['userLogin', 'supporterLogin', 'adminLogin','userChangePassword']
       if(pageNoteLoading.indexOf(to.name) == -1){
         this.setPageLoading(true)
@@ -59,7 +59,6 @@ export default {
           this.setPageLoading(false)
         }, 500);
       }
-			
 		}
 	}
 }
