@@ -4,7 +4,7 @@
         <b-nav pills>
             <b-nav-item-dropdown
                 id="my-nav-dropdown"
-                text="Tất cả"
+                :text="provinceTitle"
                 toggle-class="nav-link-custom"
                 right
             >   

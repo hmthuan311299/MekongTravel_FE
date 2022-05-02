@@ -30,6 +30,34 @@ export default {
             }
         }
     },
+    async getMemberBySearch({commit}, value){
+        try { 
+            var result = await axios_instance({
+                method: 'get',
+                url: `/member/search?search=${value}`,
+            });
+            
+            if(result.data && result.data.status == 200){
+                commit('set_listMember', result.data.member);
+                return{
+                    ok: true,
+                    message: result.data.message,
+                    data: result.data.member || []
+                }
+            }
+            else{
+                return{
+                    ok: false,
+                    message: result.data.message,
+                }
+            }
+        } catch (error) {
+            return{
+                ok: false,
+                message: error.message,
+            }
+        }
+    },
     async getMemberById({commit}, id){
         try {
             var result = await axios_instance({
@@ -331,4 +359,66 @@ export default {
             }
         }
     },
+    async userResetPassword({dispatch, commit}, email){
+        try {
+            commit('setPageLoading', true)
+            var result = await axios_instance({
+                method: 'post',
+                url: 'member/forgetPass',
+                data:{
+                    email
+                }
+            })
+            commit('setPageLoading', false)
+            if(result.data && result.data.status == 200){
+                return{
+                    ok: true,
+                    message: result.data.message,
+                }
+            }
+            else{
+                return{
+                    ok: false,
+                    message: result.data.message,
+                }
+            }
+        } catch (error) {
+            commit('setPageLoading', false)
+            return{
+                ok: false,
+                message: error.message,
+            }
+        }
+    },
+    async signUpMember({dispatch, commit}, {memberEmail, memberPass, memberName}){
+        try {
+            console.log(memberEmail, memberPass, memberName)
+            var result = await axios_instance({
+                method: 'post',
+                url: `/member/sign-up`,
+                data:{
+                    memberEmail, memberPass, memberName
+                }
+            });
+            console.log(result)
+            if(result.data && result.data.status == 200){
+                return{
+                    ok: true,
+                    message: result.data.message,
+                }
+            }
+            else{
+                return{
+                    ok: false,
+                    message: result.data.message,
+                }
+            }
+        } catch (error) {
+            console.log(error.message)
+            return{
+                ok: false,
+                message: error.message,
+            }
+        }
+    }
 }

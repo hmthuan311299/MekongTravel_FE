@@ -2,7 +2,7 @@
 <b-container fluid>
     <b-navbar toggleable="lg" type="dark" variant="info">
 		<router-link tag="b-navbar-brand" :to="{name:'userIndex'}">
-			<img src="../../assets/user-img/logo.png" class="user-navbar-logoIndex" alt="">
+			<img :src="logo" class="user-navbar-logoIndex" alt="">
 		</router-link>
 		<b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 		<b-collapse id="nav-collapse" is-nav>
@@ -15,7 +15,7 @@
 				<router-link :to="{name: 'categorySaveTA'}" tag='b-nav-item' v-if="isMemberLogin">Địa điểm quan tâm</router-link>
 				<b-nav-item-dropdown right v-if="isMemberLogin">
 					<template #button-content v-if="!member.memberavatar" >
-						<img src="../../assets/user-img/user.png" class="user-navbar-avatar" alt="">
+						<img :src="logoUser" class="user-navbar-avatar" alt="">
 					</template>
 					<template #button-content v-else>
 						<img :src="`${port_file}${member.memberavatar}`" class="user-navbar-avatar" alt="">
@@ -35,7 +35,11 @@
 </template>
 
 <script>
+import logo from "../../assets/user-img/logo.png"
+import logoUser from '../../assets/user-img/user.png'
 import port_file from '../../port_file'
+import UserSignUp from './UserSignUp.vue'
+import UserForgetPassword from './UserForgetPassword.vue'
 import ListRankTAByProvince from './ListRankTAByProvince.vue'
 import userChangePassWord from './UserChangePassword.vue'
 import ListRecommended from './ListRecommended.vue'
@@ -54,12 +58,14 @@ export default {
 				titleForm: 'Form xác nhận',
 				answer: '',
 			},
-			port_file
+			port_file,
+			logo,
+			logoUser
 		}
 	},
 	components:{
 		UserIndex, DetailToutistAtraction, CategoryTAByProvince, FormYesNo, Recommended,
-		ListRecommended, userChangePassWord, ListRankTAByProvince
+		ListRecommended, userChangePassWord, ListRankTAByProvince, UserForgetPassword, UserSignUp
 	},
 	computed:{
 		...mapGetters(['isMemberLogin']),

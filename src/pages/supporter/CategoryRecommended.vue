@@ -54,8 +54,8 @@ export default {
 				this.answer=""
 				this.deleteRecommended(this.recommendId).then(response=>{
                     if(response.ok){
-                        var newArr = [...this.listTA]
-                        this.listTA = newArr.filter(item => item.recommendid != this.recommendId);
+                        var newArr = [...this.ListTA]
+                        this.ListTA = newArr.filter(item => item.recommendid != this.recommendId);
                         this.isDisplayYesNoForm.display = false;
                         this.isDisplayYesNoForm.titleForm= "";
                         this.answer=""

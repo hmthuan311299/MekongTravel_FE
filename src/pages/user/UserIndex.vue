@@ -6,9 +6,10 @@
 		<div class="user-list-province">
 			<router-link  
 				v-for="item in listProvince" :key="item.provinceid" class="user-list-province-item" 
-				:to ="{name:'categoryTAByProvince', params:{'provinceName': handleremoveVietnameseProvinceTitle(item.provincetitle),
-															'provinceId':  item.provinceid
-				}}"
+					:to ="{ name:'categoryTAByProvince', 
+							params:{'provinceName': handleremoveVietnameseProvinceTitle(item.provincetitle),
+									'provinceId':  item.provinceid
+					}}"
 			>
 				{{item.provincetitle}}
 			</router-link>

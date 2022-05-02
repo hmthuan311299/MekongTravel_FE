@@ -46,7 +46,7 @@ export default {
             },
             listMenu: [
                 {title: 'Danh sách địa điểm', routeName: 'categoryTAByProvince'},
-                {title: 'Địa điểm quan tâm', routeName: 'listRank'},
+                {title: 'Địa điểm nổi bậc', routeName: 'listRank'},
                 {title: 'Gợi ý cho tôi', routeName: 'listSuggestion'}
             ]
         }

@@ -1,18 +1,17 @@
 <template>
-    <div class="PageLogin-admin">
+    <div class="PageLogin-admin" v-bind:style="{ 'background-image': 'url(' + image + ')'}">
         <div class="FormLogin-admin">
             <div class="logo-login-admin">
-                <img class="logo__loginAdmin--size" src="../../assets/admin-img/logo-login-admin.png" alt="">
+                <img class="logo__loginAdmin--size" :src="logoAdmin" alt="">
             </div>
             <div class="form-login-admin">
                 <h1 class="pageLoginAdmin-Title">
                     <i class="fa-solid fa-user-gear"></i> Đăng nhập
                 </h1>
-                <v-form class="pageLogin-form" ref="form" v-model="valid" lazy-validation>
+                <v-form class="pageLogin-form" ref="form" v-model="valid" lazy-validation @submit.prevent="handleLogin">
                     <v-text-field
-                        v-model="email"
-                        :rules="emailRules"
-                        label="E-mail"
+                        v-model="adminAccount"
+                        label="Tài khoản"
                         required
                     ></v-text-field>
                     <v-text-field
@@ -22,42 +21,93 @@
                         required
                     ></v-text-field>
                     <div class="center" style="margin-top: 10px">
-                        <v-btn color="blue" class="mr-4" @click="validate" width="100%">
-                            <span class="label__btn--login">Đăng nhập</span>
-                        </v-btn>
+                        
+                        <button-success title="Đăng nhập" btnWidth="100%"/>
                     </div>
                     <div class="center">
-                        <a href="">Lấy lại mật khẩu</a>
+                        <router-link :to="{name: 'adminForgetPassword'}">Lấy lại mật khẩu</router-link>
                     </div>
                 </v-form>
             </div>
 	    </div>
     </div>
 </template>
-
 <script>
+import image from '../../assets/background/Background-3.jpg'
+import logoAdmin from '../../assets/admin-img/logo-login-admin.png'
+import {mapActions, mapMutations} from 'vuex'
+import ButtonSuccess from '../../components/ButtonSuccess.vue'
 export default {
+  components: { ButtonSuccess },
     name: "login-admin",
     data: () => ({
-      valid: false,
-      name: '',
-	  pass:'',
-      email: '',
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-      ],
+        valid: false,
+        pass:'',
+        adminAccount: '',
+        image,
+        logoAdmin
     }),
 
     methods: {
       validate () {
         this.$refs.form.validate()
       },
+      ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
+		...mapActions(['loginAdmin']),
+		validate() {
+			this.$refs.form.validate()
+		},
+		handleLogin(){
+			if(!this.valid){
+				let value ={
+					display: true,
+					message: "Dữ liệu nhập vào chưa đúng"
+				}
+				this.setLoadingError(value)
+				setTimeout(()=>{
+						this.commentContent='';
+						this.setLoadingError({display: false})
+				}, 1500);
+			}else{
+				this.loginAdmin({
+					adminAccount: this.adminAccount, 
+					adminPass: this.pass
+				}).then(response=>{
+					if(response.ok){
+						let value ={
+							display: true,
+							message: response.message
+						}
+						this.setPageLoading(true)
+						setTimeout(()=>{
+							this.setPageLoading(false)
+							this.setLoadingSuccess(value)
+							setTimeout(()=>{
+								this.setLoadingSuccess({display: false})
+								this.$router.push({name:"admin"})
+							}, 1500);
+						}, 1000);
+					}
+					else{
+						let value ={
+							display: true,
+							message: response.message
+						}
+						this.setPageLoading(true)
+						setTimeout(()=>{
+							this.setPageLoading(false)
+							this.setLoadingError(value)
+							setTimeout(()=>{
+								this.setLoadingError({display: false})
+							}, 1500);
+						}, 1000);
+					}
+				})
+			}
+		}
     },
 }
-
 </script>
-
 <style>
 #app {
 }
@@ -65,7 +115,6 @@ export default {
     display: flex;
 	align-items: center;
 	justify-content: center;
-	background: url("../../assets/admin-img/background-admin.jpg");
 	background-size: cover;
     height: 100vh
 }

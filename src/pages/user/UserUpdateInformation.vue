@@ -11,10 +11,10 @@
 					>
 					<input type="file" accept="image/*" @change="handleGetPicture($event)" ref="inputFile" style="display: none"/>
 					<div class="mt-3 text-center">
-						<v-btn color="primary" class="p-4" width="35%" @click="handleCallRefs">
+						<v-btn color="primary" class="p-4" @click="handleCallRefs">
 							<span class="input-label">Thay đổi</span>
 						</v-btn>
-						<v-btn v-if="picture.base64Url" @click="handleRemove" color="error" class="p-4 ml-2" width="35%">
+						<v-btn v-if="picture.base64Url" @click="handleRemove" color="error" class="p-4 ml-2">
 							<span class="input-label" >Xóa chọn</span>
 						</v-btn>
 					</div>
@@ -59,9 +59,7 @@
 				</div>
 			</div>
 			<div class="center mt-3">
-				<v-btn color="success" type="submit" class="p-4" width="18%">
-					<span class="input-label">Gửi</span>
-				</v-btn>
+				<button-success title="Gửi" btnWidth="30%"/>
 			</div>
 		</form>
 	</div>
@@ -69,9 +67,13 @@
 </template>
 
 <script>
+import ButtonSuccess from '../../components/ButtonSuccess.vue'
 import port_file from '../../port_file'
 import {mapActions, mapState, mapMutations} from 'vuex'
 export default {
+	components:{
+		ButtonSuccess
+	},
     data(){
 		return{
 			selected: '',
@@ -100,7 +102,7 @@ export default {
 	},
     methods: {
 		...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
-		...mapActions(['getMemberById', 'updateMember']),
+		...mapActions(['getMemberById', 'updateMember', 'getCurrentUserById']),
 		handleGetPicture(e){
             var file = e.target.files[0]
             console.log(file)
@@ -122,26 +124,35 @@ export default {
             this.picture.objectFile= null;
             this.picture.base64Url= ''
         },
+		callFormError(message){
+            let value ={
+                display: true,
+                message: message
+            }
+            this.setLoadingError(value)
+            setTimeout(()=>{
+                this.setLoadingError({display: false})
+            }, 1200);
+        },
 		handleSubmit(){
             this.name = this.name ? this.name : this.member.membername;
             this.address = this.address ? this.address : this.member.memberaddress;
             this.year = this.year ? this.year : this.member.memberyearofbirth
             this.gender = this.selected ? this.selected : this.member.membergender
 			this.phone = this.phone ? this.phone : this.member.memberphone
-            if(this.name){
-                if(this.gender){
-                    if(this.address){
-						var value={
-							memberId: this.memberId,
-							memberName: this.name,              
-							memberAddress: this.address,
-							memberAvatar: this.picture.objectFile,
-							memberGender: this.selected,
-							memberPhone: this.phone,
-							memberYearOfBirth: this.year
-						}
-						this.updateMember(value).then(response=>{
+            if(this.name){ 
+				var value={
+					memberId: this.memberId,
+					memberName: this.name,              
+					memberAddress: this.address,
+					memberAvatar: this.picture.objectFile,
+					memberGender: this.selected,
+					memberPhone: this.phone,
+					memberYearOfBirth: this.year
+				}
+				this.updateMember(value).then(response=>{
 							if(response.ok){
+								this.getCurrentUserById(this.memberId)
 								let value = {
 									display: true,
 									message: response.message
@@ -176,16 +187,9 @@ export default {
 									}, 1500);
 								}, 1000);
 							}
-						})
-                    }else{
-                        this.callFormError("Cần thêm hình ảnh địa điểm");
-                    }
-                }
-                else{
-                    this.callFormError("Cần nhập mô tả địa điểm");
-                }
+						})  
             }else{
-                this.callFormError("Cần nhập tên địa điểm");
+                this.callFormError("Cần nhập Tên");
             }
         },
     },

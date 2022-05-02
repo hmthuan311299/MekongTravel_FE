@@ -1,5 +1,5 @@
 <template>
-    <b-container fluid class="admin-form-container">
+    <b-container fluid class="admin-form-container" v-bind:style="{ 'background-image': 'url(' + image + ')'}">
         <div class="row">
             <div class="col-12 col-md-3 sticky" >
                 <div class="sticky">
@@ -28,6 +28,7 @@
     </b-container>
 </template>
 <script>
+import image from '../../assets/background/Background-4.jpg'
 import FormYesNo from '../../components/FormYesNo.vue'
 import CategorySupporter from './CategorySupporter.vue'
 import AddSupporter from './AddSupporter.vue'
@@ -39,11 +40,15 @@ import UpdateProvince from '../../pages/admin/UpdateProvince.vue'
 import AdminChangePassword from './AdminChangePassword.vue'
 import UpdateAdmin from './UpdateAdmin.vue'
 import AdminStatistic from './AdminStatistic'
+import AdminForgetPassword from './AdminForgetPassword'
 import {mapActions, mapState, mapMutations} from 'vuex'
+import {setToken_Admin} from "../../helpers/constans";
+import {parseJwt} from "../../helpers/"
 export default {
     name: 'admin',
     data(){
        return{
+            image,
             activeRouterProvince : ['admin', 'categoryProvince', 'addProvince', 'updateProvince'],
             activeRouterSupporter: ['categorySupporter', 'addSupporter', 'updateSupporter'],
             activeRouterStatistic: ['statisticPlace', 'statisticView'],
@@ -51,16 +56,16 @@ export default {
             urlAddProvice: '/admin/categoryProvince/addProvince',
             urlAddSupporter: '/admin/categorySupporter/addSupporter',
             isDisplayYesNoForm:{
-				display: false,
-				titleForm: 'Form xác nhận',
-				answer: ''
-			},
+                display: false,
+                titleForm: 'Form xác nhận',
+                answer: ''
+            },
        }
     },
     components:{
         CategoryProvince, AddProvince, IconAdd, UpdateProvince,
         AddSupporter, UpdateSupporter, CategorySupporter, AdminChangePassword,
-        FormYesNo, UpdateAdmin, AdminStatistic
+        FormYesNo, UpdateAdmin, AdminStatistic, AdminForgetPassword
     },
     computed:{
         ...mapState({
@@ -95,12 +100,14 @@ export default {
     },
     methods:{
         ...mapActions(['getAdmin']),
+        ...mapMutations(['set_LogoutAdmin']),
         handleLogout(){
 				this.isDisplayYesNoForm.display = true;
 				this.isDisplayYesNoForm.titleForm= "Xác nhận đăng xuất";
 		},
         handleConfirm(value){
 			if(value == 'yes'){
+                this.set_LogoutAdmin();
 				this.isDisplayYesNoForm.titleForm= "";
 				this.answer=""
 				this.$router.push({name:'adminLogin'})
@@ -113,7 +120,15 @@ export default {
 		}
 	},
     created(){
-        this.getAdmin();
+        var getToken = localStorage.getItem(setToken_Admin) || null;
+        if(getToken){
+            var value = parseJwt(getToken);
+            if(value && value.adminAccount){
+                 this.getAdmin();
+            }
+        }else{
+            this.$router.push({name:'adminLogin'})
+        }
     }
     
 }
@@ -122,7 +137,6 @@ export default {
 <style>
 .admin-form-container{
     min-height: 100vh;
-    background: url('../../assets/admin-img/background-admin-1.jpg');
     background-size: cover;
     width: 100%;
 }

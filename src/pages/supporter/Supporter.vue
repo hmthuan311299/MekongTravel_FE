@@ -1,8 +1,9 @@
 <template>
-    <b-container fluid class="supporter-form-container">
+    <b-container fluid class="supporter-form-container" v-bind:style="{ 'background-image': 'url(' + image + ')'}">
         <div class="row">
             <div class="col-12 col-md-3">
-                <div class="sticky">
+               <div>
+                <!-- <div> class="sticky" -->
                     <div class="supporter-sidebar_avatar"> 
                     <div class="supporter-sidebar_logo supporter-sidebar_avatar-item"><i class="fa-solid fa-user supporter-sidebar_fs-icon"></i></div>
                     <div class="supporter-sidebar_avatar-item">
@@ -29,13 +30,17 @@
 </template>
 
 <script>
+import image from '../../assets/background/Background-4.jpg'
+import {setToken_Supporter} from "../../helpers/constans";
+import {parseJwt} from "../../helpers/"
 import CategoryMember from './CategoryMember.vue'
-import {mapActions, mapState} from 'vuex'
+import {mapActions, mapState, mapMutations} from 'vuex'
 //import component
 import FormYesNo from '../../components/FormYesNo.vue'
 import IconAdd from '../../components/IconAdd.vue'
 import SearchBar from '../../components/SearchBar.vue'
 //import Page
+import SupporterForgetPassword from './SupporterForgetPassword.vue'
 import ApprovalRecommended from './ApprovalRecomended.vue'
 import CategoryTA from './CategoryTA.vue'
 import AddTouristAttraction from './AddTouristAttraction.vue'
@@ -47,6 +52,7 @@ export default {
     name: 'supporter',
     data(){
         return {
+            image,
             search: '',
             activeRouterTA : ['supporter', 'categoryTA', 'addTouristAttraction', 'updateTA'],
             activeRouterReTA: ['categoryRecommended', 'updateRecommended'],
@@ -65,10 +71,11 @@ export default {
     components:{
         SearchBar, CategoryTA, CategoryRecommended, ApprovalRecommended
         ,IconAdd, AddTouristAttraction, SupporterChangePassword, FormYesNo,
-        UpdateTA, CategoryMember, UpdateCurrentSupporter
+        UpdateTA, CategoryMember, UpdateCurrentSupporter, SupporterForgetPassword
     },
     methods:{
         ...mapActions(['getListReTA']),
+        ...mapMutations(['set_LogoutSupporter']),
         getValueSearch(value){
             console.log("search", value);
             this.search = value
@@ -82,6 +89,7 @@ export default {
 		},
         handleConfirm(value){
 			if(value == 'yes'){
+                this.set_LogoutSupporter();
 				this.isDisplayYesNoForm.titleForm= "";
 				this.answer=""
 				this.$router.push({name:'supporterLogin'})
@@ -133,11 +141,19 @@ export default {
         },
     },
     created(){
-        this.getListReTA().then(response=>{
-            if(response.ok){
-                this.ListTA = response.data
+        var getToken = localStorage.getItem(setToken_Supporter) || null;
+        if(getToken){
+            var value = parseJwt(getToken);
+            if(value && value.suppId){
+                this.getListReTA().then(response=>{
+                    if(response.ok){
+                        this.ListTA = response.data
+                    }
+                })
             }
-        })
+        }else{
+            this.$router.push({name:'supporterLogin'})
+        }
     }
 }
 </script>
@@ -149,7 +165,6 @@ export default {
 }
 .supporter-form-container{
     min-height: 100vh;
-    background: url('../../assets/admin-img/background-admin-1.jpg');
     background-size: cover;
     width: 100%;
 }

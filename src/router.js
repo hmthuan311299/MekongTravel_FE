@@ -4,7 +4,7 @@ Vue.use(VueRouter)
 
 //page supported
 import LoginUser from './pages/user/LoginUser'
-import LoginSupporter from './pages/supporter/LoginSupporter'
+import SupporterLogin from './pages/supporter/Login'
 import Supporter from './pages/supporter/Supporter'
 import CategoryTA from './pages/supporter/CategoryTA'
 import AddTouristAttraction from './pages/supporter/AddTouristAttraction'
@@ -14,6 +14,8 @@ import UpdateTA from './pages/supporter/UpdateTA.vue'
 import SupporterChangePassword from './pages/supporter/SupporterChangePassword'
 import CategoryMember from './pages/supporter/CategoryMember'
 import UpdateCurrentSupporter from './pages/supporter/UpdateCurrentSupporter'
+import SupporterForgetPassword from './pages/supporter/SupporterForgetPassword'
+
 //page admin
 import LoginAdmin from './pages/admin/LoginAdmin'
 import Admin from './pages/admin/Admin'
@@ -28,7 +30,10 @@ import UpdateAdmin from './pages/admin/UpdateAdmin'
 import AdminStatistic from './pages/admin/AdminStatistic'
 import StatisticPlace from './pages/admin/StatisticPlace'
 import StatisticView from './pages/admin/StatisticView'
+import AdminForgetPassword from './pages/admin/AdminForgetPassword'
 //page user
+
+import UserSignUp from './pages/user/UserSignUp'
 import DetailToutistAtraction from './pages/user/DetailToutistAtraction'
 import UserIndex from'./pages/user/UserIndex'
 import User from './pages/user/User.vue'
@@ -44,6 +49,8 @@ import UserInformation from './pages/user/UserInformation'
 import UserChangePassWord from './pages/user/UserChangePassword'
 import ListRankTAByProvince from './pages/user/ListRankTAByProvince'
 import ListSuggestionTA from './pages/user/ListSuggestionTA'
+import UserForgetPassword from './pages/user/UserForgetPassword'
+
 const routes = [
     //User
     { path: '', component: User,
@@ -68,12 +75,15 @@ const routes = [
             {path: 'member/categorySaveTA',  component: CategorySaveTA, name: "categorySaveTA"},
             {path: 'member/information/:id',  component: UserInformation, name: "userInformation"},
             {path: 'member/information/:id/update', component: UserUpdateInformation, name: "userUpdateInformation"},
-            {path: 'member/changePassword',  component: UserChangePassWord, name: "userChangePassword"}
+            {path: 'member/changePassword',  component: UserChangePassWord, name: "userChangePassword"},
         ]
     },
+    { path: '/signUp',  component: UserSignUp, name: "userSignUp"},
+    { path: '/forgetPassword',  component: UserForgetPassword, name: "userForgetPassword"},
     { path: '/login', component: LoginUser, name:"userLogin" },
-    //Technician
-    { path: '/supporter/login', component: LoginSupporter, name:"supporterLogin"},
+    //Supporter
+    { path: '/supporter/login', component: SupporterLogin, name:"supporterLogin"},
+    { path: '/supporter/forgetPassword', component: SupporterForgetPassword, name:"supporterForgetPassword"},
     { path: '/supporter', component: Supporter,
         children: [
             {
@@ -197,7 +207,9 @@ const routes = [
         ],
     },
 
-    { path: '/admin/login', component: LoginAdmin, name:"adminLogin"}
+    { path: '/admin/login', component: LoginAdmin, name:"adminLogin"},
+    { path: '/admin/forgetPassword', component: AdminForgetPassword, name:"adminForgetPassword"},
+    
     
 ]
 const router = new VueRouter({

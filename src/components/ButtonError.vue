@@ -1,5 +1,5 @@
 <template>
-    <v-btn color="error" class="p-4 ml-2" width="18%" @click="handleCancel">
+    <v-btn color="error" class="p-4 ml-1" :width="btnWidth" @click="handleCancel">
         <span class="input-label" >{{title}}</span>
     </v-btn>
 </template>
@@ -9,7 +9,11 @@ export default {
     name: 'btn-success',
     props:{
         title: String,
-        routeName: String
+        routeName: String,
+        btnWidth: {
+            type:String,
+            default: '45%'
+        },
     },
     methods:{
         handleCancel(){

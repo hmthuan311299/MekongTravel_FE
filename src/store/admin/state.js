@@ -1,3 +1,5 @@
+import { setToken_Admin } from "../../helpers/constans";
 export default {
-    admin:{}
+    admin:{},
+    ACCESS_TOKEN: localStorage.getItem(setToken_Admin) || null
 }

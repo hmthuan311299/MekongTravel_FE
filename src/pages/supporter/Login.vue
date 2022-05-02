@@ -1,8 +1,8 @@
 <template>
-    <div class="PageLogin-technician">
+    <div class="PageLogin-technician" v-bind:style="{ 'background-image': 'url(' + image + ')'}">
         <div class="FormLogin-technician">
             <div class="logo-login-tech">
-                <img class="logo__loginTech--size" src="../../assets/technician-img/logo-login-technician.png" alt="">
+                <img class="logo__loginTech--size" :src="logoSupporter" alt="">
             </div>
             <div class="form-login-tech">
                 <h1 class="pageLoginTech-Title">
@@ -22,12 +22,10 @@
                         required
                     ></v-text-field>
                     <div class="center" style="margin-top: 10px">
-                        <v-btn type="submit" color="blue" class="mr-4" @click="validate" width="100%">
-                            <span class="label__btn--login">Đăng nhập</span>
-                        </v-btn>
+                        <button-success title="Đăng nhập" btnWidth="100%"/>
                     </div>
                     <div class="center">
-                        <a href="">Lấy lại mật khẩu</a>
+                        <router-link :to="{name: 'supporterForgetPassword'}">Lấy lại mật khẩu</router-link>
                     </div>
                 </v-form>
             </div>
@@ -36,18 +34,24 @@
 </template>
 
 <script>
+import image from '../../assets/background/Background-2.jpg'
+import logoSupporter from '../../assets/technician-img/logo-login-technician.png'
 import {mapActions, mapMutations} from 'vuex'
-export default { 
-    name: "comp-login-supporter",
+import ButtonSuccess from '../../components/ButtonSuccess.vue'
+export default {
+    components: { ButtonSuccess }, 
+    name: "supporter-login",
     data: () => ({
-      valid: false,
-      name: '',
-	  pass:'',
-      email: '',
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-      ],
+        image,
+        logoSupporter,
+        valid: false,
+        name: '',
+        pass:'',
+        email: '',
+        emailRules: [
+            v => !!v || 'E-mail is required',
+            v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+        ],
     }),
 
     methods:{
@@ -118,7 +122,6 @@ export default {
     display: flex;
 	align-items: center;
 	justify-content: center;
-	background: url("../../assets/technician-img/background-login-technician.jpg");
 	background-size: cover;
     height: 100vh
 }

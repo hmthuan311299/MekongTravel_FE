@@ -4,7 +4,7 @@
         <div class="container">
             <div v-if="listSaveTourist && listSaveTourist.length" class="row">
                 <div 
-                    v-for="card in listSaveTourist" :key="card.tourid" class="card mb-3 ml-1 col-md-4" style="width: 24rem;" 
+                    v-for="card in listSaveTourist" :key="card.tourid" class="card my-1 col-md-4" style="width: 24rem;" 
                 >
                     <img @click="handleRouterPush(card.provincetitle, card.tourid)" :src="`${port_file}${card.tourpicture}`" class="card-img-top" alt="...">
                     <div class="card-body">
@@ -12,12 +12,13 @@
                             <h5 class="card-title">{{card.tourtitle}}</h5>
                             <p class="card-text" style="height: 3rem"><i class="fa-solid fa-map-location text-primary"></i> {{card.touraddress}}</p>
                             <p class="card-text"><i class="fa-solid fa-city text-primary"></i> {{card.provincetitle}}</p>
-                            <p class="card-text">Xếp hạng
-                                <span class="fa fa-star checked"></span>
-                                <span class="fa fa-star checked"></span>
-                                <span class="fa fa-star checked"></span>
-                                <span class="fa fa-star"></span>
-                                <span class="fa fa-star"></span>
+                            <div class="card-text" v-if="card.avg" style="margin-bottom: 16px">
+                                Xếp hạng 
+                                <span v-html="getStars(card.avg)"></span>
+                                ({{parseFloat(card.avg).toFixed(1)}})
+                            </div>
+                            <p class="card-text" v-else>
+                                Xếp hạng: <i>Hiện tại chưa có đánh giá nào</i>
                             </p>
                         </div>
                         <a  @click="handleDelete({memberId:card.memberid, tourId:card.tourid})" class="mt-3 btn btn-danger text-white w-100">Xóa</a>
@@ -53,6 +54,20 @@ export default {
         })
     },
     methods:{
+        getStars(rating) {
+			// Round to nearest half
+			rating = Math.round(rating * 2) / 2;
+			let output = [];
+			// Append all the filled whole stars
+			for (var i = rating; i >= 1; i--)
+				output.push('<i class="fa fa-star" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+			// If there is a half a star, append it
+			if (i == .5) output.push('<i class="fa-solid fa-star-half-stroke" style="color:yellow;"></i>&nbsp;');
+			// Fill the empty stars
+			for (let i = (5 - rating); i >= 1; i--)
+				output.push('<i class="fa fa-star" aria-hidden="true"></i>&nbsp;');
+			return output.join('');
+		},
          ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
         ...mapActions(['getListSaveTourist', 'deleteSaveTA']),
         handleDelete({memberId, tourId}){

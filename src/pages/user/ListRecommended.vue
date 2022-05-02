@@ -64,6 +64,7 @@ export default {
             "Xác nhận xóa?";
             this.recommendId = value;
         },
+        
 		handleConfirm(value){
 			if(value == 'yes'){
 				this.isDisplayYesNoForm.titleForm= "";

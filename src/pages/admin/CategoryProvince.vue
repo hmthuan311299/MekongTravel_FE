@@ -61,6 +61,11 @@ export default {
 				this.answer=""
 				this.deleteProvince(this.provinceId).then(response=>{
                     if(response.ok){
+                        this.getProvince().then(response=>{
+                            if(response.ok){
+                                this.listProvince = response.data
+                            }
+                        });
                         this.isDisplayYesNoForm.display = false;
                         this.isDisplayYesNoForm.titleForm= "";
                         this.answer=""
@@ -73,14 +78,8 @@ export default {
                             this.setPageLoading(false)
                             this.setLoadingSuccess(value)
                             setTimeout(()=>{
-                                
                                 this.setLoadingSuccess({display: false});
-                                this.getProvince().then(response=>{
-                                    if(response.ok){
-                                        this.listProvince = response.data
-
-                                    }
-                                });
+                                
                             }, 1200);
                         }, 1000);
                     }else{

@@ -28,7 +28,7 @@
         </b-modal>
         <b-modal id="modal-tall-1" title="Tất cả đánh giá">
             <div class="row">
-                <card-evaluate propsClass="col-md-12" :tourId="tourId"/>
+                <card-evaluate :isSupporter="supporter.suppid ? true : false" propsClass="col-md-12" :tourId="tourId"/>
             </div>
         </b-modal>
     </div>
@@ -38,7 +38,7 @@ import CardEvaluate from '../../components/CardEvaluate.vue'
 import CardComment from '../../components/CardComment.vue'
 import SearchBar from '../../components/SearchBar.vue'
 import FormYesNo from '../../components/FormYesNo.vue'
-import {mapActions, mapMutations} from 'vuex';
+import {mapActions, mapMutations, mapState} from 'vuex';
 export default {
     name: "categoryTA",
     components:{
@@ -68,6 +68,11 @@ export default {
                 { provinceid: 'B', provincetitle: 'Option B' }
             ],
         }
+    },
+    computed:{
+        ...mapState({
+            supporter: state=> state.supporter.currentSupporter || {}
+        })
     },
     methods:{
         ...mapActions(['getEvaluate','getListTA', 'deleteTA', 'getProvince', 'getListTAByProvince', 'getTouristAttractionBySearch']),

@@ -58,7 +58,8 @@
                 <div v-html="detailTA.tourmap">
                 </div>
             </div>
-            <h4 class="text-center my-5">Đánh giá của khách du lịch khi đến {{detailTA.tourtitle}}: {{parseFloat(detailTA.avg).toFixed(1)}} <span class="fa fa-star checked"></span></h4>
+            <h4 v-if="detailTA.avg" class="text-center my-5">Đánh giá của khách du lịch khi đến {{detailTA.tourtitle}}: {{parseFloat(detailTA.avg).toFixed(1)}} <span class="fa fa-star checked"></span></h4>
+            <h4 v-else class="text-center my-5">Đánh giá của khách du lịch khi đến {{detailTA.tourtitle}}: <i>Hiện chưa có đánh giá nào</i></h4>
             <div class="mt-3">
             <h6 class="text-center text-warning">Đánh giá của bạn về {{detailTA.tourtitle}}</h6>
             <router-link v-if="!isMemberLogin" to="/login" tag="button" type="button"   class="btn btn-primary mb-5">Đăng nhập để viết đánh giá</router-link>
@@ -195,7 +196,7 @@
         <h6 class="mx-1">Các đánh giá của thành viên</h6>
         <div v-if="listEvaluate && listEvaluate.length > 0" class="user-evaluateTA mt-3">
             <div class="row">
-                <div class="col-md-6" v-for="(item, index) in listEvaluate" :key="index">
+                <div class="col-md-6 mt-2" v-for="(item, index) in listEvaluate" :key="index">
                     <div class="user-card-evaluate p-2 mx-1" >
                         <div>
                             <div class="user-logo-name-time">
@@ -350,30 +351,30 @@
                             <span class="answer" @click="handleReplyComment(repComment.commentid)">Trả lời</span>
                         </div>
                     </div>
-                    <div :id="`repComment-${comment.commentid}`" style="display:none" >
-                        <b-form-textarea style="width: 95%; margin-left:auto"
-                            id="input-desc"
-                            v-model="txtReplyComment"
-                            rows="4"
-                            placeholder="Trả lời bình luận này"
-                        ></b-form-textarea>
-                        <div class="right my-3">
-                            <v-btn color="primary" class="p-4" @click="handleWriteReplyComment(comment.commentid)">
-                                <span class="input-label">Gửi</span>
-                            </v-btn>
+                    <div class="mt-3">
+                        <div :id="`repComment-${comment.commentid}`" style="display:none" >
+                            <b-form-textarea style="width: 95%; margin-left:auto"
+                                id="input-desc"
+                                v-model="txtReplyComment"
+                                rows="4"
+                                placeholder="Trả lời bình luận này"
+                            ></b-form-textarea>
+                            <div class="right my-3">
+                                <v-btn color="primary" class="p-4" @click="handleWriteReplyComment(comment.commentid)">
+                                    <span class="input-label">Gửi</span>
+                                </v-btn>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="text-center mt-3">
-                    <button type="button"  class="btn btn-primary mb-5 w-25">Xem Thêm</button>
-                </div>
+                
             </div>
             <div v-else class="text-center">
                 <p>Oh!! Hiện tại địa điểm này vẫn chưa có bình luận nào</p>
                 <img src="../../assets/user-img/havenotcomment.png" width="40%">
             </div>
         </div>
-        <div class="feature-DetailTA">
+        <div class="feature-DetailTA" v-if="isMemberLogin">
             <button type="button" @click="handleSave" v-if="!checkSaveTA" class="btn btn-info">Lưu lại địa điểm</button>
             <button type="button" @click="handleDeleteSave" v-if="checkSaveTA" class="btn btn-info">Xóa khỏi quan tâm</button>
             <!-- <button type="button" class="btn btn-info mt-2">Chia sẻ địa điểm</button> -->
@@ -465,10 +466,10 @@ export default {
 			for (var i = rating; i >= 1; i--)
 				output.push('<i class="fa fa-star" aria-hidden="true" style="color: gold;"></i>&nbsp;');
 			// If there is a half a star, append it
-			if (i == .5) output.push('<i class="fa fa-star-half-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+			if (i == .5) output.push('<i class="fa-solid fa-star-half-stroke" style="color:yellow;"></i>&nbsp;');
 			// Fill the empty stars
 			for (let i = (5 - rating); i >= 1; i--)
-				output.push('<i class="fa-regular fa-star" style="color: gold;"></i>&nbsp;');
+				output.push('<i class="fa fa-star" aria-hidden="true"></i>&nbsp;');
 			return output.join('');
 		},
         handleCloseFormUpdateEvaluate(){
@@ -723,6 +724,16 @@ export default {
                 }
                 this.addEvaluate(value).then(response=>{
                     if(response.ok){
+                        this.getCurrentEvaluate({memberId: this.currentMember.memberid, tourId: this.id}).then(response=>{
+                            if(response.ok){
+                                this.currentEvaluate = response.data
+                            }
+                        })
+                        this.getTAById(this.id).then(response=>{
+                            if(response.ok){
+                                this.detailTA = response.data
+                            }
+                        })
                         this.isWriteEvaluate = true
                         document.getElementById(`user-box-rate`).style.display= "none";
                         this.listEvaluate = response.data
@@ -847,6 +858,11 @@ export default {
                                     this.listEvaluate = response.data
                                 }
                             });
+                            this.getTAById(this.id).then(response=>{
+                                if(response.ok){
+                                    this.detailTA = response.data
+                                }
+                            })
                             this.checkEvaluate({tourId: this.id, memberId: this.currentMember.memberid}).then(response=>{
                                 if(response.ok && response.data == 'true'){
                                     this.isWriteEvaluate = true

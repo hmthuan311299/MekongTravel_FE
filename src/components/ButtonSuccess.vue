@@ -1,5 +1,5 @@
 <template>
-    <v-btn color="success" type="submit" class="p-4" width="18%">
+    <v-btn color="success" :type="btnType" class="p-4 mr-1" :width="btnWidth">
         <span class="input-label">{{title}}</span>
     </v-btn>
 </template>
@@ -8,7 +8,15 @@
 export default {
     name: 'btn-success',
     props:{
-        title: String
+        title: String,
+        btnWidth: {
+            type:String,
+            default: '45%'
+        },
+        btnType:{
+            type:String,
+            default:'submit'
+        }
     }
 }
 </script>

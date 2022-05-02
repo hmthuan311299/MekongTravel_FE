@@ -14,5 +14,10 @@ export default {
     },
     set_accessTokenSupporter(state, value=''){
         state.ACCESS_TOKEN = value;
-    }
+    },
+    set_LogoutSupporter(state){
+        state.currentSupporter = {};
+        state.ACCESS_TOKEN = '';
+        localStorage.removeItem(setToken_Supporter);
+    },
 }

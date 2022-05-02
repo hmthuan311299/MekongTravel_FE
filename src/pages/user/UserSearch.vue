@@ -8,7 +8,6 @@
             <p class="text-center m-0 mb-3">Xin lối chúng tôi không tìm địa điểm nào với từ khóa: {{valueSearch}}</p>
         </div>
   </div>
-
 </template>
 
 <script>

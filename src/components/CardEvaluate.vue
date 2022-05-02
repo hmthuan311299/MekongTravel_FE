@@ -21,7 +21,7 @@
                     </div>
                     <div>
                     <i>{{ item.createat }}</i>
-                    <i v-if="supporter && supporter.length" class="fa-solid fa-circle-xmark ml-2 text-danger" @click="handleDelete({memberId: item.memberid, tourId: item.tourid})"></i>
+                    <i v-if="isSupporter" class="fa-solid fa-circle-xmark ml-2 text-danger" @click="handleDelete({memberId: item.memberid, tourId: item.tourid})"></i>
                     </div>
                 </div>
                 <div>
@@ -46,27 +46,31 @@
 
 <script>
 import FormYesNo from '../components/FormYesNo.vue'
+import port_file from '../port_file'
 import {mapActions, mapState, mapMutations} from 'vuex'
 export default {
+    name: 'card-evaluate',
     data(){
         return{
-             listEvaluate:[],
-             value: {},
-             isDisplayYesNoForm:{
-				display: false,
-				titleForm: 'Form xác nhận',
-				answer: ''
+            listEvaluate:[],
+            value: {},
+            isDisplayYesNoForm:{
+            display: false,
+            titleForm: 'Form xác nhận',
+            answer: ''
 			},
+            port_file
+
         }
     },
-    computed:{
-        ...mapState({
-            supporter: state=> state.supporter.currentSupporter || {}
-        })
-    },
+    
     props:{
         tourId: String,
-        propsClass:String
+        propsClass:String,
+        isSupporter: {
+            type: Boolean,
+            default: false
+        }
     },
     components:{
         FormYesNo

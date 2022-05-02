@@ -1,5 +1,5 @@
 <template>
-	<div class="pageLogin-user">
+	<div class="pageLogin-user" v-bind:style="{ 'background-image': 'url(' + image + ')' }">
 		<div class="FormLogin-user">
 		<h1 class="pageLogin-Title">Đăng nhập</h1>
 		<v-form class="pageLogin-form" ref="form" v-model="valid" lazy-validation @submit.prevent="handleLogin">
@@ -16,37 +16,42 @@
 				required
 			></v-text-field>
 			<div class="center">
-				<v-btn color="success" type="submit" class="mr-4" @click="validate" width="100%">
+				<!-- <v-btn color="success" type="submit" class="mr-4" @click="validate" width="100%">
 					<span class="label__btn--login">Đăng nhập</span>
-				</v-btn>
+				</v-btn> -->
+				<button-success btnWidth="100%" title="Đăng nhập"/>
 			</div>
 			<div class="center">
-				<a href="">Quên mật khẩu</a> |
-				<a href="">Đăng ký tài khoản</a>
+				<router-link :to="{name: 'userForgetPassword'}">Lấy lại mật khẩu</router-link> |
+				<router-link :to="{name: 'userSignUp'}">Đăng ký tài khoản</router-link>
 			</div>
-			<div class="center">
+			<!-- <div class="center">
 				Đăng nhập nhanh
 				<div>
 					<i class="fa-brands fa-google icon--size"></i>
 				</div>
-			</div>
+			</div> -->
 		</v-form>
 	</div>
 	</div>
 </template>
 
 <script>
+import image from '../../assets/background/Background-1.jpg'
 import {mapActions, mapMutations} from 'vuex'
+import ButtonSuccess from '../../components/ButtonSuccess.vue'
   export default {
+  components: { ButtonSuccess },
     data: () => ({
-      valid: false,
-      name: '',
-	  pass:'',
-      email: '',
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-      ],
+		image,
+		valid: false,
+		name: '',
+		pass:'',
+		email: '',
+		emailRules: [
+			v => !!v || 'E-mail is required',
+			v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+		],
     }),
 
     methods:{
@@ -115,14 +120,13 @@ import {mapActions, mapMutations} from 'vuex'
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: url("https://nld.mediacdn.vn/2018/3/2/20180228112510-15199665090941211429364.jpg");
 	background-size: cover;
 	height: 100vh;
 }
 :root{
-	--form--height-1444: 410px;
+	--form--height-1444: 350px;
 	--form--width-1444: 620px;
-	--form--height-1024: 400px;
+	--form--height-1024: 350px;
 	--form--width-1024: 500px;
 	--form--height-768: 400px;
 	--form--width-768: 400px;

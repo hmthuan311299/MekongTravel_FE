@@ -277,4 +277,35 @@ export default {
             }
         }
     },
+    async SupporterResetPassword({dispatch, commit}, email){
+        try {
+            commit('setPageLoading', true)
+            var result = await axios_instance({
+                method: 'post',
+                url: 'supporter/forgetPass',
+                data:{
+                    email
+                }
+            })
+            commit('setPageLoading', false)
+            if(result.data && result.data.status == 200){
+                return{
+                    ok: true,
+                    message: result.data.message,
+                }
+            }
+            else{
+                return{
+                    ok: false,
+                    message: result.data.message,
+                }
+            }
+        } catch (error) {
+            commit('setPageLoading', false)
+            return{
+                ok: false,
+                message: error.message,
+            }
+        }
+    },
 }

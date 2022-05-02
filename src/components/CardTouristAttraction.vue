@@ -1,7 +1,7 @@
 <template>
     <div class="user-list-touristAttraction">
 		<div 
-			v-for="card in listTA" :key="card.tourid" class="card mb-3" style="width: 24rem;"
+			v-for="(card, index) in listTA" :key="index" class="card mb-3" style="width: 24rem;"
 			@click="handleRouterPush(card.provincetitle, card.tourid)"
 		>
 			<img  :src="`${port_file}${card.tourpicture}`" class="card-img-top" alt="...">
@@ -58,12 +58,12 @@ export default {
 			for (var i = rating; i >= 1; i--)
 				output.push('<i class="fa fa-star" aria-hidden="true" style="color: gold;"></i>&nbsp;');
 			// If there is a half a star, append it
-			if (i == .5) output.push('<i class="fa fa-star-half-o" aria-hidden="true" style="color: gold;"></i>&nbsp;');
+			if (i == .5) output.push('<i class="fa-solid fa-star-half-stroke" style="color:yellow;"></i>&nbsp;');
 			// Fill the empty stars
 			for (let i = (5 - rating); i >= 1; i--)
-				output.push('<i class="fa-regular fa-star" style="color: gold;"></i>&nbsp;');
+				output.push('<i class="fa fa-star" aria-hidden="true"></i>&nbsp;');
 			return output.join('');
-		}
+		},
 	},computed:{
 		
 	}

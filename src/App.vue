@@ -13,8 +13,8 @@
 import LoadingSuccessError from "./components/LoadingSuccessError.vue"
 import Loading from "./components/Loading.vue"
 import LoginUser from "./pages/user/LoginUser.vue";
-import LoginSupporter from './pages/supporter/LoginSupporter'
-import LoginAdmin from './pages/admin/LoginAdmin.vue'
+import SupporterLogin from './pages/supporter/Login.vue'
+import AdminLogin from './pages/admin/LoginAdmin.vue'
 import Admin from './pages/admin/Admin'
 import Supporter from './pages/supporter/Supporter'
 import User from './pages/user/User.vue'
@@ -23,8 +23,8 @@ export default {
   name: "App",
   components: {
     LoginUser,
-	  LoginSupporter,
-    LoginAdmin,
+    SupporterLogin,
+    AdminLogin,
     Admin,
     Supporter,
     User,
@@ -52,6 +52,8 @@ export default {
   },
   watch:{
 		$route(to, from){
+      console.log(to)
+      document.title = to.name || 'Some Default Title';
       var pageNoteLoading = ['userLogin', 'supporterLogin', 'adminLogin','userChangePassword']
       if(pageNoteLoading.indexOf(to.name) == -1){
         this.setPageLoading(true)

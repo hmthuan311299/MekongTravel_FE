@@ -34,7 +34,7 @@ export default {
         })
     },
     methods:{
-        ...mapActions(['getMember', 'getBlockedMember']),
+        ...mapActions(['getMember', 'getBlockedMember', 'getMemberBySearch']),
         handleGetListMember(){
             this.getMember()
         },
@@ -42,11 +42,7 @@ export default {
             this.getBlockedMember()
         },
         getValueSearch(value){
-            // this.getTouristAttractionBySearch(value).then(response=>{
-            //     if(response.ok){
-            //         this.renderListTA = response.data
-            //     }
-            // })
+            this.getMemberBySearch(value);
         },
     },
     created(){
