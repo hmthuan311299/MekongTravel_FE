@@ -1,9 +1,8 @@
 <template>
 	<detail-user/>
 </template>
-
 <script>
-import {mapActions, mapState, mapMutations} from 'vuex'
+import {mapActions} from 'vuex'
 import DetailUser from '../../components/DetailUser.vue';
 export default {
   	components: { DetailUser },

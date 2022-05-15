@@ -33,22 +33,12 @@
 	<FormYesNo :isDisplayYesNoForm="isDisplayYesNoForm" v-on:handleConfirm="handleConfirm"/>
 </b-container>
 </template>
-
 <script>
 import logo from "../../assets/user-img/logo.png"
 import logoUser from '../../assets/user-img/user.png'
 import port_file from '../../port_file'
-import UserSignUp from './UserSignUp.vue'
-import UserForgetPassword from './UserForgetPassword.vue'
-import ListRankTAByProvince from './ListRankTAByProvince.vue'
-import userChangePassWord from './UserChangePassword.vue'
-import ListRecommended from './ListRecommended.vue'
-import Recommended from './Recommended.vue'
 import FormYesNo from '../../components/FormYesNo.vue'
-import UserIndex from './UserIndex.vue'
-import CategoryTAByProvince from'./CategoryTAByProvince.vue'
-import DetailToutistAtraction from './DetailToutistAtraction.vue'
-import { mapMutations, mapGetters, mapActions, mapState} from 'vuex'
+import { mapMutations, mapGetters, mapState} from 'vuex'
 export default {
     name: 'user',
 	data(){
@@ -64,8 +54,7 @@ export default {
 		}
 	},
 	components:{
-		UserIndex, DetailToutistAtraction, CategoryTAByProvince, FormYesNo, Recommended,
-		ListRecommended, userChangePassWord, ListRankTAByProvince, UserForgetPassword, UserSignUp
+		FormYesNo, 
 	},
 	computed:{
 		...mapGetters(['isMemberLogin']),
@@ -125,4 +114,7 @@ export default {
 	background: rgb(248, 86, 22);
 	transition: 0.3s ease;
 }
+/* .container-fluid .bg-info{
+    background-color: #0065c1!important;
+} */
 </style>

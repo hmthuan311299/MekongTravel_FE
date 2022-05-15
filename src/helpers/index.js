@@ -31,6 +31,30 @@ function parseJwt(token) {
 
     return JSON.parse(jsonPayload);
 };
+const getCurrentDateTime=()=>{
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+    let hour = today.getHours();
+    let minute = today.getMinutes();
+    if (dd < 10) dd = `0${dd}`;
+    if (mm < 10) mm = `0${mm}`;
+    if (hour < 10) hour = '0' + hour;
+    if (minute < 10) minute = '0' + minute;
+    return `${dd}-${mm}-${yyyy} ${hour}:${minute}`;
+}
+const getCurrentDate=()=>{
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+    var currentDate = `${dd}-${mm}-${yyyy}`
+    return currentDate;
+}
 export{
-    removeVietnameseFromString, parseJwt
+    removeVietnameseFromString, parseJwt, getCurrentDateTime,
+    getCurrentDate
 }

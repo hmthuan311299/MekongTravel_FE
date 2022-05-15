@@ -26,12 +26,66 @@ export default {
             }
         }
     },
-    async statisticProvince({commit}, {provinceId='', year='', month=''}){
+    async statisticSave({commit}, {provinceId='', year='', month=''}){
         try {
             console.log('provinceId, year, month', provinceId, year, month)
             var result = await axios_instance({
                 method: 'get',
-                url: `/statistic/province?provinceId=${provinceId}&year=${year}&month=${month}`,
+                url: `/statistic/save?provinceId=${provinceId}&year=${year}&month=${month}`,
+            });
+            if(result.data && result.data.status == 200){
+                return{
+                    ok: true,
+                    message: result.data.message,
+                    data: result.data.statistic || []
+                }
+            }
+            else{
+                return{
+                    ok: false,
+                    message: result.data.message,
+                }
+            }
+        } catch (error) {
+            return{
+                ok: false,
+                message: error.message,
+            }
+        }
+    },
+    async statisticEvaluate({commit}, {provinceId='', year='', month=''}){
+        try {
+            console.log('provinceId, year, month', provinceId, year, month)
+            var result = await axios_instance({
+                method: 'get',
+                url: `/statistic/evaluate?provinceId=${provinceId}&year=${year}&month=${month}`,
+            });
+            if(result.data && result.data.status == 200){
+                return{
+                    ok: true,
+                    message: result.data.message,
+                    data: result.data.statistic || []
+                }
+            }
+            else{
+                return{
+                    ok: false,
+                    message: result.data.message,
+                }
+            }
+        } catch (error) {
+            return{
+                ok: false,
+                message: error.message,
+            }
+        }
+    },
+    async statisticView({commit}, {provinceId='', year='', month=''}){
+        try {
+            console.log('provinceId, year, month', provinceId, year, month)
+            var result = await axios_instance({
+                method: 'get',
+                url: `/statistic/view?provinceId=${provinceId}&year=${year}&month=${month}`,
             });
             if(result.data && result.data.status == 200){
                 return{

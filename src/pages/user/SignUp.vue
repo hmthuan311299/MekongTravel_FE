@@ -130,7 +130,6 @@ import {mapActions, mapMutations} from 'vuex'
   }
 
 </script>
-
 <style scoped>
 .box-changePassWord{
     height: 450px

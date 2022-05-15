@@ -35,7 +35,6 @@
 	</div>
 	</div>
 </template>
-
 <script>
 import image from '../../assets/background/Background-1.jpg'
 import {mapActions, mapMutations} from 'vuex'

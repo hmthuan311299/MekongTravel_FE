@@ -12,9 +12,9 @@
 <script>
 import LoadingSuccessError from "./components/LoadingSuccessError.vue"
 import Loading from "./components/Loading.vue"
-import LoginUser from "./pages/user/LoginUser.vue";
+import UserLogin from "./pages/user/Login.vue";
 import SupporterLogin from './pages/supporter/Login.vue'
-import AdminLogin from './pages/admin/LoginAdmin.vue'
+import AdminLogin from './pages/admin/Login.vue'
 import Admin from './pages/admin/Admin'
 import Supporter from './pages/supporter/Supporter'
 import User from './pages/user/User.vue'
@@ -22,7 +22,7 @@ import {mapState, mapActions, mapMutations} from 'vuex'
 export default {
   name: "App",
   components: {
-    LoginUser,
+    UserLogin,
     SupporterLogin,
     AdminLogin,
     Admin,

@@ -7,8 +7,8 @@
             ({{parseFloat(detailTA.avg).toFixed(1)}})
         </div>
         <p class="card-text" v-else>
-						Xếp hạng: <i>Hiện tại chưa có đánh giá nào</i>
-					</p>
+            Xếp hạng: <i>Hiện tại chưa có đánh giá nào</i>
+        </p>
         <h4>Giới thiệu về {{detailTA.tourtitle}}</h4>
         <div class="user-introProvince" >
             <img v-if="detailTA.tourpicture" :src="`${port_file}${detailTA.tourpicture}`" class="user-img-introTA" alt="">
@@ -315,11 +315,6 @@
                                     rows="2"
                                     placeholder="Nhập nội dung của bạn"
                                 ></b-form-textarea>
-                                <!-- <b-form-textarea 
-                                    :value="comment.commentcontent"
-                                    :formatter="formatter"
-                                    placeholder="Nhập nội dung của bạn"
-                                ></b-form-textarea> -->
                                 <div class="right my-1">
                                     <v-btn color="primary" class="p-2" @click="handleUpdateComment({commentId:comment.commentid, commentContent: comment.commentcontent})">
                                         <span class="input-label">Cập nhật</span>
@@ -375,12 +370,16 @@
             </div>
         </div>
         <div class="feature-DetailTA" v-if="isMemberLogin">
-            <button type="button" @click="handleSave" v-if="!checkSaveTA" class="btn btn-info">Lưu lại địa điểm</button>
+            <button type="button" @click="handleSave" v-if="!checkSaveTA" class="btn btn-info">Lưu lại</button>
             <button type="button" @click="handleDeleteSave" v-if="checkSaveTA" class="btn btn-info">Xóa khỏi quan tâm</button>
             <!-- <button type="button" class="btn btn-info mt-2">Chia sẻ địa điểm</button> -->
-            <!-- <a href="https://www.facebook.com/sharer/sharer.php?u=https://ct594-fontend.vercel.app/" target="_blank">
-                Share on Facebook
-            </a> -->
+            <div class="shareFacebook">
+                <!-- <a :href="`https://www.facebook.com/sharer/sharer.php?u=${URL}`" target="_blank">
+                    <i class="fa-brands fa-facebook" style="color: blue"></i> Chia sẻ
+                </a> -->
+                <iframe :src="`https://www.facebook.com/plugins/share_button.php?href=${URL}&layout=button_count&size=small&width=119&height=20&appId`" width="119" height="20" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+            </div>
+            
         </div>
         <FormYesNo :isDisplayYesNoForm="isDisplayYesNoForm" v-on:handleConfirm="handleConfirm"/>
         <b-modal id="modal-tall-1" title="Tất cả đánh giá">
@@ -389,22 +388,24 @@
             </div>
         </b-modal>
         <div id="fb-root"></div>
+        
     </div>
 </template>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v13.0" nonce="BdosC9vy"></script>
 <script>
 import CardEvaluate from '../../components/CardEvaluate.vue'
 import port_file from '../../port_file'
-import {parseJwt} from "../../helpers"
+import {parseJwt, getCurrentDate, getCurrentDateTime} from "../../helpers"
 import { setToken } from "../../helpers/constans"
 import {mapActions, mapState, mapGetters, mapMutations} from 'vuex'
 import FormYesNo from '../../components/FormYesNo.vue'
+console.log(getCurrentDateTime())
 export default {
     components:{
         FormYesNo, CardEvaluate
     },
     data (){
         return {
+            URL:'',
             items: [],
             id: this.$route.params.id,
             port_file,
@@ -448,6 +449,16 @@ export default {
             }
             else return 'Xóa khỏi quan tâm'
         },
+        getCurrentDateTime(){
+            var currentDateTime;
+            currentDateTime = getCurrentDateTime();
+            return currentDateTime;
+        },
+        getCurrentDate(){
+            var currentDateTime;
+            currentDateTime = getCurrentDate();
+            return currentDate;
+        }
     },
     methods:{
         ...mapMutations(['setLoadingSuccess', 'setLoadingError', 'setPageLoading']),
@@ -479,18 +490,7 @@ export default {
             this.numberStar = this.numberStar !=0 ? this.numberStar : this.currentEvaluate.evaluatestar;
             this.txtEvaluate = this.txtEvaluate ? this.txtEvaluate : this.currentEvaluate.evaluatecontent;
             if(!this.txtEvaluate || this.numberStar ==0){
-                let value ={
-                    display: true,
-                    message: "Cần nhập nội dung đánh giá"
-                }
-                this.setPageLoading(true)
-                setTimeout(()=>{
-                    this.setPageLoading(false)
-                    this.setLoadingError(value)
-                    setTimeout(()=>{
-                        this.setLoadingError({display: false})
-                    }, 1500);
-                }, 1000);
+                this.handleCallFormError('Cần nhập nội dung đánh giá', 1500, 1000)  
             }
             else{
                 var value ={
@@ -508,21 +508,10 @@ export default {
                         })
                         this.isWriteEvaluate = true
                         this.isUpdateEvaluate = false;
+                        this.txtEvaluate='';
+                        this.numberStar = 0;
                         this.listEvaluate = response.data
-                        let value ={
-                            display: true,
-                            message: response.message
-                        }
-                        this.setPageLoading(true)
-                        setTimeout(()=>{
-                            this.setPageLoading(false)
-                            this.setLoadingSuccess(value)
-                            setTimeout(()=>{
-                                this.txtEvaluate='';
-                                this.numberStar = 0;
-                                this.setLoadingSuccess({display: false});
-                            }, 1000);
-                        }, 1000);
+                        this.handleCallFormSuccess(response.message, 1000, 1000) 
                     }
                 });
             }
@@ -533,48 +522,72 @@ export default {
             var commentContent = a.commentContent;
             this.txtUpdateComment = this.txtUpdateComment
             if(!this.txtUpdateComment){
-                let value ={
-                    display: true,
-                    message: "Cần nhập nội dung bình luận"
-                }
-                this.setPageLoading(true)
-                setTimeout(()=>{
-                    this.setPageLoading(false)
-                    this.setLoadingError(value)
-                    setTimeout(()=>{
-                        this.setLoadingError({display: false})
-                    }, 1500);
-                }, 1000);  
+                this.handleCallFormError('Cần nhập nội dung bình luận', 1500, 1000)  
             }
             else{
                 this.updateComment({commentContent: this.txtUpdateComment,commentId}).then(response=>{
                     if(response.ok){
-                        console.log(commentId)
                         document.getElementById(`form-update-comment-${commentId}`).style.display= "none";
                         document.getElementById(`content-comment-${commentId}`).style.display= "unset";
-                        this.getComment(this.id).then(response=>{
-                            if(response.ok){
-                                this.listComment = response.data
-                            }
-                        })
-                        // var index = this.listComment.findIndex(item => item.commentid == value.commentId)
-                        // this.listComment[index].commentcontent = this.txtUpdateComment;
+                        this.getListComment(this.id);
+                        this.txtUpdateComment='';
                         let value = {
                             display: true,
                             message: response.message
                         }
-                        this.setPageLoading(true)
-                        setTimeout(()=>{
-                            this.setPageLoading(false)
-                            this.setLoadingSuccess(value)
-                            setTimeout(()=>{
-                                this.txtUpdateComment='';
-                                this.setLoadingSuccess({display: false});
-                            }, 1000);
-                        }, 1000);
+                        this.handleCallFormSuccess(response.message, 1000, 1000);
                     }
                 });
             }
+        },
+        handleCallFormSuccess(a, b, c){
+            let value = {
+                display: true,
+                message: a
+            }
+            this.setPageLoading(true)
+            setTimeout(()=>{
+                this.setPageLoading(false)
+                this.setLoadingSuccess(value)
+                setTimeout(()=>{
+                    this.setLoadingSuccess({display: false});
+                }, parseInt(b));
+            }, parseInt(c));
+        },
+        handleCallFormError(a, b, c){
+            let value = {
+                display: true,
+                message: a
+            }
+            this.setPageLoading(true)
+            setTimeout(()=>{
+                this.setPageLoading(false)
+                this.setLoadingError(value)
+                setTimeout(()=>{
+                    this.setLoadingError({display: false});
+                }, parseInt(b));
+            }, parseInt(c));
+        },
+        getListEvaluate(tourId){
+            this.getEvaluate(tourId).then(response=>{
+                if(response.ok){
+                    this.listEvaluate = response.data
+                }
+            })
+        },
+        getListComment(tourId){
+            this.getComment(tourId).then(response=>{
+                if(response.ok){
+                    this.listComment = response.data
+                }
+            })
+        },
+        getListReplyComment(tourId){
+            this.getReplyComment(tourId).then(response=>{
+                if(response.ok){
+                    this.listReplyComment = response.data
+                }
+            })
         },
         handleEditEvaluate(){
             this.isUpdateEvaluate= true
@@ -601,93 +614,41 @@ export default {
         },
         handleWriteComment(){
             if(!this.txtComment){
-                let value ={
-                    display: true,
-                    message: "Cần nhập nội dung bình luận"
-                }
-                this.setPageLoading(true)
-                setTimeout(()=>{
-                    this.setPageLoading(false)
-                    this.setLoadingError(value)
-                    setTimeout(()=>{
-                        this.setLoadingError({display: false})
-                    }, 1500);
-                }, 1000);  
+                this.handleCallFormError("Cần nhập nội dung bình luận", 1500, 1000)
             }
             else{
-                var d = new Date();
-                var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
-                d.getHours() + ":" + d.getMinutes();
                 var value ={
                     commentContent: this.txtComment,
                     memberId: this.currentMember.memberid,
                     tourId: this.id,
-                    createAt: datestring,
+                    createAt: this.getCurrentDateTime,
                 }
                 this.addComment(value).then(response=>{
                     if(response.ok){
                         this.listComment = response.data
-                        let value = {
-                            display: true,
-                            message: "Bình luận thành công"
-                        }
-                        this.setPageLoading(true)
-                        setTimeout(()=>{
-                            this.setPageLoading(false)
-                            this.setLoadingSuccess(value)
-                            setTimeout(()=>{
-                                this.txtComment='';
-                                this.setLoadingSuccess({display: false});
-                            }, 1000);
-                        }, 1000);
+                        this.handleCallFormSuccess(response.message, 1000, 1000)
                     }
                 });
             }
         },
         handleWriteReplyComment(commentId){
             if(!this.txtReplyComment){
-                let value ={
-                    display: true,
-                    message: "Cần nhập nội dung bình luận"
-                }
-                this.setPageLoading(true)
-                setTimeout(()=>{
-                    this.setPageLoading(false)
-                    this.setLoadingError(value)
-                    setTimeout(()=>{
-                        this.setLoadingError({display: false})
-                    }, 1500);
-                }, 1000);  
+                this.handleCallFormError("Cần nhập nội dung bình luận", 1500, 1000)
             }
             else{
-                var d = new Date();
-                var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
-                d.getHours() + ":" + d.getMinutes();
                 var value ={
                     repCommentContent: this.txtReplyComment,
                     memberId: this.currentMember.memberid,
                     tourId: this.id,
-                    createAt: datestring,
+                    createAt: this.getCurrentDateTime,
                     commentId
                 }
-                console.log('value', value)
                 this.addReplyComment(value).then(response=>{
                     if(response.ok){
                         document.getElementById(`repComment-${commentId}`).style.display= "none";
                         this.listReplyComment = response.data
-                        let value = {
-                            display: true,
-                            message: "Bình luận thành công"
-                        }
-                        this.setPageLoading(true)
-                        setTimeout(()=>{
-                            this.setPageLoading(false)
-                            this.setLoadingSuccess(value)
-                            setTimeout(()=>{
-                                this.txtReplyComment='';
-                                this.setLoadingSuccess({display: false});
-                            }, 1000);
-                        }, 1000);
+                        this.txtReplyComment='';
+                        this.handleCallFormSuccess(response.message, 1000, 1000)
                     }
                 });
             }
@@ -698,29 +659,15 @@ export default {
         },
         handleWriteEvaluate(){
             if(!this.txtEvaluate || this.numberStar ==0){
-                let value ={
-                    display: true,
-                    message: "Cần nhập nội dung đánh giá"
-                }
-                this.setPageLoading(true)
-                setTimeout(()=>{
-                    this.setPageLoading(false)
-                    this.setLoadingError(value)
-                    setTimeout(()=>{
-                        this.setLoadingError({display: false})
-                    }, 1500);
-                }, 1000);
+                this.handleCallFormError("Cần nhập nội dung đánh giá", 1500, 1000)
             }
             else{
-                var d = new Date();
-                var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
-                d.getHours() + ":" + d.getMinutes();
                 var value ={
                     numberStar: parseInt(this.numberStar),
                     evaluateContent: this.txtEvaluate,
                     memberId: this.currentMember.memberid,
                     tourId: this.id,
-                    createAt: datestring,
+                    createAt: this.getCurrentDateTime,
                 }
                 this.addEvaluate(value).then(response=>{
                     if(response.ok){
@@ -737,61 +684,23 @@ export default {
                         this.isWriteEvaluate = true
                         document.getElementById(`user-box-rate`).style.display= "none";
                         this.listEvaluate = response.data
-                        let value ={
-                            display: true,
-                            message: response.message
-                        }
-                        this.setPageLoading(true)
-                        setTimeout(()=>{
-                            this.setPageLoading(false)
-                            this.setLoadingSuccess(value)
-                            setTimeout(()=>{
-                                this.txtEvaluate='';
-                                this.setLoadingSuccess({display: false});
-                            }, 1000);
-                        }, 1000);
+                        this.handleCallFormSuccess(response.message, 1000, 1000)
                     }
                 });
             }
         },
         handleSave(){
-            var d = new Date();
-            var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
-                d.getHours() + ":" + d.getMinutes();
             var value = { 
                 memberId: this.currentMember.memberid,
                 tourId: this.id,
-                createAt: datestring
+                createAt: this.getCurrentDateTime
             }
             this.addSaveTA(value).then(response=>{
                 if(response.ok){
-                    let value = {
-                        display: true,
-                        message: response.message
-                    }
-                    this.setPageLoading(true)
-                    setTimeout(()=>{
-                        this.setPageLoading(false)
-                        this.setLoadingSuccess(value)
-                        setTimeout(()=>{
-                            this.setLoadingSuccess({display: false});
-                            this.checkSaveTA = false;
-                        }, 1200);
-                    }, 1000);
+                    this.handleCallFormSuccess(response.message, 1000, 1000)
                 }
                 else{
-                    let value ={
-                        display: true,
-                        message: response.message
-                    }
-                    this.setPageLoading(true)
-                    setTimeout(()=>{
-                        this.setPageLoading(false)
-                        this.setLoadingError(value)
-                        setTimeout(()=>{
-                            this.setLoadingError({display: false})
-                        }, 1200);
-                    }, 1000);  
+                    this.handleCallFormError(response.message, 1200, 1000)
                 }
             })
         },
@@ -802,33 +711,11 @@ export default {
             }
             this.deleteSaveTA(value).then(response=>{
                 if(response.ok){
-                    let value = {
-                        display: true,
-                        message: response.message
-                    }
-                    this.setPageLoading(true)
-                    setTimeout(()=>{
-                        this.setPageLoading(false)
-                        this.setLoadingSuccess(value)
-                        setTimeout(()=>{
-                            this.setLoadingSuccess({display: false});
-                            this.checkSaveTA = true;
-                        }, 1200);
-                    }, 1000);
+                    this.checkSaveTA = true;
+                    this.handleCallFormSuccess(response.message, 1000, 1000)
                 }
                 else{
-                    let value ={
-                        display: true,
-                        message: response.message
-                    }
-                    this.setPageLoading(true)
-                    setTimeout(()=>{
-                        this.setPageLoading(false)
-                        this.setLoadingError(value)
-                        setTimeout(()=>{
-                            this.setLoadingError({display: false})
-                        }, 1200);
-                    }, 1000);  
+                    this.handleCallFormError(response.message, 1200, 1000)
                 }
             })
         },
@@ -853,11 +740,7 @@ export default {
                     this.answer=""
                     this.deleteEvaluate({tourId: this.id, memberId: this.currentMember.memberid}).then(response=>{
                         if(response.ok){
-                            this.getEvaluate(this.id).then(response=>{
-                                if(response.ok){
-                                    this.listEvaluate = response.data
-                                }
-                            });
+                            this.getListEvaluate(this.id)
                             this.getTAById(this.id).then(response=>{
                                 if(response.ok){
                                     this.detailTA = response.data
@@ -873,34 +756,12 @@ export default {
                             this.isDisplayYesNoForm.display = false;
                             this.isDisplayYesNoForm.titleForm= "";
                             this.answer=""
-                            let value = {
-                                display: true,
-                                message: response.message
-                            }
-                            this.setPageLoading(true)
-                            setTimeout(()=>{
-                                this.setPageLoading(false)
-                                this.setLoadingSuccess(value)
-                                setTimeout(()=>{
-                                    this.setLoadingSuccess({display: false});
-                                }, 1200);
-                            }, 1000);
+                            this.handleCallFormSuccess(response.message, 1000, 1000)
                         }else{
-                            let value ={
-                                display: true,
-                                message: response.message
-                            }
-                            this.setPageLoading(true)
-                            setTimeout(()=>{
-                                this.setPageLoading(false)
-                                this.setLoadingError(value)
-                                setTimeout(()=>{
-                                    this.setLoadingError({display: false})
-                                    this.isDisplayYesNoForm.display = false;
-                                    this.isDisplayYesNoForm.titleForm= "";
-                                    this.answer=""
-                                }, 1200);
-                            }, 1000);
+                            this.isDisplayYesNoForm.display = false;
+                            this.isDisplayYesNoForm.titleForm= "";
+                            this.answer=""
+                            this.handleCallFormError(response.message, 1200, 1000)
                         }
                     })
                 }
@@ -909,42 +770,15 @@ export default {
                     this.answer=""
                     this.deleteComment(this.commentId).then(response=>{
                         if(response.ok){
-                            this.getComment(this.id).then(response=>{
-                                if(response.ok){
-                                    this.listComment = response.data
-                                }
-                            });
+                            this.getListComment(this.id);
                             this.isDisplayYesNoForm.display = false;
                             this.isDisplayYesNoForm.titleForm= "";
                             this.answer=""
-                            let value = {
-                                display: true,
-                                message: response.message
-                            }
-                            this.setPageLoading(true)
-                            setTimeout(()=>{
-                                this.setPageLoading(false)
-                                this.setLoadingSuccess(value)
-                                setTimeout(()=>{
-                                    this.setLoadingSuccess({display: false});
-                                }, 1200);
-                            }, 1000);
+                            this.handleCallFormSuccess(response.message, 1000, 1000)
                         }else{
-                            let value ={
-                                display: true,
-                                message: response.message
-                            }
-                            this.setPageLoading(true)
-                            setTimeout(()=>{
-                                this.setPageLoading(false)
-                                this.setLoadingError(value)
-                                setTimeout(()=>{
-                                    this.setLoadingError({display: false})
-                                    this.isDisplayYesNoForm.display = false;
-                                    this.isDisplayYesNoForm.titleForm= "";
-                                    this.answer=""
-                                }, 1200);
-                            }, 1000);
+                            this.isDisplayYesNoForm.display = false;
+                            this.isDisplayYesNoForm.titleForm= "";
+                            this.handleCallFormError(response.message, 1200, 1000);
                         }
                     })
                 }
@@ -953,42 +787,16 @@ export default {
                     this.answer=""
                     this.deleteReplyComment(this.repcommentId).then(response=>{
                         if(response.ok){
-                            this.getReplyComment(this.id).then(response=>{
-                                if(response.ok){
-                                    this.listReplyComment = response.data
-                                }
-                            });
+                            this.getListReplyComment(this.id);
                             this.isDisplayYesNoForm.display = false;
                             this.isDisplayYesNoForm.titleForm= "";
                             this.answer=""
-                            let value = {
-                                display: true,
-                                message: response.message
-                            }
-                            this.setPageLoading(true)
-                            setTimeout(()=>{
-                                this.setPageLoading(false)
-                                this.setLoadingSuccess(value)
-                                setTimeout(()=>{
-                                    this.setLoadingSuccess({display: false});
-                                }, 1200);
-                            }, 1000);
+                            this.handleCallFormSuccess(response.message, 1000, 1000)
                         }else{
-                            let value ={
-                                display: true,
-                                message: response.message
-                            }
-                            this.setPageLoading(true)
-                            setTimeout(()=>{
-                                this.setPageLoading(false)
-                                this.setLoadingError(value)
-                                setTimeout(()=>{
-                                    this.setLoadingError({display: false})
-                                    this.isDisplayYesNoForm.display = false;
-                                    this.isDisplayYesNoForm.titleForm= "";
-                                    this.answer=""
-                                }, 1200);
-                            }, 1000);
+                            this.isDisplayYesNoForm.display = false;
+                            this.isDisplayYesNoForm.titleForm= "";
+                            this.answer=""
+                            this.handleCallFormError(response.message, 1200, 1000);
                         }
                     })
                 }
@@ -1001,6 +809,7 @@ export default {
 		},
     },
     created(){
+        this.URL = document.URL;
         var tourId = this.$route.params.id;
         var getToken = localStorage.getItem(setToken) || null;
         if(getToken){
@@ -1037,30 +846,20 @@ export default {
                 this.imageTA = response.data
             }
         })
-        this.getEvaluate(tourId).then(response=>{
-            if(response.ok){
-                this.listEvaluate = response.data
-            }
-        })
-        this.getComment(tourId).then(response=>{
-            if(response.ok){
-                this.listComment = response.data
-            }
-        })
-        this.getReplyComment(tourId).then(response=>{
-            if(response.ok){
-                this.listReplyComment = response.data
-            }
-        })
-        var d = new Date();
-        var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +
-            d.getHours() + ":" + d.getMinutes();
-        this.countView({tourId, createAt: datestring})
+        this.getListEvaluate(tourId);
+        this.getListComment(tourId);
+        this.getListReplyComment(tourId);
+        this.countView({tourId, createAt: this.getCurrentDateTime})
     }
 }
 </script>
 <style>
-    .user-detailTA-video, .user-detailTA-map{
+    .shareFacebook{
+        margin-top: 2px;
+        width: 100px;
+        border: none;
+    }
+        .user-detailTA-video, .user-detailTA-map{
         text-align: center;
     }
     .user-avatar-evaluate{

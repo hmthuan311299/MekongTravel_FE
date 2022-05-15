@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1 class="text-center text-danger">Thêm kỹ thuật viên</h1>
+    <h1 class="text-center text-danger">Thêm Hỗ trợ viên</h1>
     <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="handleAdd">
         <v-text-field
             v-model="name"

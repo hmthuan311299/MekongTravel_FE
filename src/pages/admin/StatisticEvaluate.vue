@@ -9,7 +9,11 @@
                 right
             >   
                 <b-dropdown-item @click="handleGetProvince('','Tất cả')">Tất cả</b-dropdown-item>
-                <b-dropdown-item @click="handleGetProvince(province.provinceid, province.provincetitle)" v-for="province in listProvince" :key="province.provinceid">{{province.provincetitle}}</b-dropdown-item>                   
+                <b-dropdown-item 
+                    @click="handleGetProvince(province.provinceid, province.provincetitle)" v-for="province in listProvince" :key="province.provinceid"
+                >
+                    {{province.provincetitle}}
+                </b-dropdown-item>                   
             </b-nav-item-dropdown>
             <b-nav-item-dropdown
                 id="my-nav-dropdown2"
@@ -31,7 +35,9 @@
                 right
             >   
                 <b-dropdown-item @click="handleGetMonth('', 'Chọn tháng')" >Tất cả</b-dropdown-item>
-                <b-dropdown-item @click="handleGetMonth(month.monthId, month.monthTitle)"  v-for="month in getListMonth" :key="month.monthId">{{month.monthTitle}}</b-dropdown-item>
+                <b-dropdown-item @click="handleGetMonth(month.monthId, month.monthTitle)"  v-for="month in getListMonth" :key="month.monthId">
+                    {{month.monthTitle}}
+                </b-dropdown-item>
                 
             </b-nav-item-dropdown>
         </b-nav>
@@ -50,7 +56,7 @@ export default {
         ChartBar
     },
     props:{
-      statisticTitle: {type: String, default:'Thống kê địa điểm có lượt xem nhiều nhất'}
+      statisticTitle: {type: String, default:'Thống kê địa điểm có lượt đánh giá nhiều nhất'}
     },
     data(){
         return{
@@ -63,7 +69,7 @@ export default {
             listProvince: [],
             labels: [],
             datasets: [{
-                label: 'Số lượt xem',
+                label: 'Số lượt đánh giá',
                 data: [0],
                 backgroundColor: 'rgba(255, 205, 86)',
                 borderColor: 'rgb(75, 192, 192)',
@@ -91,9 +97,9 @@ export default {
     },
     methods:{
         ...mapMutations(['setLoadingError', 'setPageLoading']),
-        ...mapActions(['statisticView', 'getProvince']),
-        getStatisticView(provinceId, year, month){
-            this.statisticView({provinceId, year, month}).then(response=>{
+        ...mapActions(['statisticEvaluate', 'getProvince']),
+        getStatisticEvaluate(provinceId, year, month){
+            this.statisticEvaluate({provinceId, year, month}).then(response=>{
                 if(response.ok){
                     this.labels = [];
                     this.datasets[0].data= [0];
@@ -106,7 +112,7 @@ export default {
             this.month = monthId;
             this.monthTitle = monthTitle
             if(this.year){
-                this.getStatisticView(this.provinceId, this.year, this.month)
+                this.getStatisticEvaluate(this.provinceId, this.year, this.month)
             }else{
                 this.monthTitle ='Chọn tháng';
                 this.month= '';
@@ -123,13 +129,13 @@ export default {
         handleGetYear(yearId, yearTitle){
             this.year = yearId;
             this.yearTitle = String(yearTitle)
-            this.getStatisticView(this.provinceId, this.year, this.month)
+            this.getStatisticEvaluate(this.provinceId, this.year, this.month)
             
         },
         handleGetProvince(provinceId, provinceTitle){
             this.provinceId = provinceId;
             this.provinceTitle = provinceTitle
-            this.getStatisticView(this.provinceId, this.year, this.month)
+            this.getStatisticEvaluate(this.provinceId, this.year, this.month)
         }
     },
     created(){
@@ -138,7 +144,7 @@ export default {
                 this.listProvince = response.data  
             }
         })
-        this.getStatisticView(this.provinceId, this.year, this.month);
+        this.getStatisticEvaluate(this.provinceId, this.year, this.month);
 
     }
 }

@@ -66,5 +66,4 @@ export default {
 	background-size: cover;
     height: 100vh
 }
-   
 </style>

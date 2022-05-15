@@ -112,7 +112,7 @@ export default {
 			return removeVietnameseFromString(provinceTitle);
 		},
 		handleRouterPush(provincetitle, tourid){
-			this.$router.push({path: `/province/${this.handleremoveVietnameseProvinceTitle(provincetitle)}/listAllTouristAttraction/detailTouristAttraction/${tourid}`})
+			this.$router.push({name: `detailToutistAtraction`, params:{id: tourid, provinceName:provincetitle}})
 		},
     },
     created(){

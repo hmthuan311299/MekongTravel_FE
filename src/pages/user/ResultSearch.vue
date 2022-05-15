@@ -9,7 +9,6 @@
         </div>
   </div>
 </template>
-
 <script>
 import CardTouristAttraction from '../../components/CardTouristAttraction.vue'
 import {mapState, mapActions} from 'vuex'
@@ -49,7 +48,6 @@ export default {
     created(){
         this.valueSearch = this.$route.query.valueSearch;
         this.handleSearch(this.valueSearch);
-
     }
 }
 </script>

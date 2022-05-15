@@ -11,10 +11,10 @@
                     </div>
                 </div>
                 <b-list-group>
-                    <router-link class="b-list-group-item admin-sidebar_fs" :class="{ 'active': getActiveProvince }" tag="b-list-group-item" :to="{name:'admin'}">Danh mục tỉnh thành</router-link>
-                    <router-link class="b-list-group-item admin-sidebar_fs" :class="{ 'active': getActiveSupporter }" tag="b-list-group-item" :to="{name:'categorySupporter'}">Danh mục hỗ trợ viên</router-link>
-                    <router-link class="b-list-group-item admin-sidebar_fs" :class="{ 'active': getActiveStatistic }" tag="b-list-group-item" :to="{name:'statisticPlace'}">Thống kê</router-link>
-                    <router-link class="b-list-group-item admin-sidebar_fs" :class="{ 'active': getActiveChangePass}" tag="b-list-group-item" :to="{name:'adminChangePassword'}">Đổi mật khẩu</router-link>
+                    <router-link 
+                        v-for="(item,index) in getListActive" :key="index"
+                        class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': item.className }" tag="b-list-group-item" :to="{name:item.routerName}" >{{item.title}} <span v-if="item.title==`Duyệt đề xuất mới`" class="noti-recommended">{{numberRecommended}}</span>
+                    </router-link>
                     <b-list-group-item class="b-list-group-item admin-sidebar_fs" exactActiveClass="active" @click="handleLogout">Đăng xuất</b-list-group-item>
                 </b-list-group>
                 </div>
@@ -30,17 +30,7 @@
 <script>
 import image from '../../assets/background/Background-4.jpg'
 import FormYesNo from '../../components/FormYesNo.vue'
-import CategorySupporter from './CategorySupporter.vue'
-import AddSupporter from './AddSupporter.vue'
-import UpdateSupporter from './UpdateSupporter.vue'
-import CategoryProvince from './CategoryProvince.vue'
-import AddProvince from './AddProvince.vue'
 import IconAdd from '../../components/IconAdd.vue'
-import UpdateProvince from '../../pages/admin/UpdateProvince.vue'
-import AdminChangePassword from './AdminChangePassword.vue'
-import UpdateAdmin from './UpdateAdmin.vue'
-import AdminStatistic from './AdminStatistic'
-import AdminForgetPassword from './AdminForgetPassword'
 import {mapActions, mapState, mapMutations} from 'vuex'
 import {setToken_Admin} from "../../helpers/constans";
 import {parseJwt} from "../../helpers/"
@@ -49,10 +39,6 @@ export default {
     data(){
        return{
             image,
-            activeRouterProvince : ['admin', 'categoryProvince', 'addProvince', 'updateProvince'],
-            activeRouterSupporter: ['categorySupporter', 'addSupporter', 'updateSupporter'],
-            activeRouterStatistic: ['statisticPlace', 'statisticView'],
-            activeRouterChangePass: ['adminChangePassword'],
             urlAddProvice: '/admin/categoryProvince/addProvince',
             urlAddSupporter: '/admin/categorySupporter/addSupporter',
             isDisplayYesNoForm:{
@@ -60,12 +46,16 @@ export default {
                 titleForm: 'Form xác nhận',
                 answer: ''
             },
+            activeClassByRouteName:{
+                activeByCategoryProvince : ['admin', 'categoryProvince', 'addProvince', 'updateProvince'],
+                activeByCategorySupporter: ['categorySupporter', 'addSupporter', 'updateSupporter'],
+                activeByStatistic: ['statisticPlace', 'statisticView', 'statisticSave', 'statisticEvaluate'],
+                activeByChangePassword: ['adminChangePassword'],
+            }
        }
     },
     components:{
-        CategoryProvince, AddProvince, IconAdd, UpdateProvince,
-        AddSupporter, UpdateSupporter, CategorySupporter, AdminChangePassword,
-        FormYesNo, UpdateAdmin, AdminStatistic, AdminForgetPassword
+        IconAdd, FormYesNo
     },
     computed:{
         ...mapState({
@@ -76,21 +66,29 @@ export default {
             if(path == 'admin' || path == 'categoryProvince' ) return this.urlAddProvice;
             if(path == 'categorySupporter' ) return this.urlAddSupporter;
         },
-        getActiveProvince(){
-            var result = (this.activeRouterProvince.indexOf(this.$route.name) > -1)
+        getActiveByCategoryProvince(){
+            var result = (this.activeClassByRouteName.activeByCategoryProvince.indexOf(this.$route.name) > -1)
             return Boolean(result);
         },
-        getActiveSupporter(){
-            var result = (this.activeRouterSupporter.indexOf(this.$route.name) > -1)
+        getActiveByCategorySupporter(){
+            var result = (this.activeClassByRouteName.activeByCategorySupporter.indexOf(this.$route.name) > -1)
             return Boolean(result);
         },
-        getActiveStatistic(){
-           var result = (this.activeRouterStatistic.indexOf(this.$route.name) > -1)
+        getActiveByStatistic(){
+           var result = (this.activeClassByRouteName.activeByStatistic.indexOf(this.$route.name) > -1)
+            return Boolean(result);
+        },        
+        getActiveByChangePassword(){
+            var result = (this.activeClassByRouteName.activeByChangePassword.indexOf(this.$route.name) > -1)
             return Boolean(result);
         },
-        getActiveChangePass(){
-            var result = (this.activeRouterChangePass.indexOf(this.$route.name) > -1)
-            return Boolean(result);
+        getListActive(){
+            return [
+                {title:"Danh mục tỉnh thành",className: this.getActiveByCategoryProvince, routerName:'admin'},
+                {title:"Danh mục hỗ trợ viên",className: this.getActiveByCategorySupporter, routerName:'categorySupporter'},
+                {title:"Thống kê", className: this.getActiveByStatistic, routerName:'statisticPlace'},
+                {title:"Đổi mật khẩu",className: this.getActiveByChangePassword, routerName:'adminChangePassword'},
+            ]
         },
         showIconAdd(){
             var name = this.$route.name;

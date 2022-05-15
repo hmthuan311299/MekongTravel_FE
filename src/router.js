@@ -2,22 +2,21 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
-//page supported
-import LoginUser from './pages/user/LoginUser'
+//page supporter
 import SupporterLogin from './pages/supporter/Login'
 import Supporter from './pages/supporter/Supporter'
 import CategoryTA from './pages/supporter/CategoryTA'
-import AddTouristAttraction from './pages/supporter/AddTouristAttraction'
+import AddTA from './pages/supporter/AddTA'
 import CategoryRecommended from './pages/supporter/CategoryRecommended'
 import ApprovalRecommended from './pages/supporter/ApprovalRecomended.vue'
 import UpdateTA from './pages/supporter/UpdateTA.vue'
-import SupporterChangePassword from './pages/supporter/SupporterChangePassword'
+import SupporterChangePassword from './pages/supporter/ChangePassword'
 import CategoryMember from './pages/supporter/CategoryMember'
-import UpdateCurrentSupporter from './pages/supporter/UpdateCurrentSupporter'
-import SupporterForgetPassword from './pages/supporter/SupporterForgetPassword'
+import SupporterUpdateInformation from './pages/supporter/UpdateInformation'
+import SupporterForgetPassword from './pages/supporter/ForgetPassword'
 
 //page admin
-import LoginAdmin from './pages/admin/LoginAdmin'
+import AdminLogin from './pages/admin/Login'
 import Admin from './pages/admin/Admin'
 import CategorySupporter from './pages/admin/CategorySupporter'
 import CategoryProvince from './pages/admin/CategoryProvince.vue'
@@ -25,40 +24,43 @@ import AddProvince from './pages/admin/AddProvince.vue'
 import UpdateProvince from './pages/admin/UpdateProvince.vue'
 import AddSupporter from './pages/admin/AddSupporter'
 import UpdateSupporter from './pages/admin/UpdateSupporter'
-import AdminChangePassword from './pages/admin/AdminChangePassword.vue'
-import UpdateAdmin from './pages/admin/UpdateAdmin'
-import AdminStatistic from './pages/admin/AdminStatistic'
+import AdminChangePassword from './pages/admin/ChangePassword.vue'
+import AdminUpdateInformation from './pages/admin/UpdateInformation'
+import CategoryStatistic from './pages/admin/CategoryStatistic'
 import StatisticPlace from './pages/admin/StatisticPlace'
 import StatisticView from './pages/admin/StatisticView'
-import AdminForgetPassword from './pages/admin/AdminForgetPassword'
-//page user
+import StatisticSave from './pages/admin/StatisticSave'
+import StatisticEvaluate from './pages/admin/StatisticEvaluate'
+import AdminForgetPassword from './pages/admin/ForgetPassword'
 
-import UserSignUp from './pages/user/UserSignUp'
-import DetailToutistAtraction from './pages/user/DetailToutistAtraction'
-import UserIndex from'./pages/user/UserIndex'
+//page user
+import UserLogin from './pages/user/Login'
+import SignUp from './pages/user/SignUp'
+import DetailTA from './pages/user/DetailTA'
+import ShowUserPage from'./pages/user/ShowUserPage'
 import User from './pages/user/User.vue'
 import CategoryTAByProvince from  './pages/user/CategoryTAByProvince'
-import UserUpdateInformation from './pages/user/UserUpdateInformation'
-import UserSearch from './pages/user/UserSearch'
+import UserUpdateInformation from './pages/user/UpdateInformation'
+import ResultSearch from './pages/user/ResultSearch'
 import UserListAllTA from './pages/user/UserListAllTA'
 import ListTAByProvince from './pages/user/ListTAByProvince'
 import Recommended from './pages/user/Recommended'
 import ListRecommended from './pages/user/ListRecommended'
-import CategorySaveTA from './pages/user/CategorySaveTA'
-import UserInformation from './pages/user/UserInformation'
-import UserChangePassWord from './pages/user/UserChangePassword'
+import CategorySavedPlace from './pages/user/CategorySavedPlace'
+import Information from './pages/user/Information'
+import UserChangePassWord from './pages/user/ChangePassword'
 import ListRankTAByProvince from './pages/user/ListRankTAByProvince'
 import ListSuggestionTA from './pages/user/ListSuggestionTA'
-import UserForgetPassword from './pages/user/UserForgetPassword'
+import UserForgetPassword from './pages/user/ForgetPassword'
 
 const routes = [
     //User
     { path: '', component: User,
         children:[
-            {path: '', component: UserIndex,
+            {path: '', component: ShowUserPage,
                 children:[
                     {path: '',  component: UserListAllTA, name: "userIndex"},
-                    {path: 'search',  component: UserSearch, name: "userSearch"}
+                    {path: 'search',  component: ResultSearch, name: "userSearch"}
                 ]
             },
             {path: 'province/:provinceName/:provinceId',  component: CategoryTAByProvince,
@@ -68,19 +70,19 @@ const routes = [
                     {path: 'listSuggestion',  component: ListSuggestionTA, name: "listSuggestion"},
                 ]
             },
-            {path: 'province/:provinceName/listAllTouristAttraction/detailTouristAttraction/:id',  component: DetailToutistAtraction, name: "detailToutistAtraction"},
+            {path: 'province/:provinceName/listAllTouristAttraction/detailTouristAttraction/:id',  component: DetailTA, name: "detailToutistAtraction"},
             {path: 'member/recommended',  component: Recommended, name: "recommended"},
             {path: 'member/unapprovedList',  component: ListRecommended, name: "unapprovedList"},
             {path: 'member/approvedList',  component: ListRecommended, name: "approvedList"},
-            {path: 'member/categorySaveTA',  component: CategorySaveTA, name: "categorySaveTA"},
-            {path: 'member/information/:id',  component: UserInformation, name: "userInformation"},
+            {path: 'member/categorySavedPlace',  component: CategorySavedPlace, name: "categorySaveTA"},
+            {path: 'member/information/:id',  component: Information, name: "userInformation"},
             {path: 'member/information/:id/update', component: UserUpdateInformation, name: "userUpdateInformation"},
             {path: 'member/changePassword',  component: UserChangePassWord, name: "userChangePassword"},
         ]
     },
-    { path: '/signUp',  component: UserSignUp, name: "userSignUp"},
+    { path: '/signUp',  component: SignUp, name: "userSignUp"},
     { path: '/forgetPassword',  component: UserForgetPassword, name: "userForgetPassword"},
-    { path: '/login', component: LoginUser, name:"userLogin" },
+    { path: '/login', component: UserLogin, name:"userLogin" },
     //Supporter
     { path: '/supporter/login', component: SupporterLogin, name:"supporterLogin"},
     { path: '/supporter/forgetPassword', component: SupporterForgetPassword, name:"supporterForgetPassword"},
@@ -99,7 +101,7 @@ const routes = [
             {
                 path: 'categoryTA/add',
                 name: 'addTouristAttraction',
-                component: AddTouristAttraction,
+                component: AddTA,
             },
             {
                 path: 'categoryRecommended',
@@ -134,7 +136,7 @@ const routes = [
             {
                 path: 'updateCurrentSupporter',
                 name: 'updateCurrentSupporter',
-                component: UpdateCurrentSupporter,
+                component: SupporterUpdateInformation,
             },
         ]
     },
@@ -149,7 +151,7 @@ const routes = [
             {
                 path: 'update',
                 name: 'updateAdmin',
-                component: UpdateAdmin,
+                component: AdminUpdateInformation,
             },
             {
                 path: 'categoryProvince',
@@ -184,7 +186,7 @@ const routes = [
             {
                 path: 'categoryStatistic',
                 name: 'categoryStatistic',
-                component: AdminStatistic,
+                component: CategoryStatistic,
                 children: [
                     {
                         path: '',
@@ -195,6 +197,16 @@ const routes = [
                         path: 'statisticView',
                         name: 'statisticView',
                         component: StatisticView,
+                    },
+                    {
+                        path: 'statisticSave',
+                        name: 'statisticSave',
+                        component: StatisticSave,
+                    },
+                    {
+                        path: 'statisticEvaluate',
+                        name: 'statisticEvaluate',
+                        component: StatisticEvaluate,
                     }
                 ]
             },
@@ -207,7 +219,7 @@ const routes = [
         ],
     },
 
-    { path: '/admin/login', component: LoginAdmin, name:"adminLogin"},
+    { path: '/admin/login', component: AdminLogin, name:"adminLogin"},
     { path: '/admin/forgetPassword', component: AdminForgetPassword, name:"adminForgetPassword"},
     
     

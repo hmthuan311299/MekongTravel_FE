@@ -1,7 +1,7 @@
 <template>
   <div>
        <p class="text-center m-0 mb-3" >Danh sách tất cả địa điểm</p>
-	   <card-touristAttraction :listTA="listTA"/>
+	   <card-touristAttraction v-if="listTA.length" :listTA="listTA"/>
   </div>
 </template>
 

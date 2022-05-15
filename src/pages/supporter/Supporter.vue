@@ -2,8 +2,8 @@
     <b-container fluid class="supporter-form-container" v-bind:style="{ 'background-image': 'url(' + image + ')'}">
         <div class="row">
             <div class="col-12 col-md-3">
-               <div>
-                <!-- <div> class="sticky" -->
+                
+               <div><!-- class="sticky" -->
                     <div class="supporter-sidebar_avatar"> 
                     <div class="supporter-sidebar_logo supporter-sidebar_avatar-item"><i class="fa-solid fa-user supporter-sidebar_fs-icon"></i></div>
                     <div class="supporter-sidebar_avatar-item">
@@ -12,10 +12,10 @@
                     </div>
                     </div>
                     <b-list-group>
-                        <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveTA }" tag="b-list-group-item" :to="{name:'supporter'}">Danh mục địa điểm</router-link>
-                        <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveReTA }" tag="b-list-group-item" :to="{name:'categoryRecommended'}">Duyệt đề xuất địa điểm mới <span class="noti-recommended">{{numberRecommended}}</span></router-link>
-                        <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveCategoryMember }" tag="b-list-group-item" :to="{name:'categoryMember'}">Danh mục thành viên</router-link>
-                        <router-link class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': getActiveChangePass}" tag="b-list-group-item" :to="{name:'supporterChangePassword'}">Đổi mật khẩu</router-link>
+                        <router-link 
+                            v-for="(item,index) in getListActive" :key="index"
+                            class="b-list-group-item supporter-sidebar_fs" :class="{ 'active': item.className }" tag="b-list-group-item" :to="{name:item.routerName}" >{{item.title}} <span v-if="item.title==`Duyệt đề xuất mới`" class="noti-recommended">{{numberRecommended}}</span>
+                        </router-link>
                         <b-list-group-item class="b-list-group-item supporter-sidebar_fs" exactActiveClass="active" @click="handleLogout">Đăng xuất</b-list-group-item>
                     </b-list-group>
                </div>
@@ -33,56 +33,37 @@
 import image from '../../assets/background/Background-4.jpg'
 import {setToken_Supporter} from "../../helpers/constans";
 import {parseJwt} from "../../helpers/"
-import CategoryMember from './CategoryMember.vue'
 import {mapActions, mapState, mapMutations} from 'vuex'
-//import component
 import FormYesNo from '../../components/FormYesNo.vue'
 import IconAdd from '../../components/IconAdd.vue'
-import SearchBar from '../../components/SearchBar.vue'
-//import Page
-import SupporterForgetPassword from './SupporterForgetPassword.vue'
-import ApprovalRecommended from './ApprovalRecomended.vue'
-import CategoryTA from './CategoryTA.vue'
-import AddTouristAttraction from './AddTouristAttraction.vue'
-import CategoryRecommended from './CategoryRecommended.vue'
-import SupporterChangePassword from './SupporterChangePassword.vue'
-import UpdateTA from './UpdateTA.vue'
-import UpdateCurrentSupporter from './UpdateCurrentSupporter.vue'
 export default {
     name: 'supporter',
     data(){
         return {
             image,
-            search: '',
-            activeRouterTA : ['supporter', 'categoryTA', 'addTouristAttraction', 'updateTA'],
-            activeRouterReTA: ['categoryRecommended', 'updateRecommended'],
             urlAddTA: '/supporter/categoryTA/add',
-            activeRouterChangePass: ['supporterChangePassword'],
-            activeCategoryMember: ['categoryMember'],
-            // urlAddReTA: 'supporter/categoryReTA/edit/:id',
             isDisplayYesNoForm:{
 				display: false,
 				titleForm: 'Form xác nhận',
 				answer: ''
 			},
             ListTA: [],
+            activeClassByRouteName:{
+                activeByCategoryTA: ['supporter', 'categoryTA', 'addTouristAttraction', 'updateTA'],
+                activeByRecommendedPlace: ['categoryRecommended', 'approvalRecommended'],
+                activeByChangePassword: ['supporterChangePassword'],
+                activeByCategoryMember: ['categoryMember', 'categoryBlockedMember'],
+
+            },
+
         }
     },
     components:{
-        SearchBar, CategoryTA, CategoryRecommended, ApprovalRecommended
-        ,IconAdd, AddTouristAttraction, SupporterChangePassword, FormYesNo,
-        UpdateTA, CategoryMember, UpdateCurrentSupporter, SupporterForgetPassword
+        IconAdd,FormYesNo,
     },
     methods:{
         ...mapActions(['getListReTA']),
         ...mapMutations(['set_LogoutSupporter']),
-        getValueSearch(value){
-            console.log("search", value);
-            this.search = value
-            if(!this.search){
-                alert("vui long nhap lai")
-            }
-        },
         handleLogout(){
 				this.isDisplayYesNoForm.display = true;
 				this.isDisplayYesNoForm.titleForm= "Xác nhận đăng xuất";
@@ -118,26 +99,29 @@ export default {
             var path = this.$route.name;
             if(path == 'supporter' || path == 'categoryTA' ) return this.urlAddTA;
         },
-        getActiveTA(){
-            var result = (this.activeRouterTA.indexOf(this.$route.name) > -1)
+        getActiveByCategoryTA(){
+            var result = (this.activeClassByRouteName.activeByCategoryTA.indexOf(this.$route.name) > -1)
             return Boolean(result);
         },
-        getActiveReTA(){
-            var result = (this.activeRouterReTA.indexOf(this.$route.name) > -1)
+        getActiveByRecommendedPlace(){
+            var result = (this.activeClassByRouteName.activeByRecommendedPlace.indexOf(this.$route.name) > -1)
             return Boolean(result);
         },
-        getActiveCategoryMember(){
-           var result = (this.activeCategoryMember.indexOf(this.$route.name) > -1)
+        getActiveByCategoryMember(){
+           var result = (this.activeClassByRouteName.activeByCategoryMember.indexOf(this.$route.name) > -1)
             return Boolean(result);
         },
-        getUrlIconAddByPath(){
-            if(this.$route.name == 'supporter' || 'categoryTA'){
-                return this.urlAddTA;
-            }
-        },
-        getActiveChangePass(){
-            var result = (this.activeRouterChangePass.indexOf(this.$route.name) > -1)
+        getActiveByChangePassword(){
+            var result = (this.activeClassByRouteName.activeByChangePassword.indexOf(this.$route.name) > -1)
             return Boolean(result);
+        },
+        getListActive(){
+            return [
+                {title:"Danh mục địa điểm",className: this.getActiveByCategoryTA, routerName:'supporter'},
+                {title:"Duyệt đề xuất mới",className: this.getActiveByRecommendedPlace, routerName:'categoryRecommended'},
+                {title:"Danh mục thành viên",className: this.getActiveByCategoryMember, routerName:'categoryMember'},
+                {title:"Đổi mật khẩu",className: this.getActiveByChangePassword, routerName:'supporterChangePassword'},
+            ]
         },
     },
     created(){

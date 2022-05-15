@@ -6,7 +6,7 @@
 		<div class="user-list-province">
 			<router-link  
 				v-for="item in listProvince" :key="item.provinceid" class="user-list-province-item" 
-					:to ="{ name:'categoryTAByProvince', 
+					:to ="{name:'categoryTAByProvince', 
 							params:{'provinceName': handleremoveVietnameseProvinceTitle(item.provincetitle),
 									'provinceId':  item.provinceid
 					}}"
@@ -17,12 +17,10 @@
 	</div>
 	<hr>
 	<router-view></router-view>
-	
   </div>
 </template>
-
 <script>
-import UserSearch from './UserSearch'
+import ResultSearch from './ResultSearch'
 import UserListAllTA from './UserListAllTA'
 import SearchBar from '../../components/SearchBar.vue'
 import {mapActions, mapState} from 'vuex';
@@ -45,7 +43,7 @@ export default {
 
 	},
 	components:{
-		SearchBar, UserSearch, UserListAllTA, 
+		SearchBar, ResultSearch, UserListAllTA, 
 	},
 	created(){
     this.getProvince().then(response=>{
@@ -106,5 +104,4 @@ export default {
 	transition: 0.5s ease;
 	text-decoration: none;
 }
-
 </style>

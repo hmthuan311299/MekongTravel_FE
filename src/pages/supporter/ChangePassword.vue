@@ -58,7 +58,6 @@ export default {
     }
 }
 </script>
-
 <style>
     .container-changePassword{
         display: flex;

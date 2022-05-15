@@ -1,44 +1,55 @@
 <template>
-    <div class="user-list-touristAttraction">
-		<div 
-			v-for="(card, index) in listTA" :key="index" class="card mb-3" style="width: 24rem;"
-			@click="handleRouterPush(card.provincetitle, card.tourid)"
-		>
-			<img  :src="`${port_file}${card.tourpicture}`" class="card-img-top" alt="...">
-			<div class="card-body">
-				<div>
-					<h5 class="card-title">{{card.tourtitle}}</h5>
-					<p class="card-text" style="height: 3rem"><i class="fa-solid fa-map-location text-primary"></i> {{card.touraddress}}</p>
-					<p class="card-text"><i class="fa-solid fa-city text-primary"></i> {{card.provincetitle}}</p>
-					<div class="card-text" v-if="card.avg" style="margin-bottom: 16px">
-						Xếp hạng 
-						<span v-html="getStars(card.avg)"></span>
-						({{formatNumberStar(card.avg)}})
+	<div>
+		<div class="container text-right mb-4">
+			<b-form-select ref="BFormSelect" v-model="selected" :options="options" class="mb-2" style="width: 20%"></b-form-select>
+		</div>
+		<div class="user-list-touristAttraction">
+			<div 
+				v-for="(card, index) in listRenderTA" :key="index" class="card mb-3" style="width: 24rem;"
+				@click="handleRouterPush(card.provincetitle, card.tourid)"
+			>
+				<img  :src="`${port_file}${card.tourpicture}`" class="card-img-top" alt="...">
+				<div class="card-body">
+					<div>
+						<h5 class="card-title">{{card.tourtitle}}</h5>
+						<p class="card-text" style="height: 3rem"><i class="fa-solid fa-map-location text-primary"></i> {{card.touraddress}}</p>
+						<p class="card-text"><i class="fa-solid fa-city text-primary"></i> {{card.provincetitle}}</p>
+						<div class="card-text" v-if="card.avg" style="margin-bottom: 16px">
+							Xếp hạng 
+							<span v-html="getStars(card.avg)"></span>
+							({{formatNumberStar(card.avg)}}) ({{card.numbereval}} đánh giá)
+						</div>
+						<p class="card-text" v-else>
+							Xếp hạng: <i>Hiện tại chưa có đánh giá nào</i>
+						</p>
+						
+						<a class="btn btn-primary text-white w-100">Xem thử</a>
 					</div>
-					<p class="card-text" v-else>
-						Xếp hạng: <i>Hiện tại chưa có đánh giá nào</i>
-					</p>
-					
-					<a class="btn btn-primary text-white w-100">Xem thử</a>
 				</div>
-			</div>
-		</div>	
+			</div>	
+		</div>
 	</div>
 </template>
 
 <script>
 import port_file from '../port_file'
 import {removeVietnameseFromString} from '../helpers'
-import {mapActions, mapMutations} from 'vuex'
 export default {
     name: 'card-touristAttraction',
 	data(){
 		return{
 			port_file,
+			selected: null,
+            options: [
+                { value: null, text: 'Sắp xếp' },
+				{ value: 0, text: 'Theo tên tăng dần' },
+				{ value: 1, text: 'Theo tên giảm dần' },
+            ],
+			listRenderTA: this.listTA
 		}
 	},
 	props:{
-		listTA: [],
+		listTA:[],
 	},
 	methods:{
 		handleremoveVietnameseProvinceTitle(provinceTitle){
@@ -64,9 +75,44 @@ export default {
 				output.push('<i class="fa fa-star" aria-hidden="true"></i>&nbsp;');
 			return output.join('');
 		},
-	},computed:{
-		
+	},
+	watch: {
+		selected(newQuestion, oldQuestion) {
+			console.log(newQuestion);
+			var newlistTA = this.listRenderTA
+			if(newQuestion == 0){
+				for( var i = 0; i< (newlistTA.length-1) ; i++){
+                    for( var j = i+1; j< newlistTA.length; j++){
+                        if(newlistTA[i].tourtitle > newlistTA[j].tourtitle){
+                            let a = newlistTA[i];
+                            newlistTA[i] = newlistTA[j];
+                            newlistTA[j] = a;
+                        }
+                    }
+                }
+				this.listRenderTA = newlistTA
+			}
+			if(newQuestion == 1){
+				for( var i = 0; i< (newlistTA.length-1) ; i++){
+                    for( var j = i+1; j< newlistTA.length; j++){
+                        if(newlistTA[i].tourtitle < newlistTA[j].tourtitle){
+                            let a = newlistTA[i];
+                            newlistTA[i] = newlistTA[j];
+                            newlistTA[j] = a;
+                        }
+                    }
+                }
+				this.listRenderTA = newlistTA
+			}
+			else{
+				this.listRenderTA = this.listTA
+			}
+		},
+	},
+	created(){
+		console.log(this.listTA)
 	}
+
 }
 </script>
 
